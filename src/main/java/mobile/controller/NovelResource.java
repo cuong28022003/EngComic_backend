@@ -42,7 +42,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("api/novels")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000") // Cho phép React truy cập
 public class NovelResource {
     private static final Logger LOGGER = LogManager.getLogger(NovelResource.class);
 
