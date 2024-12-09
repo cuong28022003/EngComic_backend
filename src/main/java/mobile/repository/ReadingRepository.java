@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @EnableMongoRepositories
 public interface ReadingRepository  extends MongoRepository<Reading, ObjectId> {
-    void deleteAllByNovel(Comic comic);
+    void deleteAllByComic(Comic comic);
     @Query("{'user.$id':?0}")
     List<Reading> findByUserId(ObjectId id);
    // @Query("{$and : [?#{{'user.$id':[0]}},?#{{'novel.$id':[1]}}]}")

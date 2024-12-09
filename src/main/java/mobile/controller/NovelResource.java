@@ -1,15 +1,10 @@
 package mobile.controller;
 
-import mobile.Service.ChapterService;
-import mobile.Service.CommentService;
-import mobile.Service.ComicService;
-import mobile.Service.ReadingService;
-import mobile.Service.UserService;
+import mobile.Service.*;
 import mobile.mapping.ChapterMapping;
 import mobile.mapping.NovelMapping;
 import mobile.mapping.ReadingMapping;
 import mobile.model.Entity.*;
-import mobile.model.payload.request.chapter.CreateChapterRequest;
 import mobile.model.payload.request.chapter.DeleteChapterRequest;
 import mobile.model.payload.request.chapter.UpdateChapterRequest;
 import mobile.model.payload.request.novel.CreateNovelRequest;
@@ -50,6 +45,7 @@ public class NovelResource {
     private final ChapterService chapterService;
     private final ReadingService readingService;
     private final CommentService commentService;
+    private final SavedService savedService;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -514,9 +510,10 @@ public class NovelResource {
             }
 
             if (findComic.getUploader().getUsername().equals(user.getUsername())) {
-                commentService.DeleteCommentByNovelUrl(findComic.getUrl());
-                readingService.deleteAllReadingByNovel(findComic);
-                chapterService.DeleteAllChapterByNovel(findComic);
+                commentService.DeleteCommentByComicUrl(findComic.getUrl());
+                readingService.deleteAllReadingByComic(findComic);
+                chapterService.DeleteAllChapterByComic(findComic);
+                savedService.DeleteSavedByComic(findComic);
                 comicService.DeleteComic(findComic);
             } else {
                 throw new BadCredentialsException("Không thể chỉnh sửa truyện của người khác");

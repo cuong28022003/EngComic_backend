@@ -39,8 +39,8 @@ public class ReadingServiceImpl implements ReadingService{
 	}
 
 	@Override
-	public void deleteAllReadingByNovel(Comic comic) {
-		readingRepository.deleteAllByNovel(comic);
+	public void deleteAllReadingByComic(Comic comic) {
+		readingRepository.deleteAllByComic(comic);
 	}
 
 	@Override

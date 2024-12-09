@@ -1,5 +1,6 @@
 package mobile.repository;
 
+import mobile.model.Entity.Comic;
 import mobile.model.Entity.Saved;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Example;
@@ -20,4 +21,6 @@ public interface SavedRepository extends MongoRepository<Saved, ObjectId> {
 
     @Query(value="{'user._id':?0, 'comic.$id':?1}",delete = true)
     Saved deleteByParam(ObjectId userId,ObjectId novelId);
+
+    void deleteByComic(Comic comic);
 }

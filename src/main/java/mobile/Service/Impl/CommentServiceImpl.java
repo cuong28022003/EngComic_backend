@@ -86,7 +86,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void DeleteCommentByNovelUrl(String url) {
+    public void DeleteCommentByComicUrl(String url) {
         commentRepository.deleteAllByUrltruyen(url);
     }
 

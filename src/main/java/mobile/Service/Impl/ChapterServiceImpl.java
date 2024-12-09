@@ -48,7 +48,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public void DeleteAllChapterByNovel(Comic comic) {
+    public void DeleteAllChapterByComic(Comic comic) {
         chapterRepository.deleteAllByDautruyenId(comic);
     }
 

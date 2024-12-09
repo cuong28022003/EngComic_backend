@@ -1,5 +1,6 @@
 package mobile.Service;
 
+import mobile.model.Entity.Comic;
 import mobile.model.Entity.Saved;
 import org.bson.types.ObjectId;
 
@@ -10,4 +11,6 @@ public interface SavedService {
     Saved createSaved(Saved saved);
     Saved deleteSaved(ObjectId userId, ObjectId comicId);
     Saved getSaved(ObjectId userId, ObjectId comicId);
+
+    void DeleteSavedByComic(Comic findComic);
 }

@@ -13,7 +13,7 @@ public interface ChapterService {
     List<Chapter> findByDauTruyen(ObjectId id, Pageable pageable);
     int countByDauTruyen(ObjectId id);
     List<Object> getNameAndChapnumber(ObjectId id, Pageable pageable);
-    void DeleteAllChapterByNovel(Comic comic);
+    void DeleteAllChapterByComic(Comic comic);
     List<Chapter> getChaptersNewUpdate(Pageable pageable);
     void SaveChapter(Chapter chapter);
     void DeleteChapter(Chapter chapter);

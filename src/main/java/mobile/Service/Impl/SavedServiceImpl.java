@@ -3,6 +3,7 @@ package mobile.Service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mobile.Service.SavedService;
+import mobile.model.Entity.Comic;
 import mobile.model.Entity.Saved;
 import mobile.repository.SavedRepository;
 import mobile.repository.UserRepository;
@@ -35,5 +36,10 @@ public class SavedServiceImpl implements SavedService {
     @Override
     public Saved getSaved(ObjectId userId, ObjectId comicId) {
         return savedRepository.findByParam(userId, comicId);
+    }
+
+    @Override
+    public void DeleteSavedByComic(Comic findComic) {
+        savedRepository.deleteByComic(findComic);
     }
 }
