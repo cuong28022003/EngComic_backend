@@ -2,7 +2,9 @@ package mobile.controller;
 
 import mobile.Service.RoleService;
 import mobile.Service.UserService;
+import mobile.Service.ComicService;
 import mobile.mapping.UserMapping;
+import mobile.model.Entity.Comic;
 import mobile.model.Entity.User;
 import mobile.model.payload.request.user.DeleteUserRequest;
 import mobile.model.payload.request.user.RegisterAdminRequest;
@@ -36,10 +38,26 @@ public class AdminResource {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final ComicService comicService;
 
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @DeleteMapping("/comics/{url}")
+    public ResponseEntity<String> deleteComic(@PathVariable String url) {
+        boolean isDeleted = comicService.deleteComicByUrl(url);
+
+        if (isDeleted) {
+            return ResponseEntity.ok("Comic deleted successfully.");
+        } else {
+            return ResponseEntity.status(404).body("Comic not found.");
+        }
+    }
+
+    @GetMapping("/comics")
+    public List<Comic> getAllComics() {
+        return comicService.getAllComics();
+    }
 
     @GetMapping("/users")
     @ResponseBody
@@ -53,7 +71,8 @@ public class AdminResource {
 
     @PostMapping("user/save")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> saveUser(@RequestBody @Valid RegisterAdminRequest user, BindingResult errors) throws Exception {
+    public ResponseEntity<SuccessResponse> saveUser(@RequestBody @Valid RegisterAdminRequest user, BindingResult errors)
+            throws Exception {
         if (errors.hasErrors()) {
             throw new MethodArgumentNotValidException(errors);
         }
@@ -91,7 +110,8 @@ public class AdminResource {
 
     @PutMapping("user/active")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> activeUser(@RequestBody Map<String, String> json, BindingResult errors) throws Exception {
+    public ResponseEntity<SuccessResponse> activeUser(@RequestBody Map<String, String> json, BindingResult errors)
+            throws Exception {
         if (errors.hasErrors()) {
             throw new MethodArgumentNotValidException(errors);
         }
@@ -120,9 +140,11 @@ public class AdminResource {
             throw new Exception("Can't active account");
         }
     }
+
     @PutMapping("user/inactive")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> inactiveUser(@RequestBody Map<String, String> json, BindingResult errors) throws Exception {
+    public ResponseEntity<SuccessResponse> inactiveUser(@RequestBody Map<String, String> json, BindingResult errors)
+            throws Exception {
         if (errors.hasErrors()) {
             throw new MethodArgumentNotValidException(errors);
         }
@@ -154,7 +176,8 @@ public class AdminResource {
 
     @PostMapping("role/addtouser")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> addRoleToUser(@RequestBody @Valid RoleToUserRequest roleForm, BindingResult errors) throws Exception {
+    public ResponseEntity<SuccessResponse> addRoleToUser(@RequestBody @Valid RoleToUserRequest roleForm,
+            BindingResult errors) throws Exception {
         if (errors.hasErrors()) {
             throw new MethodArgumentNotValidException(errors);
         }
@@ -191,7 +214,8 @@ public class AdminResource {
 
     @PutMapping("role/updatetouser")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> updateRoleToUser(@RequestBody @Valid UpdateRoleToUserRequest roleListForm, BindingResult errors) throws Exception {
+    public ResponseEntity<SuccessResponse> updateRoleToUser(@RequestBody @Valid UpdateRoleToUserRequest roleListForm,
+            BindingResult errors) throws Exception {
         if (errors.hasErrors()) {
             throw new MethodArgumentNotValidException(errors);
         }
@@ -221,30 +245,30 @@ public class AdminResource {
         }
     }
 
-    @DeleteMapping("user")
+    @DeleteMapping("deleteuser")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> deleteAccount(@RequestBody @Valid DeleteUserRequest deleteUserRequest) throws Exception{
-        if(deleteUserRequest.getUsername()==null){
+    public ResponseEntity<SuccessResponse> deleteAccount(@RequestBody @Valid DeleteUserRequest deleteUserRequest)
+            throws Exception {
+        if (deleteUserRequest.getUsername() == null) {
             throw new HttpMessageNotReadableException("Missing field");
         }
-           try{
-               User user = userService.findByUsername(deleteUserRequest.getUsername());
-               if(user==null){
-                   throw new RecordNotFoundException("Không tìm thấy tài khoản");
-               }
-               User userDel = userService.deleteUser(deleteUserRequest.getUsername());
-               SuccessResponse response = new SuccessResponse();
-               response.setStatus(HttpStatus.OK.value());
-               response.setMessage("Delete user successful");
-               response.setSuccess(true);
-               response.getData().put("username", deleteUserRequest.getUsername());
-               return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
-           }catch (Exception ex){
-               throw new Exception("Xoá tài khoản thất bại");
-           }
+        try {
+            User user = userService.findByUsername(deleteUserRequest.getUsername());
+            if (user == null) {
+                throw new RecordNotFoundException("Không tìm thấy tài khoản");
+            }
+            User userDel = userService.deleteUser(deleteUserRequest.getUsername());
+            SuccessResponse response = new SuccessResponse();
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Delete user successful");
+            response.setSuccess(true);
+            response.getData().put("username", deleteUserRequest.getUsername());
+            return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            throw new Exception("Xoá tài khoản thất bại");
+        }
 
     }
-
 
     private ResponseEntity SendErrorValid(String field, String message) {
         ErrorResponseMap errorResponseMap = new ErrorResponseMap();
