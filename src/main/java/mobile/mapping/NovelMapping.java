@@ -30,7 +30,7 @@ public class NovelMapping {
         novelDetailResponse.setDescription(comic.getDescription());
         novelDetailResponse.setUploader(comic.getUploader().getTenhienthi());
         novelDetailResponse.setViews(comic.getViews());
-        novelDetailResponse.setReviewCount(comic.getRatingCount());
+        novelDetailResponse.setRatingCount(comic.getRatingCount());
         novelDetailResponse.setChapterCount(sochap);
         novelDetailResponse.setGenre(comic.getGenre());
         novelDetailResponse.setStatus(comic.getStatus());

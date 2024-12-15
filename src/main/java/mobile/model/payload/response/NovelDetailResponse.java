@@ -3,7 +3,6 @@ package mobile.model.payload.response;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 
 @Getter
 @Setter
@@ -15,7 +14,7 @@ public class NovelDetailResponse {
     protected int views;
     protected String uploader;
     protected String description;
-    protected int reviewCount;
+    protected int ratingCount;
     protected String artist;
     protected String name;
     protected String genre;

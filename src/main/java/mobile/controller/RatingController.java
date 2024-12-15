@@ -136,7 +136,15 @@ public class RatingController {
                 throw new RecordNotFoundException("Không tìm thấy truyện");
             }
 
+            double averageRating = ratingService.calculateAverageRating(comic);
+
             ratingService.deleteRating(comic, user);
+
+            int ratingCount = ratingService.getTotalReviews(comic);
+            comic.setRating(averageRating);
+            comic.setRatingCount(ratingCount);
+            comicService.SaveComic(comic);
+
             return ResponseEntity.ok("Rating deleted successfully");
 
         }else {
