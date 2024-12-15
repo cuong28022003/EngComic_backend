@@ -1,6 +1,8 @@
 package mobile.repository;
 
+import mobile.model.Entity.Comic;
 import mobile.model.Entity.Rating;
+import mobile.model.Entity.User;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -9,12 +11,11 @@ import java.util.List;
 
 @Repository
 public interface RatingRepository extends MongoRepository<Rating, ObjectId> {
-    // Tìm tất cả các đánh giá của một truyện
-    List<Rating> findByComic_Id(ObjectId comicId);
+    List<Rating> findByComic(Comic comic);
 
-    // Tìm tất cả các đánh giá của một người dùng
-    List<Rating> findByUser_Id(ObjectId userId);
+    List<Rating> findByUser(User user);
 
-    // Tìm đánh giá của một người dùng trên một truyện cụ thể
-    Rating findByUser_IdAndComic_Id(ObjectId userId, ObjectId comicId);
+    Rating findByComicAndUser(Comic comic, User user);
+
+    void deleteByComicAndUser(Comic comic, User user);
 }

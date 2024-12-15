@@ -1,14 +1,13 @@
 package mobile.Service;
 
+import mobile.model.Entity.Comic;
 import mobile.model.Entity.Rating;
-import org.bson.types.ObjectId;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import mobile.model.Entity.User;
 
 public interface RatingService {
-    List<Rating> getRatingsByComic(ObjectId comicId);
-    List<Rating> getRatingsByUser(ObjectId userId);
-    Rating getUserRatingForComic(ObjectId userId, ObjectId comicId);
-    double getAverageRating(ObjectId comicId);
+    Rating rateComic(Comic comic, User user, int rating);
+    double calculateAverageRating(Comic comic);
+    int getTotalReviews(Comic comic);
+    Rating getRatingByComicAndUser(Comic comic, User user);
+    void deleteRating(Comic comic, User user);
 }

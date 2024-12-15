@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class NovelResponse {
-    protected int rating;
+    protected double rating;
     protected String image;
     protected int views;
     protected String description;

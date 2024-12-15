@@ -10,7 +10,7 @@ import org.bson.types.ObjectId;
 @NoArgsConstructor
 public class NovelDetailResponse {
     protected String id;
-    protected int rating;
+    protected double rating;
     protected String image;
     protected int views;
     protected String uploader;

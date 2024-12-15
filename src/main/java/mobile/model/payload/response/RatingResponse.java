@@ -1,14 +1,26 @@
 package mobile.model.payload.response;
 
-import lombok.*;
-import org.bson.types.ObjectId;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 public class RatingResponse {
-    double averageRating;
-    private int reviewCount;
+    private int userRating;
+    private double averageRating;
+    private int totalReviews;
+
+    public RatingResponse(int userRating, double averageRating, int totalReviews) {
+        this.userRating = userRating;
+        this.averageRating = averageRating;
+        this.totalReviews = totalReviews;
+    }
+
+    // Getters
+    public int getUserRating() {
+        return userRating;
+    }
+
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public int getTotalReviews() {
+        return totalReviews;
+    }
 }

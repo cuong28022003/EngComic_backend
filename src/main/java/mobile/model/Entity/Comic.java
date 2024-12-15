@@ -14,7 +14,7 @@ import java.util.Date;
 public class Comic {
     @Id
     protected ObjectId _id;
-    protected int rating;
+    protected double rating;
     protected String image;
     protected int views;
     @DBRef
@@ -59,11 +59,11 @@ public class Comic {
         this._id = _id;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
