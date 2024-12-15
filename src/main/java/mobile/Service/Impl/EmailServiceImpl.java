@@ -114,18 +114,19 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendForgetPasswordMessage(
             User user, String newpassword) {
-        String accessToken = getAccessToken();
-        ((JavaMailSenderImpl)emailSender).setPassword(accessToken);
+//        String accessToken = getAccessToken();
+//        ((JavaMailSenderImpl)emailSender).setPassword(accessToken);
         MimeMessage message = emailSender.createMimeMessage();
         String text = templateForgetPasswordMessage(user, newpassword);
         String subject = "New password from Novel";
         MimeMessageHelper helper = null;
         try {
             helper = new MimeMessageHelper(message, "utf-8");
-            helper.setFrom("server10.noreply@gmail.com");
+            helper.setFrom("techcave4dev@gmail.com");
             helper.setTo(user.getEmail());
             helper.setSubject(subject);
             helper.setText(text, true);
+            System.out.println("Mail sent successfully...");
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -1138,7 +1139,7 @@ public class EmailServiceImpl implements EmailService {
                 "      <td class=\"v-container-padding-padding\" style=\"overflow-wrap:break-word;word-break:break-word;padding:10px 20px;font-family:'Raleway',sans-serif;\" align=\"left\">\n" +
                 "        \n" +
                 "  <div class=\"v-text-align v-line-height\" style=\"color: #ffffff; line-height: 150%; text-align: left; word-wrap: break-word;\">\n" +
-                "    <p style=\"font-size: 14px; line-height: 150%;\"><strong>Thích truyện chữ</strong></p>\n" +
+                "    <p style=\"font-size: 14px; line-height: 150%;\"><strong>Eng Comic</strong></p>\n" +
                 "<p style=\"font-size: 14px; line-height: 150%;\">Số 1, Võ Văn Ngân, TP Thủ Đức, TP Hồ Chí Minh</p>\n" +
                 "  </div>\n" +
                 "\n" +
