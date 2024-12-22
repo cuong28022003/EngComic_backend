@@ -55,10 +55,11 @@ public class NovelResource {
     @GetMapping("/")
     @ResponseBody
     public ResponseEntity<List<NovelResponse>> getNovels(@RequestParam(defaultValue = "None") String status,
-            @RequestParam(defaultValue = "tentruyen") String sort, @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "name") String sort, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "desc") String order,
             @RequestParam(defaultValue = "3") int size) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+        Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
         List<Comic> comicList = null;
         List<NovelResponse> novelResponseList = new ArrayList<>();
         if (status.equals("None"))
