@@ -101,6 +101,10 @@ public class ComicServiceImpl implements ComicService {
         return comicRepository.findByNameLike(name);
     }
 
+    public List<Comic> findByUploaderContaining(ObjectId id) {
+        return comicRepository.findByUploaderContaining(id);
+    }
+
     @Override
     public List<Comic> getComicsByGenre(String genre) {
         return comicRepository.findByGenre(genre);

@@ -45,4 +45,6 @@ public interface ComicService {
     Comic incrementViews(String url);
 
     boolean deleteComicByUrl(String url);
+
+    List<Comic> findByUploaderContaining(ObjectId id);
 }
