@@ -23,7 +23,7 @@ public class UserMapping {
 
     public static User UpdateUserInfoByUser(User user, InfoUserRequest userInfo) {
         user.setBirthdate(userInfo.getBirthdate());
-        user.setTenhienthi(userInfo.getTenhienthi());
+        user.setFullName(userInfo.getFullName());
         user.setImage(userInfo.getImage());
         return  user;
     }

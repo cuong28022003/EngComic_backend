@@ -1,6 +1,5 @@
 package mobile.controller;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import mobile.Service.EmailService;
 import mobile.Service.UserService;
 import mobile.mapping.UserMapping;
@@ -57,7 +56,7 @@ public class AuthentiactionController {
 
     @PostMapping("/register")
     @ResponseBody
-    public ResponseEntity<SuccessResponse>  addUser(@RequestBody @Valid RegisterRequest user, BindingResult errors) throws Exception {
+    public ResponseEntity<SuccessResponse>Register(@RequestBody @Valid RegisterRequest user, BindingResult errors) throws Exception {
 
         if (errors.hasErrors()) {
             throw new MethodArgumentNotValidException(errors);
@@ -136,7 +135,8 @@ public class AuthentiactionController {
 
         response.getData().put("accessToken",accessToken);
         response.getData().put("refreshToken",refreshToken);
-        response.getData().put("name",loginUser.getTenhienthi());
+        response.getData().put("fullName",loginUser.getFullName());
+        response.getData().put("email",loginUser.getEmail());
         response.getData().put("username",loginUser.getUsername());
         response.getData().put("image",loginUser.getImage());
         response.getData().put("roles",userDetails.getRoles());

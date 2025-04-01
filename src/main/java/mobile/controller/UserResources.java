@@ -70,7 +70,7 @@ public class UserResources {
             throw new BadCredentialsException("access token is missing");
         }
     }
-    @PutMapping("/info")
+    @PutMapping("/{username}")
     @ResponseBody
     public ResponseEntity<SuccessResponse>  updateInfo(@RequestBody @Valid InfoUserRequest userInfo, BindingResult errors, HttpServletRequest request) throws Exception {
         String authorizationHeader = request.getHeader(AUTHORIZATION);

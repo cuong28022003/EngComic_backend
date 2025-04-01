@@ -3,18 +3,20 @@ package mobile.Service;
 import mobile.model.Entity.Chapter;
 import mobile.model.Entity.Comic;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ChapterService {
-    List<Chapter> findByDauTruyen(ObjectId id);
-    Chapter findByDauTruyenAndChapterNumber(ObjectId id,int number);
-    List<Chapter> findByDauTruyen(ObjectId id, Pageable pageable);
-    int countByDauTruyen(ObjectId id);
+    Page<Chapter> findByComic(Comic comic, int page, int size);
+    Chapter findById(String chapterId);
+    int countChaptersByComic(Comic comic);
+
+
+    Chapter findByComicAndChapterNumber(Comic comic, int chapterNumber);
     List<Object> getNameAndChapnumber(ObjectId id, Pageable pageable);
     void DeleteAllChapterByComic(Comic comic);
-    List<Chapter> getChaptersNewUpdate(Pageable pageable);
     void SaveChapter(Chapter chapter);
     void DeleteChapter(Chapter chapter);
 }

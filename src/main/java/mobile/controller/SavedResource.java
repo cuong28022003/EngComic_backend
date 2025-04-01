@@ -35,7 +35,7 @@ import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 @RequestMapping("api/saved")
 @RequiredArgsConstructor
 public class SavedResource {
-    private static final Logger LOGGER = LogManager.getLogger(NovelResource.class);
+    private static final Logger LOGGER = LogManager.getLogger(ComicController.class);
 
     private final UserService userService;
     private final ComicService comicService;

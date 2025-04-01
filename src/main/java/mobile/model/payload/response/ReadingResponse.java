@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ReadingResponse {
-    protected String tentruyen;
-    protected String hinhanh;
-    protected int chapnumber;
-    protected int sochap;
+    protected String name;
+    protected String image;
+    protected int chapterNumber;
+    protected int chapterCount;
     protected String url;
 }

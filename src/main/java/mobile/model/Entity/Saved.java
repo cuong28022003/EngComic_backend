@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 @RestResource(exported=false)
-@Document(collection = "saveds")
+@Document(collection = "saved")
 public class Saved {
     @Id
     protected ObjectId _id;

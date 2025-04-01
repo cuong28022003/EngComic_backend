@@ -33,7 +33,7 @@ public class CommentMapping {
         commentResponse.setContent(comment.getContent());
         commentResponse.setNumChild(comment.getNumChild());
         commentResponse.setDepth(comment.getDepth());
-        commentResponse.setTenhienthi(comment.getUser().getTenhienthi());
+        commentResponse.setTenhienthi(comment.getUser().getFullName());
         commentResponse.setUsername(comment.getUser().getUsername());
         commentResponse.setImage(comment.getUser().getImage());
         commentResponse.setDate(comment.getCreatedate());

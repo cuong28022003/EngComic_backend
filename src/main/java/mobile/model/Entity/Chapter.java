@@ -12,75 +12,71 @@ import java.util.Date;
 import java.util.List;
 
 @RestResource(exported = false)
-@Document(collection = "chapters")
+@Document(collection = "chapter")
 public class Chapter {
     @Id
-    protected ObjectId _id;
-    protected int chapnumber;
+    protected String id;
+    protected int chapterNumber;
     @DBRef
-    protected Comic dautruyenId;
-    protected String tenchap;
-    protected List<String> danhSachAnh; // Danh sách URL ảnh
+    protected Comic comic;
+    protected String name;
+    protected List<String> images; // Danh sách URL ảnh
     @CreatedDate
     protected Date createAt;
     @LastModifiedDate
     protected Date updateAt;
 
-    // Constructor mặc định
     public Chapter() {
     }
 
-    // Constructor có tham số
-    public Chapter(ObjectId _id, int chapnumber, Comic dautruyenId, String tenchap,
-            List<String> danhSachAnh, Date createAt, Date updateAt) {
-        this._id = _id;
-        this.chapnumber = chapnumber;
-        this.dautruyenId = dautruyenId;
-        this.tenchap = tenchap;
-        this.danhSachAnh = danhSachAnh;
+    public Chapter(String id, int chapterNumber, Comic comic, String name, List<String> images, Date createAt, Date updateAt) {
+        this.id = id;
+        this.chapterNumber = chapterNumber;
+        this.comic = comic;
+        this.name = name;
+        this.images = images;
         this.createAt = createAt;
         this.updateAt = updateAt;
     }
 
-    // Getters và Setters
-    public ObjectId getId() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void setId(ObjectId id) {
-        this._id = id;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public int getChapnumber() {
-        return chapnumber;
+    public int getChapterNumber() {
+        return chapterNumber;
     }
 
-    public void setChapnumber(int chapnumber) {
-        this.chapnumber = chapnumber;
+    public void setChapterNumber(int chapterNumber) {
+        this.chapterNumber = chapterNumber;
     }
 
-    public Comic getDautruyenId() {
-        return dautruyenId;
+    public Comic getComic() {
+        return comic;
     }
 
-    public void setDautruyenId(Comic dautruyenId) {
-        this.dautruyenId = dautruyenId;
+    public void setComic(Comic comic) {
+        this.comic = comic;
     }
 
-    public String getTenchap() {
-        return tenchap;
+    public String getName() {
+        return name;
     }
 
-    public void setTenchap(String tenchap) {
-        this.tenchap = tenchap;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public List<String> getDanhSachAnh() {
-        return danhSachAnh;
+    public List<String> getImages() {
+        return images;
     }
 
-    public void setDanhSachAnh(List<String> danhSachAnh) {
-        this.danhSachAnh = danhSachAnh;
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 
     public Date getCreateAt() {
@@ -99,3 +95,4 @@ public class Chapter {
         this.updateAt = updateAt;
     }
 }
+

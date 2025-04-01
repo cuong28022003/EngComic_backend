@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class InfoUserRequest {
-    protected  String tenhienthi;
+    protected  String fullName;
     protected Date birthdate;
     protected  String image;
 

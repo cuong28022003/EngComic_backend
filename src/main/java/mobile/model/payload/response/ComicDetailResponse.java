@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class NovelDetailResponse {
+public class ComicDetailResponse {
     protected String id;
     protected double rating;
     protected String image;

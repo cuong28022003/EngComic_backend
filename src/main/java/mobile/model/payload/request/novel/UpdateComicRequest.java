@@ -8,9 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 
-public class UpdateNovelRequest {
-    protected String name;
+public class UpdateComicRequest {
     protected String id;
+    protected String name;
     protected String genre;
     protected String artist;
     protected String url;

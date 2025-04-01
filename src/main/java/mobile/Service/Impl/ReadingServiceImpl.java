@@ -1,10 +1,11 @@
 package mobile.Service.Impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -21,21 +22,21 @@ public class ReadingServiceImpl implements ReadingService{
 	final ReadingRepository readingRepository;
 
 	@Override
-	public void upsertReading(Reading reading) {
-		Optional<Reading> readingDB = readingRepository.findWithParam(reading.getUser().getId(), reading.getNovel().getId());
+	public void saveReading(Reading reading) {
+		Optional<Reading> readingDB = readingRepository.findWithParam(reading.getUser().getId(), reading.getComic().getId());
 		if(readingDB.isEmpty()) {
-			Reading newReading = new Reading(reading.getUser(),reading.getChapnumber(),reading.getNovel());
+			Reading newReading = new Reading(reading.getUser(),reading.getChapterNumber(),reading.getComic());
 			readingRepository.save(newReading);
 		} else {
 			Reading oldReading = readingDB.get();
-			oldReading.setChapnumber(reading.getChapnumber());
+			oldReading.setChapterNumber(reading.getChapterNumber());
 			readingRepository.save(oldReading);
 		}
 	}
 
 	@Override
-	public List<Reading> getReadings(User user) {
-		return readingRepository.findByUserId(user.getId());
+	public Page<Reading> getReadings(User user, Pageable pageable) {
+		return readingRepository.findByUser(user, pageable);
 	}
 
 	@Override
@@ -51,5 +52,10 @@ public class ReadingServiceImpl implements ReadingService{
 	@Override
 	public Reading save(Reading reading) {
 		return readingRepository.save(reading);
+	}
+
+	@Override
+	public Reading findByComicAndUser(Comic comic, User user) {
+		return readingRepository.findByComicAndUser(comic, user);
 	}
 }

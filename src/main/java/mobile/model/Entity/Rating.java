@@ -9,7 +9,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 import javax.persistence.Entity;
 
 @RestResource(exported=false)
-@Document(collection = "ratings")
+@Document(collection = "rating")
 public class Rating {
     @Id
     protected ObjectId _id;

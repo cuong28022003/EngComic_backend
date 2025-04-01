@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 
-public class CreateNovelRequest {
+public class CreateComicRequest {
     protected String name;
     protected String genre;
     protected String artist;

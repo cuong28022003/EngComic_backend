@@ -60,7 +60,7 @@ public class RatingController {
             int ratingCount = ratingService.getTotalReviews(comic);
             comic.setRating(averageRating);
             comic.setRatingCount(ratingCount);
-            comicService.SaveComic(comic);
+            comicService.saveComic(comic);
 
             RatingResponse response = new RatingResponse(
                     userRating.getRating(),
@@ -143,7 +143,7 @@ public class RatingController {
             int ratingCount = ratingService.getTotalReviews(comic);
             comic.setRating(averageRating);
             comic.setRatingCount(ratingCount);
-            comicService.SaveComic(comic);
+            comicService.saveComic(comic);
 
             return ResponseEntity.ok("Rating deleted successfully");
 

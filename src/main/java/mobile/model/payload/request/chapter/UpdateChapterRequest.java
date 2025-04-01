@@ -10,7 +10,7 @@ import lombok.*;
 
 public class UpdateChapterRequest {
     protected int chapnumber;
-    protected String tenchap;
+    protected String name;
     protected String content;
     protected String url;
 }

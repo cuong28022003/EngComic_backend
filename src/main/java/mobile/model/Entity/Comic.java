@@ -10,7 +10,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 import java.util.Date;
 
 @RestResource(exported=false)
-@Document(collection = "novels")
+@Document(collection = "comic")
 public class Comic {
     @Id
     protected ObjectId _id;

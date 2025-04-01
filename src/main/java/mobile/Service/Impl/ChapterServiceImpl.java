@@ -7,7 +7,10 @@ import mobile.repository.ChapterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,43 +21,38 @@ public class ChapterServiceImpl implements ChapterService {
      final ChapterRepository chapterRepository;
 
     @Override
-    public List<Chapter> findByDauTruyen(ObjectId id) {
-        log.info("Fetching all chapter  Novel id: "+id.toHexString());
-        return chapterRepository.findByDautruyenId(id);
+    public Page<Chapter> findByComic(Comic comic, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("chapterNumber"));
+        log.info("Fetching all chapter  Novel id: "+comic+" Page: "+page+" Size "+size);
+        return chapterRepository.findByComic(comic, pageable);
     }
 
     @Override
-    public List<Chapter> findByDauTruyen(ObjectId id, Pageable pageable) {
-        log.info("Fetching all chapter  Novel id: "+id.toHexString()+" Page: "+pageable.getPageNumber()+" Size "+pageable.getPageSize());
-        return chapterRepository.findAllByDautruyenId(id, pageable);
+    public Chapter findById(String chapterId) {
+        return chapterRepository.findById(chapterId)
+                .orElseThrow(() -> new RuntimeException("Chapter not found with id: " + chapterId));
     }
 
     @Override
-    public Chapter findByDauTruyenAndChapterNumber(ObjectId id, int number) {
-        log.info("Fetching all chapter  Novel id: "+id.toHexString()+" chpater: "+number);
-        return chapterRepository.findByDautruyenIdAndChapnumber(id,number).get();
+    public int countChaptersByComic(Comic comic) {
+        return chapterRepository.countAllByComic(comic);
     }
 
     @Override
-    public int countByDauTruyen(ObjectId id) {
-        log.info("count all chapter  Novel id: "+id.toHexString());
-        return chapterRepository.countAllByDautruyenId(id);
+    public Chapter findByComicAndChapterNumber(Comic comic, int chapterNumber) {
+        return chapterRepository.findByComicAndChapterNumber(comic, chapterNumber).get();
     }
+
 
     @Override
     public List<Object> getNameAndChapnumber(ObjectId id,Pageable pageable) {
         log.info("fetch all chapter  Novel id: "+id.toHexString());
-        return chapterRepository.getTenchapAndChapNumberByDautruyenId(id,pageable);
+        return null;
     }
 
     @Override
     public void DeleteAllChapterByComic(Comic comic) {
-        chapterRepository.deleteAllByDautruyenId(comic);
-    }
-
-    @Override
-    public List<Chapter> getChaptersNewUpdate(Pageable pageable) {
-        return chapterRepository.findNewUpdate(pageable);
+        chapterRepository.deleteAllByComic(comic);
     }
 
     @Override

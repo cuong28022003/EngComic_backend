@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @RestResource(exported=false)
-@Document(collection = "users")
+@Document(collection = "user")
 public class User {
     @JsonIgnore
 
@@ -23,7 +23,7 @@ public class User {
     protected  String email;
     @JsonIgnore
     protected  String password;
-    protected  String tenhienthi;
+    protected  String fullName;
     protected   Date  birthdate;
     protected   Date createdate;
     protected  String image;
@@ -33,12 +33,12 @@ public class User {
 //    @Unwrapped(onEmpty = Unwrapped.OnEmpty.USE_NULL)
     protected  Set<Role> roles = new HashSet<>();
 
-    public User(ObjectId _id, String username, String email, String password, String tenhienthi, Date birthdate, Date createdate, String image, Boolean active, String status, Set<Role> roles) {
+    public User(ObjectId _id, String username, String email, String password, String fullName, Date birthdate, Date createdate, String image, Boolean active, String status, Set<Role> roles) {
         this._id = _id;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.tenhienthi = tenhienthi;
+        this.fullName = fullName;
         this.birthdate = birthdate;
         this.createdate = createdate;
         this.image = image;
@@ -54,7 +54,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.tenhienthi= username;
+        this.fullName = username;
         this.birthdate = new Date();
         this.createdate = new Date();
         this.image ="";
@@ -100,12 +100,12 @@ public class User {
     public void setStatus(String status) {
         this.status = status;
     }
-    public String getTenhienthi() {
-        return tenhienthi;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setTenhienthi(String tenhienthi) {
-        this.tenhienthi = tenhienthi;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public Date getBirthdate() {

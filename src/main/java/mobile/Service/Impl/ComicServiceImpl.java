@@ -3,10 +3,13 @@ package mobile.Service.Impl;
 import mobile.Service.ComicService;
 
 import mobile.model.Entity.Comic;
+import mobile.model.Entity.User;
 import mobile.repository.ComicRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -22,21 +25,32 @@ public class ComicServiceImpl implements ComicService {
     final ComicRepository comicRepository;
 
     @Override
-    public List<Comic> getAllComics() {
-        log.info("Fetching all Novels ");
-        return comicRepository.findAll();
-    }
-
-    @Override
-    public List<Comic> getComics(Pageable pageable) {
+    public Page<Comic> getComics(Pageable pageable) {
         log.info("Fetching all Novels page: " + pageable.getPageNumber() + " page size: " + pageable.getPageSize());
         return comicRepository.findAllBy_idNotNull(pageable);
     }
 
     @Override
-    public Comic findByName(String name) {
-        log.info("Fetching  Novel: " + name);
-        return comicRepository.findByName(name).get();
+    public Page<Comic> findByName(String value, Pageable pageable) {
+        log.info("Searching  Novel value: " + value);
+        return comicRepository.findByNameContainingIgnoreCase(value, pageable);
+    }
+
+    @Override
+    public Page<Comic> findByGenre(String value, Pageable pageable) {
+        log.info("Searching Novel by theloai: " + value);
+        return comicRepository.findByGenreContainingIgnoreCase(value, pageable);
+    }
+
+    @Override
+    public Page<Comic> findByArtist(String value, Pageable pageable) {
+        log.info("Searching Novel value: " + value);
+        return comicRepository.findByArtistContainingIgnoreCase(value, pageable);
+    }
+
+    @Override
+    public Page<Comic> findByUploader(User user, Pageable pageable) {
+        return comicRepository.findByUploader(user, pageable);
     }
 
     @Override
@@ -46,16 +60,33 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
+    public Optional<Comic> findById(ObjectId id) {
+        return comicRepository.findBy_id(id);
+    }
+
+    @Override
+    public void saveComic(Comic newComic) {
+        comicRepository.save(newComic);
+    }
+
+
+    @Override
+    public List<Comic> getAllComics() {
+        log.info("Fetching all Novels ");
+        return comicRepository.findAll();
+    }
+
+
+
+
+
+    @Override
     public List<Comic> findAllByStatus(String status, Pageable pageable) {
         log.info("Fetching  Novel status: " + status);
         return comicRepository.findAllByStatus(status, pageable);
     }
 
-    @Override
-    public List<Comic> SearchByName(String value, Pageable pageable) {
-        log.info("Searching  Novel value: " + value);
-        return comicRepository.findAllByNameContainsAllIgnoreCase(value, pageable);
-    }
+
 
     @Override
     public List<Comic> SearchByTypeAndName(String type, String value, Pageable pageable) {
@@ -63,52 +94,13 @@ public class ComicServiceImpl implements ComicService {
         return comicRepository.findAllByGenreContainsAndNameContainsAllIgnoreCase(type, value, pageable);
     }
 
-    @Override
-    public List<Comic> SearchByArtist(String value, Pageable pageable) {
-        log.info("Searching Novel value: " + value);
-        return comicRepository.findAllByArtistContainsAllIgnoreCase(value, pageable);
-    }
 
-    @Override
-    public List<Comic> SearchByGenre(String genre, Pageable pageable) {
-        log.info("Searching Novel by theloai: " + genre);
-        return comicRepository.findAllByGenreContainsAllIgnoreCase(genre, pageable);
-    }
 
-    @Override
-    public List<Comic> SearchByUploader(ObjectId id, Pageable pageable) {
-        return comicRepository.findWithUserId(id, pageable);
-    }
 
-    @Override
-    public void SaveComic(Comic newComic) {
-        comicRepository.save(newComic);
-    }
-
-    @Override
-    public Optional<Comic> findById(ObjectId id) {
-        return comicRepository.findById(id);
-    }
 
     @Override
     public void DeleteComic(Comic comic) {
         comicRepository.delete(comic);
-    }
-
-    @Override
-    public List<Comic> findByNameLike(String name) {
-        log.info("Searching Novel by firstname like: " + name);
-        return comicRepository.findByNameLike(name);
-    }
-
-    @Override
-    public List<Comic> getComicsByGenre(String genre) {
-        return comicRepository.findByGenre(genre);
-    }
-
-    @Override
-    public List<Comic> getComicsByArtist(String artist) {
-        return comicRepository.findByArtist(artist);
     }
 
     @Override

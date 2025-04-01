@@ -1,6 +1,7 @@
 package mobile.model.payload.request.chapter;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class CreateChapterRequest {
-    protected String tenchap;
-    protected List<String> danhSachAnh; // Danh sách URL ảnh
+    protected String name;
+    protected MultipartFile[] images; // Danh sách URL ảnh
     protected String url;
 }
