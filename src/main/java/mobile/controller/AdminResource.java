@@ -18,6 +18,7 @@ import mobile.model.payload.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -257,7 +258,18 @@ public class AdminResource {
             if (user == null) {
                 throw new RecordNotFoundException("Không tìm thấy tài khoản");
             }
-            User userDel = userService.deleteUser(deleteUserRequest.getUsername());
+            // Lấy userId từ người dùng
+            ObjectId userId = user.getId();
+
+            // Tìm và xóa tất cả truyện có uploader chứa userId
+            List<Comic> userComics = comicService.findByUploaderContaining(userId);
+            for (Comic comic : userComics) {
+                comicService.DeleteComic(comic);
+            }
+
+            // Xóa người dùng
+            userService.deleteUser(deleteUserRequest.getUsername());
+
             SuccessResponse response = new SuccessResponse();
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Delete user successful");

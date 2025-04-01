@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 import java.util.List;
 import java.util.Optional;
+
 @EnableMongoRepositories
 public interface ComicRepository extends MongoRepository<Comic, ObjectId> {
     Page<Comic> findAllBy_idNotNull(Pageable pageable);
@@ -24,12 +25,19 @@ public interface ComicRepository extends MongoRepository<Comic, ObjectId> {
 
 
     List<Comic> findAllByStatus(String status, Pageable pageable);
+
     List<Comic> findAllByGenreContainsAndNameContainsAllIgnoreCase(String type, String value, Pageable pageable);
+
     List<Comic> findAllByArtistContainsAllIgnoreCase(String value, Pageable pageable);
+
     List<Comic> findAllByGenreContainsAllIgnoreCase(String theloai, Pageable pageable);
+
     List<Comic> findByNameLike(String name);
+
     List<Comic> findByGenre(String genre);
+
     List<Comic> findByArtist(String artist);
+
     List<Comic> findByNameContainingIgnoreCaseAndGenreContainingIgnoreCase(String name, String genre, Pageable pageable);
 
 }
