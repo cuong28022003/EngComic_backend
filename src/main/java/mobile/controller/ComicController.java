@@ -275,7 +275,7 @@ public class ComicController {
                                                            @RequestParam String username,
                                                            HttpServletRequest request) {
         User user = userService.findByUsername(username);
-        System.out.println(user.getId().toHexString());
+        System.out.println(user.getId());
         Pageable pageable = PageRequest.of(page, size);
         Page<Comic> comicList = comicService.findByUploader(user, pageable);
         if (comicList == null) {
