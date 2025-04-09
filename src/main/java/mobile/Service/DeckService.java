@@ -1,13 +1,14 @@
 package mobile.Service;
 
 import mobile.model.Entity.Deck;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 public interface DeckService {
-    Page<Deck> findByUserId(String userId, Pageable pageable);
-    Deck findById(String id);
+    Page<Deck> findByUserId(ObjectId userId, Pageable pageable);
+    Deck findById(ObjectId id);
     Deck save(Deck deck);
-    void deleteById(String id);
+    void deleteById(ObjectId id);
 }

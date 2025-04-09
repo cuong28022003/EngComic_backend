@@ -1,12 +1,12 @@
 package mobile.controller;
 
-import mobile.Service.DeckService;
+import mobile.Service.CardService;
 import mobile.Service.UserService;
-import mobile.mapping.DeckMapping;
-import mobile.model.Entity.Deck;
-import mobile.model.Entity.User;
+import mobile.mapping.CardMapping;
+import mobile.model.Entity.Card;
+import mobile.model.payload.request.card.CreateCardRequest;
 import mobile.model.payload.request.deck.CreateDeckRequest;
-import mobile.model.payload.response.DeckResponse;
+import mobile.model.payload.response.CardResponse;
 import mobile.security.JWT.JwtUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +19,20 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("api/deck")
-public class DeckController {
+@RequestMapping("/api/card")
+public class CardController {
 
     @Autowired
-    private DeckService deckService;
+    private CardService cardService;
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    JwtUtils jwtUtils;
+    private JwtUtils jwtUtils;
 
     @GetMapping("/{id}")
-    public ResponseEntity<DeckResponse> getDeckById(@PathVariable String id, HttpServletRequest request) {
+    public ResponseEntity<CardResponse> getCardById(@PathVariable String id, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid token");
@@ -42,18 +42,18 @@ public class DeckController {
             throw new RuntimeException("Token expired");
         }
 
-        ObjectId deckId = new ObjectId(id);
-        Deck deck = deckService.findById(deckId);
-        if (deck != null) {
-            DeckResponse deckResponse = DeckMapping.entityToResponse(deck);
-            return ResponseEntity.ok(deckResponse);
+        ObjectId cardId = new ObjectId(id);
+        Card card = cardService.findById(cardId);
+        if (card != null) {
+            CardResponse cardResponse = CardMapping.entityToResponse(card);
+            return ResponseEntity.ok(cardResponse);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<DeckResponse>> getDecksByUserId(@PathVariable String userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
+    @GetMapping("/deck/{deckId}")
+    public ResponseEntity<Page<CardResponse>> getCardsByDeckId(@PathVariable String deckId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid token");
@@ -63,19 +63,19 @@ public class DeckController {
             throw new RuntimeException("Token expired");
         }
 
+        ObjectId deckObjectId = new ObjectId(deckId);
         Pageable pageable = PageRequest.of(page, size);
-        ObjectId userIdObj = new ObjectId(userId);
-        Page<Deck> decks = deckService.findByUserId(userIdObj, pageable);
-        if (decks.hasContent()) {
-            Page<DeckResponse> deckResponses = decks.map(DeckMapping::entityToResponse);
-            return ResponseEntity.ok(deckResponses);
+        Page<Card> card = cardService.findByDeckId(deckObjectId, pageable);
+        if (card.hasContent()) {
+            Page<CardResponse> cardResponsePage = card.map(CardMapping::entityToResponse);
+            return ResponseEntity.ok(cardResponsePage);
         } else {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping()
-    public ResponseEntity<DeckResponse> createDeck(@RequestBody CreateDeckRequest createDeckRequest, HttpServletRequest request) {
+    public ResponseEntity<CardResponse> createCard(@RequestBody CreateCardRequest createCardRequest, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid token");
@@ -85,15 +85,13 @@ public class DeckController {
             throw new RuntimeException("Token expired");
         }
 
-        Deck createdDeck = DeckMapping.createRequestToEntity(createDeckRequest);
-        User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
-        createdDeck.setUserId(user.getId());
-        Deck deck = deckService.save(createdDeck);
-        return ResponseEntity.ok(DeckMapping.entityToResponse(deck));
+        Card savedCard = cardService.save(CardMapping.createRequestToEntity(createCardRequest));
+        CardResponse cardResponse = CardMapping.entityToResponse(savedCard);
+        return ResponseEntity.ok(cardResponse);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DeckResponse> updateDeck(@PathVariable String id, @RequestBody CreateDeckRequest createDeckRequest, HttpServletRequest request) {
+    public ResponseEntity<CardResponse> updateCard(@PathVariable String id, @RequestBody CreateCardRequest createCardRequest, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid token");
@@ -102,20 +100,23 @@ public class DeckController {
         if (jwtUtils.validateExpiredToken(accessToken)) {
             throw new RuntimeException("Token expired");
         }
-        ObjectId deckId = new ObjectId(id);
-        Deck existingDeck = deckService.findById(deckId);
-        if (existingDeck != null) {
-            existingDeck.setName(createDeckRequest.getName());
-            existingDeck.setDescription(createDeckRequest.getDescription());
-            Deck updatedDeck = deckService.save(existingDeck);
-            return ResponseEntity.ok(DeckMapping.entityToResponse(updatedDeck));
+
+        ObjectId cardId = new ObjectId(id);
+        Card existingCard = cardService.findById(cardId);
+        if (existingCard != null) {
+            Card updatedCard = CardMapping.createRequestToEntity(createCardRequest);
+            updatedCard.setId(cardId);
+            updatedCard.setCreateAt(existingCard.getCreateAt());
+            Card savedCard = cardService.save(updatedCard);
+            CardResponse cardResponse = CardMapping.entityToResponse(savedCard);
+            return ResponseEntity.ok(cardResponse);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDeck(@PathVariable String id, HttpServletRequest request) {
+    public ResponseEntity<Void> deleteCard(@PathVariable String id, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid token");
@@ -124,8 +125,9 @@ public class DeckController {
         if (jwtUtils.validateExpiredToken(accessToken)) {
             throw new RuntimeException("Token expired");
         }
-        ObjectId deckId = new ObjectId(id);
-        deckService.deleteById(deckId);
+
+        ObjectId cardId = new ObjectId(id);
+        cardService.deleteById(cardId);
         return ResponseEntity.noContent().build();
     }
 }

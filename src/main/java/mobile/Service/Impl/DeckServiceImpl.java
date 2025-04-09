@@ -3,6 +3,7 @@ package mobile.Service.Impl;
 import mobile.Service.DeckService;
 import mobile.model.Entity.Deck;
 import mobile.repository.DeckRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,12 +16,12 @@ public class DeckServiceImpl implements DeckService {
     private DeckRepository deckRepository;
 
     @Override
-    public Page<Deck> findByUserId(String userId,Pageable pageable) {
+    public Page<Deck> findByUserId(ObjectId userId, Pageable pageable) {
          return deckRepository.findByUserId(userId, pageable);
     }
 
     @Override
-    public Deck findById(String id) {
+    public Deck findById(ObjectId id) {
          return deckRepository.findById(id).orElse(null);
     }
 
@@ -30,7 +31,7 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public void deleteById(String id) {
+    public void deleteById(ObjectId id) {
          deckRepository.deleteById(id);
     }
 }

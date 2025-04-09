@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.Id;
 import java.util.Date;
@@ -14,12 +16,13 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@RestResource(exported=false)
 @Document(collection = "cardReview")
 public class CardReview {
     @Id
-    protected String id;
-    protected String userId;
-    protected String cardId;
+    protected ObjectId id;
+    protected ObjectId userId;
+    protected ObjectId cardId;
     protected Date lastReviewed;
     protected Date nextReview;
     protected int interval; // số ngày tới lần ôn tiếp theo
