@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,4 +16,7 @@ public interface CardRepository extends MongoRepository<Card, ObjectId> {
     Optional<Card> findById(ObjectId id);
     void deleteById(ObjectId id);
     Card save(Card card);
+    List<Card> findByDeckId(ObjectId deckId);
+
+    void deleteAllByDeckId(ObjectId deckId);
 }

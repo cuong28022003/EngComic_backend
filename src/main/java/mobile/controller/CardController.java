@@ -4,9 +4,11 @@ import mobile.Service.CardService;
 import mobile.Service.UserService;
 import mobile.mapping.CardMapping;
 import mobile.model.Entity.Card;
+import mobile.model.Entity.User;
 import mobile.model.payload.request.card.CreateCardRequest;
-import mobile.model.payload.request.deck.CreateDeckRequest;
-import mobile.model.payload.response.CardResponse;
+import mobile.model.payload.request.card.CardReviewRequest;
+import mobile.model.payload.response.card.CardResponse;
+import mobile.model.payload.response.card.CardReviewResponse;
 import mobile.security.JWT.JwtUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,12 +68,8 @@ public class CardController {
         ObjectId deckObjectId = new ObjectId(deckId);
         Pageable pageable = PageRequest.of(page, size);
         Page<Card> card = cardService.findByDeckId(deckObjectId, pageable);
-        if (card.hasContent()) {
-            Page<CardResponse> cardResponsePage = card.map(CardMapping::entityToResponse);
-            return ResponseEntity.ok(cardResponsePage);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Page<CardResponse> cardResponsePage = card.map(CardMapping::entityToResponse);
+        return ResponseEntity.ok(cardResponsePage);
     }
 
     @PostMapping()
@@ -129,5 +127,32 @@ public class CardController {
         ObjectId cardId = new ObjectId(id);
         cardService.deleteById(cardId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/review")
+    public ResponseEntity<CardReviewResponse> reviewCard(@RequestBody CardReviewRequest cardReviewRequest,
+                                                         HttpServletRequest request) {
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
+        }
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
+        }
+        User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
+
+        ObjectId userIdObj = user.getId();
+        ObjectId cardIdObj = new ObjectId(cardReviewRequest.getCardId());
+        boolean isCorrect = cardReviewRequest.isCorrect();
+        String reviewState = cardReviewRequest.getReviewState();
+        Card review = cardService.review(cardIdObj, isCorrect, reviewState);
+        if (review != null) {
+            CardReviewResponse cardReviewResponse = CardMapping.entityToCardReviewResponse(review);
+            return ResponseEntity.ok(cardReviewResponse);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

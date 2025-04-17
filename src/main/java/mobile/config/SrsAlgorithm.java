@@ -1,62 +1,56 @@
 package mobile.config;
 
-import mobile.model.Entity.CardReview;
-import org.bson.types.ObjectId;
+import mobile.model.Entity.Card;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
 import java.util.Date;
+
+import static mobile.constant.SrsConstant.*;
 
 @Component
 public class SrsAlgorithm {
-    private static final double MIN_EASE_FACTOR = 1.3;
-    private static final double DEFAULT_EASE_FACTOR = 2.5;
-    private static final int FIRST_INTERVAL = 1;
-    private static final int SECOND_INTERVAL = 3;
 
-    public CardReview calculate(CardReview review, boolean isCorrect) {
+
+    public Card updateCardReview(Card cardReview, boolean isCorrect , String reviewState) {
+        int interval = cardReview.getInterval();
+        double easeFactor = cardReview.getEaseFactor();
+
         if (isCorrect) {
-            review.setRepetition(review.getRepetition() + 1);
-            review.setEaseFactor(review.getEaseFactor() + 0.1);
-
-            int interval = calculateNextInterval(review);
-            review.setInterval(interval);
+            cardReview.setRepetition(cardReview.getRepetition() + 1);
+            cardReview.setEaseFactor(cardReview.getEaseFactor() + 10);
         } else {
-            review.setRepetition(0);
-            review.setEaseFactor(Math.max(MIN_EASE_FACTOR, review.getEaseFactor() - 0.2));
-            review.setInterval(FIRST_INTERVAL);
-            review.setLapses(review.getLapses() + 1);
+            cardReview.setRepetition(0);
+            cardReview.setEaseFactor(Math.max(MIN_EASE_FACTOR, cardReview.getEaseFactor() - 20));
+            cardReview.setInterval(FIRST_INTERVAL);
+            cardReview.setLapses(cardReview.getLapses() + 1);
         }
 
-        review.setLastReviewed(new Date());
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, review.getInterval());
-        review.setNextReview(calendar.getTime());
-
-        return review;
-    }
-
-    private int calculateNextInterval(CardReview review) {
-        if (review.getRepetition() == 1) {
-            return FIRST_INTERVAL;
+        switch (reviewState) {
+            case "AGAIN":
+                interval = 1;
+                easeFactor = Math.max(130, easeFactor - AGAIN_EASE_REDUCE);
+                break;
+            case "HARD":
+                interval = (int) (interval * 1.2);
+                easeFactor = Math.max(130, easeFactor - HARD_EASE_REDUCE);
+                break;
+            case "GOOD":
+                interval = (int) (interval * easeFactor);
+                break;
+            case "EASY":
+                interval = (int) (interval * easeFactor * 1.5);
+                easeFactor += EASY_EASE_INCREASE;
+                break;
         }
-        if (review.getRepetition() == 2) {
-            return SECOND_INTERVAL;
-        }
-        return (int) Math.ceil(review.getInterval() * review.getEaseFactor());
-    }
 
-    public CardReview initNewReview(ObjectId userId, ObjectId cardId) {
-        CardReview review = new CardReview();
-        review.setUserId(userId);
-        review.setCardId(cardId);
-        review.setLastReviewed(new Date());
-        review.setNextReview(new Date());
-        review.setInterval(FIRST_INTERVAL);
-        review.setEaseFactor(DEFAULT_EASE_FACTOR);
-        review.setRepetition(0);
-        review.setLapses(0);
-        return review;
+        // Đảm bảo hệ số dễ tối thiểu
+        easeFactor = Math.max(easeFactor, MIN_EASE_FACTOR);
+
+        cardReview.setInterval(interval);
+        cardReview.setEaseFactor(easeFactor);
+        cardReview.setNextReview(new Date(System.currentTimeMillis() + (long) cardReview.getInterval() * 24 * 60 * 60 * 1000));
+        cardReview.setLastReviewed(new Date());
+
+        return cardReview;
     }
 }

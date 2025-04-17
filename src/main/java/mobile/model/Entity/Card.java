@@ -36,4 +36,11 @@ public class Card {
     protected Date createAt;
     @LastModifiedDate
     protected Date updateAt;
+    protected Date lastReviewed;
+    protected Date nextReview;
+    protected int interval; // số ngày tới lần ôn tiếp theo
+    protected double easeFactor; // độ dễ (giống Anki mặc định là 2.5)
+    protected int repetition; // số lần ôn lại liên tiếp
+    protected int lapses; // số lần quên
+    protected int reviewCount; // số lần đã ôn
 }

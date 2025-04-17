@@ -1,6 +1,7 @@
 package mobile.Service;
 
 import mobile.model.Entity.Deck;
+import mobile.model.payload.response.deck.DeckStatisticsResponse;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,4 +12,6 @@ public interface DeckService {
     Deck findById(ObjectId id);
     Deck save(Deck deck);
     void deleteById(ObjectId id);
+
+    DeckStatisticsResponse getDeckStatistics(ObjectId deckId);
 }

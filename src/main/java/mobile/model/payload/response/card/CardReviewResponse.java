@@ -1,4 +1,4 @@
-package mobile.model.payload.response;
+package mobile.model.payload.response.card;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +13,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class CardReviewResponse {
     private String cardId;
+    private boolean isCorrect;
+    private String userAnswer;
+    private String reviewState; // AGAIN | HARD | GOOD | EASY
     private Date lastReviewed;
     private Date nextReview;
     private Integer interval;        // số ngày sẽ ôn lại

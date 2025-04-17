@@ -1,4 +1,4 @@
-package mobile.model.payload.response;
+package mobile.model.payload.response.card;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
