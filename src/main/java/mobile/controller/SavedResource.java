@@ -46,7 +46,7 @@ public class SavedResource {
     @Autowired
     JwtUtils jwtUtils;
 
-    @PostMapping("/")
+    @PostMapping("")
     @ResponseBody
     public ResponseEntity<SuccessResponse> createSaved(@RequestBody @Valid SavedRequest savedRequest
                                                         , HttpServletRequest request){

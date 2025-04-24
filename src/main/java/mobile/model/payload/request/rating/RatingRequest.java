@@ -1,14 +1,14 @@
 package mobile.model.payload.request.rating;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RatingRequest {
+    private String id;
+    private String userId;
+    private String comicId;
     private int rating;
-
-    // Getters and Setters
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
+    private String comment;
 }

@@ -29,7 +29,7 @@ public class CommentMapping {
             commentResponse.setParentId(comment.getParentId().toHexString());
         else
             commentResponse.setParentId(null);
-        commentResponse.setUrltruyen(comment.getUrltruyen());
+        commentResponse.setUrltruyen(comment.getComicUrl());
         commentResponse.setContent(comment.getContent());
         commentResponse.setNumChild(comment.getNumChild());
         commentResponse.setDepth(comment.getDepth());

@@ -1,26 +1,20 @@
 package mobile.model.payload.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RatingResponse {
-    private int userRating;
-    private double averageRating;
-    private int totalReviews;
-
-    public RatingResponse(int userRating, double averageRating, int totalReviews) {
-        this.userRating = userRating;
-        this.averageRating = averageRating;
-        this.totalReviews = totalReviews;
-    }
-
-    // Getters
-    public int getUserRating() {
-        return userRating;
-    }
-
-    public double getAverageRating() {
-        return averageRating;
-    }
-
-    public int getTotalReviews() {
-        return totalReviews;
-    }
+    private String id;
+    private String userId;
+    private String comicId;
+    private int rating;
+    private String comment;
+    private String createdAt;
+    private String updatedAt;
 }

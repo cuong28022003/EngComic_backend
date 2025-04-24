@@ -26,11 +26,11 @@ public class ComicMapping {
         comicDetailResponse.setName(comic.getName());
         comicDetailResponse.setArtist(comic.getArtist());
         comicDetailResponse.setUrl(comic.getUrl());
-        comicDetailResponse.setRating(rating);
+        comicDetailResponse.setAverageRating(rating);
         comicDetailResponse.setDescription(comic.getDescription());
         comicDetailResponse.setUploader(comic.getUploader().getFullName());
         comicDetailResponse.setViews(comic.getViews());
-        comicDetailResponse.setRatingCount(ratingCount);
+        comicDetailResponse.setTotalRatings(ratingCount);
         comicDetailResponse.setChapterCount(chapterCount);
         comicDetailResponse.setGenre(comic.getGenre());
         comicDetailResponse.setStatus(comic.getStatus());

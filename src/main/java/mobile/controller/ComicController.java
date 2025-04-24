@@ -38,7 +38,7 @@ public class ComicController {
     private final ComicService comicService;
     private final ChapterService chapterService;
     private final ReadingService readingService;
-    private final CommentService commentService;
+//    private final CommentService commentService;
     private final SavedService savedService;
     private final RatingService ratingService;
 
@@ -60,52 +60,6 @@ public class ComicController {
         return new ResponseEntity<Page<ComicResponse>>(responsePage, HttpStatus.OK);
     }
 
-//    @GetMapping("/theloai/{theloai}")
-//    @ResponseBody
-//    public ResponseEntity<List<Comic>> getNovelsByType(@PathVariable String theloai,
-//            @RequestParam(defaultValue = "tentruyen") String sort, @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "3") int size) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
-//        List<Comic> comicList = null;
-//        // List<NovelResponse> novelResponseList=new ArrayList<>();
-//        comicList = comicService.SearchByGenre(theloai, pageable);
-//
-//        if (comicList == null) {
-//            throw new RecordNotFoundException("Không tìm thấy truyện");
-//        }
-//        // for (Novel novel: novelList
-//        // ) {
-//        // novelResponseList.add(NovelMapping.EntityToNovelResponse(novel));
-//        // }
-//        return new ResponseEntity<List<Comic>>(comicList, HttpStatus.OK);
-//    }
-
-    /*
-     * @GetMapping("/search")
-     * 
-     * @ResponseBody
-     * public ResponseEntity<List<Novel>> searchNovel(@RequestParam(defaultValue =
-     * "") String theloai,
-     * 
-     * @RequestParam(defaultValue = "") String value, @RequestParam(defaultValue =
-     * "tentruyen") String sort,
-     * 
-     * @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3")
-     * int size) {
-     * Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
-     * List<Novel> novelList = null;
-     * if (theloai.equals("")) {
-     * novelList = novelService.SearchByTentruyen(value, pageable);
-     * } else {
-     * novelList = novelService.SearchByTypeAndTentruyen(theloai, value, pageable);
-     * }
-     * 
-     * if (novelList == null) {
-     * throw new RecordNotFoundException("Không tìm thấy truyện");
-     * }
-     * return new ResponseEntity<List<Novel>>(novelList, HttpStatus.OK);
-     * }
-     */
     @GetMapping("/search")
     @ResponseBody
     public ResponseEntity<Page<ComicResponse>> searchComic(
@@ -145,9 +99,11 @@ public class ComicController {
 
         Comic comic = comicService.findByUrl(url);
         int chapterCount = chapterService.countChaptersByComic(comic);
-        double rating = ratingService.calculateAverageRating(comic);
-        int ratingCount = ratingService.getTotalReviews(comic);
-        ComicDetailResponse comicDetailResponse = ComicMapping.EntityToComicDetailResponse(comic, chapterCount, rating,ratingCount);
+
+        List<Rating> ratings = ratingService.getRatingsByComicId(comic.getId());
+        double averageRating = ratings.stream().mapToInt(Rating::getRating).average().orElse(0.0);
+        int totalRatings = ratings.size();
+        ComicDetailResponse comicDetailResponse = ComicMapping.EntityToComicDetailResponse(comic, chapterCount, averageRating, totalRatings);
         if (comicDetailResponse == null) {
             throw new RecordNotFoundException("Không tìm thấy truyện");
         }
@@ -247,7 +203,7 @@ public class ComicController {
             }
 
             if (comic.getUploader().getUsername().equals(user.getUsername())) {
-                commentService.DeleteCommentByComicUrl(comic.getUrl());
+//                commentService.DeleteCommentByComicUrl(comic.getUrl());
                 readingService.deleteAllReadingByComic(comic);
                 chapterService.DeleteAllChapterByComic(comic);
                 savedService.DeleteSavedByComic(comic);

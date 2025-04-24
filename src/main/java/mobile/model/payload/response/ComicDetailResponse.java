@@ -9,12 +9,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ComicDetailResponse {
     protected String id;
-    protected double rating;
+    protected double averageRating;
     protected String image;
     protected int views;
     protected String uploader;
     protected String description;
-    protected int ratingCount;
+    protected int totalRatings;
     protected String artist;
     protected String name;
     protected String genre;

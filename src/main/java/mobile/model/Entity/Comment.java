@@ -18,7 +18,7 @@ public class Comment {
     protected ObjectId _id;
     protected ObjectId parentId;
     protected List<Comment> listChild;
-    protected String urltruyen;
+    protected String comicUrl;
     @DBRef
     protected User user;
     protected int numChild;
@@ -30,11 +30,11 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String urltruyen, User user, ObjectId parentId, String content) {
+    public Comment(String comicUrl, User user, ObjectId parentId, String content) {
         this._id = new ObjectId();
         this.parentId = parentId;
         this.listChild = new ArrayList<>();
-        this.urltruyen = urltruyen;
+        this.comicUrl = comicUrl;
         this.user = user;
         this.numChild = 0;
         this.depth = 0;
@@ -42,11 +42,11 @@ public class Comment {
         this.createdate = new Date();
     }
 
-    public Comment(ObjectId _id, ObjectId parentId, List<Comment> listChild, String urltruyen, User user, int numChild, int depth, String content) {
+    public Comment(ObjectId _id, ObjectId parentId, List<Comment> listChild, String comicUrl, User user, int numChild, int depth, String content) {
         this._id = _id;
         this.parentId = parentId;
         this.listChild = listChild;
-        this.urltruyen = urltruyen;
+        this.comicUrl = comicUrl;
         this.user = user;
         this.numChild = numChild;
         this.depth = depth;
@@ -77,12 +77,12 @@ public class Comment {
         this.listChild = listChild;
     }
 
-    public String getUrltruyen() {
-        return urltruyen;
+    public String getComicUrl() {
+        return comicUrl;
     }
 
-    public void setUrltruyen(String urltruyen) {
-        this.urltruyen = urltruyen;
+    public void setComicUrl(String comicUrl) {
+        this.comicUrl = comicUrl;
     }
 
     public User getUser() {
