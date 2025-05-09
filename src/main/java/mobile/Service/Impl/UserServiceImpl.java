@@ -11,6 +11,7 @@ import mobile.repository.RoleRepository;
 import mobile.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -129,5 +130,14 @@ public class UserServiceImpl implements UserService {
     public User updateActive(User user) {
         user.setActive(!user.getActive());
         return userRepository.save(user);
+    }
+
+    @Override
+    public User findById(ObjectId id) {
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty()){
+            throw new RecordNotFoundException("User not found");
+        }
+        return user.get();
     }
 }

@@ -3,6 +3,7 @@ package mobile.Service;
 import mobile.model.Entity.Role;
 import mobile.model.Entity.User;
 import mobile.model.payload.request.user.InfoUserRequest;
+import org.bson.types.ObjectId;
 
 
 import java.util.List;
@@ -23,4 +24,5 @@ public interface UserService {
     User updateUserPassword(User user, String password);
     User deleteUser(String username);
     User updateActive(User user);
+    User findById(ObjectId id);
 }
