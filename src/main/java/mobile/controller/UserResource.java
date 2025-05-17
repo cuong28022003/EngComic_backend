@@ -1,6 +1,7 @@
 package mobile.controller;
 
 import mobile.Service.UserService;
+import mobile.mapping.UserMapping;
 import mobile.model.Entity.User;
 import mobile.model.payload.request.user.ChangePassRequest;
 import mobile.model.payload.request.user.InfoUserRequest;
@@ -8,11 +9,13 @@ import mobile.Handler.HttpMessageNotReadableException;
 import mobile.Handler.MethodArgumentNotValidException;
 import mobile.model.payload.response.ErrorResponseMap;
 import mobile.model.payload.response.SuccessResponse;
+import mobile.model.payload.response.user.UserResponse;
 import mobile.security.JWT.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import mobile.model.payload.request.authenticate.LoginRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +36,7 @@ import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 @RestController
 @RequestMapping("api/user")
 @RequiredArgsConstructor
-public class UserResources {
+public class UserResource {
     private static final Logger LOGGER = LogManager.getLogger(AdminResource.class);
 
     private final UserService userService;
@@ -97,6 +100,17 @@ public class UserResources {
             throw new BadCredentialsException("access token is missing");
         }
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable String userId, HttpServletRequest request) {
+        User user = userService.findById(new ObjectId(userId));
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        UserResponse userResponse = UserMapping.mapToUserResponse(user);
+        return ResponseEntity.ok(userResponse);
+    }
+
     @PutMapping("/info/password")
     @ResponseBody
     public ResponseEntity<SuccessResponse>  updatePassword(@RequestBody @Valid ChangePassRequest pass, BindingResult errors, HttpServletRequest request) throws Exception {

@@ -1,11 +1,10 @@
 package mobile.Service;
 
-import mobile.model.Entity.Character;
-import mobile.model.payload.response.card.GachaPackResult;
+import mobile.model.payload.response.pack.GachaPackResult;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
 public interface GachaService {
-    List<GachaPackResult> roll(int count);
+    List<GachaPackResult> roll(ObjectId userId, int count);
 }

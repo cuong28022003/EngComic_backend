@@ -33,12 +33,14 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Character create(String name, String description, String rarity, MultipartFile image) {
+    public Character create(String name, String description, String rarity, MultipartFile image, ObjectId packId) {
         Character character = new Character();
         character.setName(name);
         character.setDescription(description);
         character.setRarity(rarity);
+        character.setPackId(packId);
         try {
+//            String imageUrl = cloudinaryService.uploadFile(image);
             String imageUrl = cloudinaryService.uploadFile(image);
             character.setImageUrl(imageUrl);
         } catch (Exception e) {

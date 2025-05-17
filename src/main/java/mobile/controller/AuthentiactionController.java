@@ -141,6 +141,7 @@ public class AuthentiactionController {
         response.getData().put("image",loginUser.getImage());
         response.getData().put("roles",userDetails.getRoles());
         response.getData().put("id", loginUser.getId().toHexString());
+        response.getData().put("birthday", loginUser.getBirthday());
 
         return new ResponseEntity<SuccessResponse>(response,HttpStatus.OK);
     }

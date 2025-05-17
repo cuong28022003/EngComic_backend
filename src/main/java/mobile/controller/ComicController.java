@@ -223,14 +223,14 @@ public class ComicController {
     }
 
 
-    @GetMapping("/created")
-    public ResponseEntity<Page<Comic>> getComicsByUsername(@RequestParam(defaultValue = "None") String status,
+    @GetMapping("/uploader/{userId}")
+    public ResponseEntity<Page<Comic>> getComicsByUploaderId(@RequestParam(defaultValue = "None") String status,
                                                            @RequestParam(defaultValue = "name") String sort,
                                                            @RequestParam(defaultValue = "0") int page,
                                                            @RequestParam(defaultValue = "20") int size,
-                                                           @RequestParam String username,
+                                                           @PathVariable String userId,
                                                            HttpServletRequest request) {
-        User user = userService.findByUsername(username);
+        User user = userService.findById(new ObjectId(userId));
         System.out.println(user.getId());
         Pageable pageable = PageRequest.of(page, size);
         Page<Comic> comicList = comicService.findByUploader(user, pageable);

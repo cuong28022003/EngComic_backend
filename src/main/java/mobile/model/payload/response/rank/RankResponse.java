@@ -1,26 +1,22 @@
-package mobile.model.Entity;
+package mobile.model.payload.response.rank;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mobile.model.payload.response.character.CharacterResponse;
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.persistence.Id;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "rank")
-public class Rank {
-    @Id
+public class RankResponse {
     private ObjectId id;
     private String name;
     private int minXp;
     private int maxXp;
     private String badge;
     private int rewardDiamond;
-    private ObjectId rewardCharacterId;
+    private CharacterResponse rewardCharacter;
 }

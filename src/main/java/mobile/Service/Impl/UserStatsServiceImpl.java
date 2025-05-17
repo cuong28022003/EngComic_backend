@@ -42,37 +42,47 @@ public class UserStatsServiceImpl implements UserStatsService {
 
         stats.setXp(stats.getXp() + xpEarned);
 
-        // Xử lý streak
+        Rank rank = rankService.getRankByXp(stats.getXp());
+        stats.setRank(rank);
+
         LocalDate today = LocalDate.now();
-        if (stats.getLastStudyDate() != null) {
-            LocalDate lastActiveDate = stats.getLastStudyDate();
-            if (lastActiveDate.plusDays(1).equals(today)) {
-                // Ngày liên tiếp
-                stats.setCurrentStreak(stats.getCurrentStreak() + 1);
-            } else if (!lastActiveDate.equals(today)) {
-                // Không liên tiếp, reset streak
-                stats.setCurrentStreak(1);
-            }
+        LocalDate lastStudyDate = stats.getLastStudyDate();
+
+        if (lastStudyDate.isEqual(today)) {
+            stats.setCurrentStreak(stats.getCurrentStreak());
+        } else if (lastStudyDate.isEqual(today.minusDays(1))) {
+            stats.setCurrentStreak(stats.getCurrentStreak() + 1);
         } else {
-            // Lần đầu tiên
             stats.setCurrentStreak(1);
         }
 
-        // Cập nhật longest streak
         if (stats.getCurrentStreak() > stats.getLongestStreak()) {
             stats.setLongestStreak(stats.getCurrentStreak());
         }
-
-        Rank rank = rankService.getRankByXp(stats.getXp());
-        stats.setRank(rank);
+        stats.setLastStudyDate(today);
 
         return userStatsRepository.save(stats);
     }
 
     @Override
+    public UserStats addDiamond(ObjectId userId, int diamondEarned) {
+        return userStatsRepository.findByUserId(userId)
+                .map(stats -> {
+                    stats.setDiamond(stats.getDiamond() + diamondEarned);
+                    return userStatsRepository.save(stats);
+                })
+                .orElseThrow(() -> new RuntimeException("UserStats not found"));
+    }
+
+@Override
     public UserStats getStatsByUserId(ObjectId userId) {
         return userStatsRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("UserStats not found"));
+                .orElseGet(() -> {
+                    UserStats newStats = new UserStats();
+                    newStats.setUserId(userId);
+                    newStats.setRank(rankService.getRankByXp(0));
+                    return userStatsRepository.save(newStats);
+                });
     }
 
     @Override
@@ -83,5 +93,38 @@ public class UserStatsServiceImpl implements UserStatsService {
             return UserMapping.mapToUserStatsResponse(user, userStats);
         });
         return topUsers;
+    }
+
+    @Override
+    public UserStats updateStreak(ObjectId userId) {
+        UserStats stats = userStatsRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("UserStats not found"));
+
+        LocalDate today = LocalDate.now();
+        LocalDate lastStudyDate = stats.getLastStudyDate();
+
+        if (lastStudyDate != null) {
+            if (lastStudyDate.isEqual(today)) {
+                return stats;
+            } else if (lastStudyDate.isEqual(today.minusDays(1))) {
+                stats.setCurrentStreak(stats.getCurrentStreak() + 1);
+            } else {
+                stats.setCurrentStreak(1);
+            }
+        } else {
+            // Nếu lastStudyDate chưa được thiết lập, khởi tạo streak
+            stats.setCurrentStreak(0);
+        }
+
+        if (stats.getCurrentStreak() > stats.getLongestStreak()) {
+            stats.setLongestStreak(stats.getCurrentStreak());
+        }
+        stats.setLastStudyDate(today);
+        return userStatsRepository.save(stats);
+    }
+
+    @Override
+    public UserStats saveUserStats(UserStats userStats) {
+        return userStatsRepository.save(userStats);
     }
 }

@@ -17,6 +17,7 @@ import mobile.model.payload.response.SuccessResponse;
 import mobile.security.JWT.JwtUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -93,9 +94,9 @@ public class SavedResource {
 
 
 
-    @GetMapping("/savedbyuser")
+    @GetMapping("/user/{userId}")
     @ResponseBody
-    public ResponseEntity<List<SavedResponse>> getSavedsByUsername(HttpServletRequest request){
+    public ResponseEntity<List<SavedResponse>> getSavedByUserId(@PathVariable String userId, HttpServletRequest request){
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
             String accessToken = authorizationHeader.substring("Bearer ".length());
@@ -111,7 +112,7 @@ public class SavedResource {
                 throw new HttpMessageNotReadableException("user is not existed");
             }
 
-            List<Saved> savedList = savedService.getSavedByUserId(user.getId());
+            List<Saved> savedList = savedService.getSavedByUserId(new ObjectId(userId));
             if(savedList == null){
                 throw new RecordNotFoundException("Saved is not existed");
             }

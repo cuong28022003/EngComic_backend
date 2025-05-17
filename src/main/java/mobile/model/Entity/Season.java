@@ -6,21 +6,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@RestResource(exported = false)
-@Document(collection = "pack")
-public class Pack {
+@Document(collection = "season")
+public class Season {
     @Id
     private ObjectId id;
-
-    private String name; // "One Piece", "Naruto", ...
-    private String imageUrl; // ảnh gói thẻ
-    private String description;
+    private String name;
+    private int seasonNumber;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private boolean isActive;
 }
