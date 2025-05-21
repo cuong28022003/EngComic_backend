@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mobile.Service.CharacterService;
 import mobile.Service.UserCharacterService;
 import mobile.model.Entity.Character;
+import mobile.model.payload.request.character.CharacterRequest;
 import mobile.model.payload.response.character.UserCharacterResponse;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,22 +59,35 @@ public class CharacterController {
     }
 
     @PostMapping
-    public ResponseEntity<Character> createCharacterCard(@RequestParam String name,
-                                                         @RequestParam String description,
-                                                         @RequestParam MultipartFile image,
-                                                         @RequestParam String rarity,
-                                                         @RequestParam ObjectId packId) {
-        Character createdCard = characterService.create(name, description, rarity, image, packId);
+    public ResponseEntity<Character> createCharacterCard(@RequestPart("data") CharacterRequest characterData,
+                                                         @RequestPart("image") MultipartFile image) {
+        Character createdCard = characterService.create(
+                characterData.getName(),
+                characterData.getDescription(),
+                characterData.getRarity(),
+                image,
+                new ObjectId(characterData.getPackId()),
+                characterData.getBonusXp(),
+                characterData.getBonusDiamond(),
+                characterData.getSkillsUsagePerDay()
+        );
         return ResponseEntity.ok(createdCard);
     }
 
-    @PutMapping("/{id}")
+@PutMapping("/{id}")
     public ResponseEntity<Character> updateCharacterCard(@PathVariable ObjectId id,
-                                                         @RequestParam String name,
-                                                         @RequestParam String description,
-                                                         @RequestParam MultipartFile image,
-                                                         @RequestParam String rarity) {
-        Character updatedCard = characterService.update(id, name, description, rarity, image);
+                                                         @RequestPart("data") CharacterRequest characterData,
+                                                         @RequestPart("image") MultipartFile image) {
+        Character updatedCard = characterService.update(
+                id,
+                characterData.getName(),
+                characterData.getDescription(),
+                characterData.getRarity(),
+                image,
+                characterData.getBonusXp(),
+                characterData.getBonusDiamond(),
+                characterData.getSkillsUsagePerDay()
+        );
         return ResponseEntity.ok(updatedCard);
     }
 

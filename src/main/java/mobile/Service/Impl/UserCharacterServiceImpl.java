@@ -43,19 +43,19 @@ public class UserCharacterServiceImpl implements UserCharacterService {
                 .filter(response -> {
                     // Tìm kiếm theo searchTerm (name hoặc packName)
                     if (searchTerm == null || searchTerm.isEmpty()) return true;
-                    return (response.getCharacter().getName() != null && response.getCharacter().getName().toLowerCase().contains(searchTerm.toLowerCase())) ||
+                    return (response.getName() != null && response.getName().toLowerCase().contains(searchTerm.toLowerCase())) ||
                             (response.getPack().getName() != null && response.getPack().getName().toLowerCase().contains(searchTerm.toLowerCase()));
                 })
                 .filter(response -> {
                     // Lọc theo rarity nếu được cung cấp
                     if (rarity == null || rarity.isEmpty()) return true;
-                    return response.getCharacter().getRarity().equals(rarity);
+                    return response.getRarity().equals(rarity);
                 })
                 .sorted((response1, response2) -> {
                     // Sắp xếp theo sortBy và sortDirection
                     int comparison = 0;
                     if ("name".equalsIgnoreCase(sortBy)) {
-                        comparison = response1.getCharacter().getName().compareToIgnoreCase(response2.getCharacter().getName());
+                        comparison = response1.getName().compareToIgnoreCase(response2.getName());
                     } else if ("obtainedAt".equalsIgnoreCase(sortBy)) {
                         comparison = response1.getObtainedAt().compareTo(response2.getObtainedAt());
                     }

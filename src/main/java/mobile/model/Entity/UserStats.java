@@ -28,6 +28,6 @@ public class UserStats {
     private Rank rank;
     private int currentStreak = 0;
     private int longestStreak = 0;
-    private LocalDate lastStudyDate = LocalDate.now();
+    private LocalDate lastStudyDate = LocalDate.now().minusDays(1);
     private boolean isReceivedSeasonReward;
 }

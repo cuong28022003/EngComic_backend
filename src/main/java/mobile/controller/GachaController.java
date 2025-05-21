@@ -3,6 +3,7 @@ package mobile.controller;
 import mobile.Service.GachaService;
 import mobile.Service.UserService;
 import mobile.model.Entity.User;
+import mobile.model.payload.response.character.CharacterResponse;
 import mobile.model.payload.response.pack.GachaPackResult;
 import mobile.security.JWT.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class GachaController {
     private JwtUtils jwtUtils;
 
     @PostMapping("/roll")
-    public ResponseEntity<List<GachaPackResult>> roll(@RequestParam(defaultValue = "1") int count, HttpServletRequest request) {
+    public ResponseEntity<List<CharacterResponse>> roll(@RequestParam(defaultValue = "1") int count, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid token");

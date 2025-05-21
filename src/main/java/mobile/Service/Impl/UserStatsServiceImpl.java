@@ -74,7 +74,7 @@ public class UserStatsServiceImpl implements UserStatsService {
                 .orElseThrow(() -> new RuntimeException("UserStats not found"));
     }
 
-@Override
+    @Override
     public UserStats getStatsByUserId(ObjectId userId) {
         return userStatsRepository.findByUserId(userId)
                 .orElseGet(() -> {

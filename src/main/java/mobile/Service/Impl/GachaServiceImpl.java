@@ -3,9 +3,11 @@ package mobile.Service.Impl;
 import lombok.RequiredArgsConstructor;
 import mobile.Service.GachaService;
 import mobile.Service.UserCharacterService;
+import mobile.mapping.CharacterMapping;
 import mobile.model.Entity.Character;
 import mobile.model.Entity.Pack;
 import mobile.model.Entity.UserStats;
+import mobile.model.payload.response.character.CharacterResponse;
 import mobile.model.payload.response.pack.GachaPackResult;
 import mobile.repository.CharacterRepository;
 import mobile.repository.PackRepository;
@@ -33,7 +35,7 @@ public class GachaServiceImpl implements GachaService {
 
     private final Random random = new Random();
 
-    public List<GachaPackResult> roll(ObjectId userId, int count) {
+    public List<CharacterResponse> roll(ObjectId userId, int count) {
         UserStats userStats = userStatsRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("User stats not found"));
 
         int totalCost = count * 100;
@@ -46,7 +48,7 @@ public class GachaServiceImpl implements GachaService {
         userStatsRepository.save(userStats);
 
         List<Pack> packs = packRepository.findAll();
-        List<GachaPackResult> results = new ArrayList<>();
+        List<CharacterResponse> results = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
             Pack pack = packs.get(random.nextInt(packs.size()));
@@ -56,15 +58,12 @@ public class GachaServiceImpl implements GachaService {
 
             Character drawn = rollOneCard(characters);
 
-            results.add(new GachaPackResult(
-                    pack,
-                    drawn
-            ));
+            results.add(CharacterMapping.toCharacterResponse(drawn, pack));
         }
 
-//        results.forEach(result -> {
-//            userCharacterService.save(userId, result.getCharacter().getId());
-//        });
+        results.forEach(result -> {
+            userCharacterService.save(userId, result.getId());
+        });
 
         return results;
     }

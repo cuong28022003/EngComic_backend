@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -33,14 +34,16 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Character create(String name, String description, String rarity, MultipartFile image, ObjectId packId) {
+    public Character create(String name, String description, String rarity, MultipartFile image, ObjectId packId, int bonusXp, int bonusDiamond, Map<String, Integer> skillsUsagePerDay) {
         Character character = new Character();
         character.setName(name);
         character.setDescription(description);
         character.setRarity(rarity);
         character.setPackId(packId);
+        character.setBonusXp(bonusXp);
+        character.setBonusDiamond(bonusDiamond);
+        character.setSkillsUsagePerDay(skillsUsagePerDay);
         try {
-//            String imageUrl = cloudinaryService.uploadFile(image);
             String imageUrl = cloudinaryService.uploadFile(image);
             character.setImageUrl(imageUrl);
         } catch (Exception e) {
@@ -50,13 +53,16 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Character update(ObjectId id, String name, String description, String rarity, MultipartFile image) {
+    public Character update(ObjectId id, String name, String description, String rarity, MultipartFile image, int bonusXp, int bonusDiamond, Map<String, Integer> skillsUsagePerDay) {
         Character character = characterRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CharacterCard not found"));
 
         character.setName(name);
         character.setDescription(description);
         character.setRarity(rarity);
+        character.setBonusXp(bonusXp);
+        character.setBonusDiamond(bonusDiamond);
+        character.setSkillsUsagePerDay(skillsUsagePerDay);
         try {
             String imageUrl = cloudinaryService.uploadFile(image);
             character.setImageUrl(imageUrl);
