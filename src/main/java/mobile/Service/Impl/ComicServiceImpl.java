@@ -26,8 +26,9 @@ public class ComicServiceImpl implements ComicService {
 
     @Override
     public Page<Comic> getComics(Pageable pageable) {
-        log.info("Fetching all Novels page: " + pageable.getPageNumber() + " page size: " + pageable.getPageSize());
-        return comicRepository.findAllBy_idNotNull(pageable);
+        log.info("Fetching all Comics with status != 'LOCK', page: " + pageable.getPageNumber() + " page size: "
+                + pageable.getPageSize());
+        return comicRepository.findAllByStatusNot("LOCK", pageable);
     }
 
     @Override
@@ -69,16 +70,11 @@ public class ComicServiceImpl implements ComicService {
         comicRepository.save(newComic);
     }
 
-
     @Override
     public List<Comic> getAllComics() {
         log.info("Fetching all Novels ");
         return comicRepository.findAll();
     }
-
-
-
-
 
     @Override
     public List<Comic> findAllByStatus(String status, Pageable pageable) {
@@ -86,17 +82,11 @@ public class ComicServiceImpl implements ComicService {
         return comicRepository.findAllByStatus(status, pageable);
     }
 
-
-
     @Override
     public List<Comic> SearchByTypeAndName(String type, String value, Pageable pageable) {
         log.info("Searching  Novel type: " + type + " value: " + value);
         return comicRepository.findAllByGenreContainsAndNameContainsAllIgnoreCase(type, value, pageable);
     }
-
-
-
-
 
     @Override
     public void DeleteComic(Comic comic) {

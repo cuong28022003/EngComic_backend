@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ComicResponse {
+    protected Object id;
     protected double rating;
     protected String image;
     protected int views;

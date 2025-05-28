@@ -12,8 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/rank")
+@RequiredArgsConstructor
 public class RankController {
     private final RankService rankService;
 
@@ -25,7 +25,7 @@ public class RankController {
     // Get all ranks
     @GetMapping
     public List<Rank> getAllRanks() {
-        return rankService.getAllRanks();
+        return rankService.getAllRank();
     }
 
     // Get rank by ID
@@ -37,14 +37,16 @@ public class RankController {
 
     // Create a new rank
     @PostMapping
-    public ResponseEntity<Rank> createRank(@RequestParam String name, @RequestParam int minXp, @RequestParam int maxXp, @RequestParam MultipartFile badge) {
+    public ResponseEntity<Rank> createRank(@RequestParam String name, @RequestParam int minXp, @RequestParam int maxXp,
+            @RequestParam MultipartFile badge) {
         Rank createdRank = rankService.createRank(name, minXp, maxXp, badge);
         return ResponseEntity.ok(createdRank);
     }
 
     // Update an existing rank
     @PutMapping("/{id}")
-    public ResponseEntity<Rank> updateRank(@PathVariable String id, @RequestParam String name, @RequestParam int minXp, @RequestParam int maxXp, @RequestParam MultipartFile badge) {
+    public ResponseEntity<Rank> updateRank(@PathVariable String id, @RequestParam String name, @RequestParam int minXp,
+            @RequestParam int maxXp, @RequestParam MultipartFile badge) {
         Rank updatedRank = rankService.updateRank(new ObjectId(id), name, minXp, maxXp, badge);
         return ResponseEntity.ok(updatedRank);
     }

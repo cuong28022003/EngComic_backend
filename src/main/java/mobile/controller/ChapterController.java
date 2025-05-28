@@ -53,7 +53,7 @@ public class ChapterController {
 
     @GetMapping("")
     public ResponseEntity<Page<Chapter>> getChaptersByComic(@RequestParam String url,
-                                                            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
         Comic comic = comicService.findByUrl(url);
         if (comic == null) {
@@ -99,95 +99,95 @@ public class ChapterController {
     }
 
     @PostMapping("")
-                public ResponseEntity<SuccessResponse> CreateChapter(
-                        @RequestParam("name") String name,
-                        @RequestParam("url") String url,
-                        @RequestParam("images") MultipartFile[] images,
-                        @RequestParam(value = "cover", required = false) MultipartFile cover,
-                        HttpServletRequest request) {
+    public ResponseEntity<SuccessResponse> CreateChapter(
+            @RequestParam("name") String name,
+            @RequestParam("url") String url,
+            @RequestParam("images") MultipartFile[] images,
+            @RequestParam(value = "cover", required = false) MultipartFile cover,
+            HttpServletRequest request) {
 
-                    String authorizationHeader = request.getHeader(AUTHORIZATION);
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
 
-                    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                        String accessToken = authorizationHeader.substring("Bearer ".length());
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String accessToken = authorizationHeader.substring("Bearer ".length());
 
-                        // Kiểm tra token
-                        if (jwtUtils.validateExpiredToken(accessToken)) {
-                            throw new BadCredentialsException("access token đã hết hạn");
-                        }
+            // Kiểm tra token
+            if (jwtUtils.validateExpiredToken(accessToken)) {
+                throw new BadCredentialsException("access token đã hết hạn");
+            }
 
-                        // Tìm thông tin người dùng từ token
-                        User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
-                        if (user == null) {
-                            throw new RecordNotFoundException("Không tìm thấy người dùng");
-                        }
+            // Tìm thông tin người dùng từ token
+            User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
+            if (user == null) {
+                throw new RecordNotFoundException("Không tìm thấy người dùng");
+            }
 
-                        // Tìm truyện qua URL
-                        Comic comic = comicService.findByUrl(url);
-                        if (comic == null) {
-                            throw new RecordNotFoundException("Không tìm thấy truyện");
-                        }
+            // Tìm truyện qua URL
+            Comic comic = comicService.findByUrl(url);
+            if (comic == null) {
+                throw new RecordNotFoundException("Không tìm thấy truyện");
+            }
 
-                        // Kiểm tra quyền chỉnh sửa
-                        if (!comic.getUploader().getUsername().equals(user.getUsername())) {
-                            throw new BadCredentialsException("Không thể chỉnh sửa truyện của người khác");
-                        }
+            // Kiểm tra quyền chỉnh sửa
+            if (!comic.getUploader().getUsername().equals(user.getUsername())) {
+                throw new BadCredentialsException("Không thể chỉnh sửa truyện của người khác");
+            }
 
-                        // Upload từng ảnh lên Cloudinary
-                        List<String> files = new ArrayList<>();
-                        String coverUrl = null;
-                        try {
-                            for (MultipartFile file : images) {
-                                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-                                String imageUrl = (String) uploadResult.get("secure_url");
-                                files.add(imageUrl);
-                            }
-
-                            // Upload cover nếu có, nếu không lấy ảnh đầu tiên làm cover
-                            if (cover != null) {
-                                Map coverUploadResult = cloudinary.uploader().upload(cover.getBytes(), ObjectUtils.emptyMap());
-                                coverUrl = (String) coverUploadResult.get("secure_url");
-                            } else if (!files.isEmpty()) {
-                                coverUrl = files.get(0);
-                            }
-                        } catch (IOException e) {
-                            SuccessResponse errorResponse = new SuccessResponse();
-                            errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                            errorResponse.setMessage("Upload failed: " + e.getMessage());
-                            errorResponse.setSuccess(false);
-                            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-                        }
-
-                        // Tạo chương mới
-                        int chapterNumber = chapterService.countChaptersByComic(comic) + 1;
-                        String fullTitle = "Chương " + chapterNumber + ": " + name;
-
-                        Chapter newChapter = new Chapter();
-                        newChapter.setComic(comic);
-                        newChapter.setImages(files);
-                        newChapter.setChapterNumber(chapterNumber);
-                        newChapter.setName(fullTitle);
-                        newChapter.setCover(coverUrl);
-
-                        chapterService.SaveChapter(newChapter);
-
-                        // Trả phản hồi thành công
-                        SuccessResponse response = new SuccessResponse();
-                        response.setStatus(HttpStatus.OK.value());
-                        response.setMessage("Đăng chương mới thành công");
-                        response.setSuccess(true);
-
-                        return new ResponseEntity<>(response, HttpStatus.OK);
-
-                    } else {
-                        throw new BadCredentialsException("Không tìm thấy access token");
-                    }
+            // Upload từng ảnh lên Cloudinary
+            List<String> files = new ArrayList<>();
+            String coverUrl = null;
+            try {
+                for (MultipartFile file : images) {
+                    Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+                    String imageUrl = (String) uploadResult.get("secure_url");
+                    files.add(imageUrl);
                 }
+
+                // Upload cover nếu có, nếu không lấy ảnh đầu tiên làm cover
+                if (cover != null) {
+                    Map coverUploadResult = cloudinary.uploader().upload(cover.getBytes(), ObjectUtils.emptyMap());
+                    coverUrl = (String) coverUploadResult.get("secure_url");
+                } else if (!files.isEmpty()) {
+                    coverUrl = files.get(0);
+                }
+            } catch (IOException e) {
+                SuccessResponse errorResponse = new SuccessResponse();
+                errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                errorResponse.setMessage("Upload failed: " + e.getMessage());
+                errorResponse.setSuccess(false);
+                return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            // Tạo chương mới
+            int chapterNumber = chapterService.countChaptersByComic(comic) + 1;
+            String fullTitle = "Chương " + chapterNumber + ": " + name;
+
+            Chapter newChapter = new Chapter();
+            newChapter.setComic(comic);
+            newChapter.setImages(files);
+            newChapter.setChapterNumber(chapterNumber);
+            newChapter.setName(fullTitle);
+            newChapter.setCover(coverUrl);
+
+            chapterService.SaveChapter(newChapter);
+
+            // Trả phản hồi thành công
+            SuccessResponse response = new SuccessResponse();
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Đăng chương mới thành công");
+            response.setSuccess(true);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } else {
+            throw new BadCredentialsException("Không tìm thấy access token");
+        }
+    }
 
     @PutMapping("/{chapterNumber}")
     @ResponseBody
     public ResponseEntity<SuccessResponse> UpdateChapter(@RequestBody UpdateChapterRequest updateChapterRequest,
-                                                         HttpServletRequest request) {
+            HttpServletRequest request) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String accessToken = authorizationHeader.substring("Bearer ".length());
@@ -216,7 +216,7 @@ public class ChapterController {
             if (comic.getUploader().getUsername().equals(user.getUsername())) {
                 String name = updateChapterRequest.getName();
                 chapter.setName(name);
-//                chapter.setContent(updateChapterRequest.getContent());
+                // chapter.setContent(updateChapterRequest.getContent());
                 chapterService.SaveChapter(chapter);
             } else {
                 throw new BadCredentialsException("Không thể chỉnh sửa truyện của người khác");
@@ -234,7 +234,7 @@ public class ChapterController {
 
     @DeleteMapping("")
     public ResponseEntity<SuccessResponse> DeleteChapter(@RequestBody DeleteChapterRequest deleteChapterRequest,
-                                                         HttpServletRequest request) {
+            HttpServletRequest request) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String accessToken = authorizationHeader.substring("Bearer ".length());
@@ -273,6 +273,5 @@ public class ChapterController {
             throw new BadCredentialsException("Không tìm thấy access token");
         }
     }
-
 
 }

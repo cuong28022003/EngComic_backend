@@ -7,6 +7,9 @@ import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import javax.persistence.Id;
 
 @Getter
@@ -16,6 +19,7 @@ import javax.persistence.Id;
 @Document(collection = "rank")
 public class Rank {
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
     private String name;
     private int minXp;

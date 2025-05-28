@@ -1,4 +1,5 @@
 package mobile.model.Entity;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -7,12 +8,16 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.rest.core.annotation.RestResource;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.util.Date;
 
-@RestResource(exported=false)
+@RestResource(exported = false)
 @Document(collection = "comic")
 public class Comic {
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     protected ObjectId _id;
     protected double rating;
     protected String image;
@@ -24,7 +29,7 @@ public class Comic {
     protected String artist;
     protected String name;
     protected String genre;
-    protected String status;
+    protected String status = "NONE";
     protected String url;
     @CreatedDate
     protected Date createAt;
@@ -34,7 +39,8 @@ public class Comic {
     public Comic() {
     }
 
-    public Comic(ObjectId _id, int rating, String image, int views, User uploader, String description, int ratingCount, String artist, String name, String genre, String status, String url, Date createAt, Date updateAt) {
+    public Comic(ObjectId _id, int rating, String image, int views, User uploader, String description, int ratingCount,
+            String artist, String name, String genre, String status, String url, Date createAt, Date updateAt) {
         this._id = _id;
         this.rating = rating;
         this.image = image;

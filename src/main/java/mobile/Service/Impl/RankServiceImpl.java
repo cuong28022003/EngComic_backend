@@ -25,7 +25,7 @@ public class RankServiceImpl implements RankService {
     private CloudinaryService cloudinaryService;
 
     @Override
-    public List<Rank> getAllRanks() {
+    public List<Rank> getAllRank() {
         return rankRepository.findAll();
     }
 
