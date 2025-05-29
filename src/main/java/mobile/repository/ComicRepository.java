@@ -15,14 +15,20 @@ import java.util.Optional;
 @EnableMongoRepositories
 public interface ComicRepository extends MongoRepository<Comic, ObjectId> {
     Page<Comic> findAllBy_idNotNull(Pageable pageable);
+
     Page<Comic> findByNameContainingIgnoreCase(String value, Pageable pageable);
+
     Page<Comic> findByGenreContainingIgnoreCase(String value, Pageable pageable);
+
     Page<Comic> findByArtistContainingIgnoreCase(String value, Pageable pageable);
+
     Comic findByUrl(String url);
+
     Optional<Comic> findBy_id(ObjectId id);
+
     Page<Comic> findByUploader(User user, Pageable pageable);
 
-
+    Page<Comic> findAllByStatusNot(String status, Pageable pageable);
 
     List<Comic> findAllByStatus(String status, Pageable pageable);
 
@@ -38,6 +44,7 @@ public interface ComicRepository extends MongoRepository<Comic, ObjectId> {
 
     List<Comic> findByArtist(String artist);
 
-    List<Comic> findByNameContainingIgnoreCaseAndGenreContainingIgnoreCase(String name, String genre, Pageable pageable);
+    List<Comic> findByNameContainingIgnoreCaseAndGenreContainingIgnoreCase(String name, String genre,
+            Pageable pageable);
 
 }

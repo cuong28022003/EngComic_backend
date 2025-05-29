@@ -250,41 +250,42 @@ public class AdminResource {
         }
     }
 
-//    @DeleteMapping("deleteuser")
-//    @ResponseBody
-//    public ResponseEntity<SuccessResponse> deleteAccount(@RequestBody @Valid DeleteUserRequest deleteUserRequest)
-//            throws Exception {
-//        if (deleteUserRequest.getUsername() == null) {
-//            throw new HttpMessageNotReadableException("Missing field");
-//        }
-//        try {
-//            User user = userService.findByUsername(deleteUserRequest.getUsername());
-//            if (user == null) {
-//                throw new RecordNotFoundException("Không tìm thấy tài khoản");
-//            }
-//            // Lấy userId từ người dùng
-//            ObjectId userId = user.getId();
-//
-//            // Tìm và xóa tất cả truyện có uploader chứa userId
-//            List<Comic> userComics = comicService.findByUploaderContaining(userId);
-//            for (Comic comic : userComics) {
-//                comicService.DeleteComic(comic);
-//            }
-//
-//            // Xóa người dùng
-//            userService.deleteUser(deleteUserRequest.getUsername());
-//
-//            SuccessResponse response = new SuccessResponse();
-//            response.setStatus(HttpStatus.OK.value());
-//            response.setMessage("Delete user successful");
-//            response.setSuccess(true);
-//            response.getData().put("username", deleteUserRequest.getUsername());
-//            return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
-//        } catch (Exception ex) {
-//            throw new Exception("Xoá tài khoản thất bại");
-//        }
-//
-//    }
+    // @DeleteMapping("deleteuser")
+    // @ResponseBody
+    // public ResponseEntity<SuccessResponse> deleteAccount(@RequestBody @Valid
+    // DeleteUserRequest deleteUserRequest)
+    // throws Exception {
+    // if (deleteUserRequest.getUsername() == null) {
+    // throw new HttpMessageNotReadableException("Missing field");
+    // }
+    // try {
+    // User user = userService.findByUsername(deleteUserRequest.getUsername());
+    // if (user == null) {
+    // throw new RecordNotFoundException("Không tìm thấy tài khoản");
+    // }
+    // // Lấy userId từ người dùng
+    // ObjectId userId = user.getId();
+    //
+    // // Tìm và xóa tất cả truyện có uploader chứa userId
+    // List<Comic> userComics = comicService.findByUploaderContaining(userId);
+    // for (Comic comic : userComics) {
+    // comicService.DeleteComic(comic);
+    // }
+    //
+    // // Xóa người dùng
+    // userService.deleteUser(deleteUserRequest.getUsername());
+    //
+    // SuccessResponse response = new SuccessResponse();
+    // response.setStatus(HttpStatus.OK.value());
+    // response.setMessage("Delete user successful");
+    // response.setSuccess(true);
+    // response.getData().put("username", deleteUserRequest.getUsername());
+    // return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
+    // } catch (Exception ex) {
+    // throw new Exception("Xoá tài khoản thất bại");
+    // }
+    //
+    // }
 
     private ResponseEntity SendErrorValid(String field, String message) {
         ErrorResponseMap errorResponseMap = new ErrorResponseMap();

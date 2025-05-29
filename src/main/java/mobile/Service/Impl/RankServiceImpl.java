@@ -49,7 +49,7 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
-    public List<Rank> getAllRanks() {
+    public List<Rank> getAllRank() {
         return rankRepository.findAll();
     }
 
