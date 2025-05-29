@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface ChapterService {
     Page<Chapter> findByComic(Comic comic, int page, int size);
+    List<Chapter> findAllByComic(Comic comic);
     Chapter findById(String chapterId);
     int countChaptersByComic(Comic comic);
 

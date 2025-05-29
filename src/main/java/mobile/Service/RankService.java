@@ -2,13 +2,17 @@ package mobile.Service;
 
 import mobile.model.Entity.Rank;
 import mobile.model.payload.request.rank.CreateRankRequest;
+import mobile.model.payload.response.rank.RankResponse;
 import org.bson.types.ObjectId;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface RankService {
+
     List<Rank> getAllRank();
+
+    List<RankResponse> getAllRankWithCharacterAndPack();
 
     Rank getRankById(ObjectId id);
 

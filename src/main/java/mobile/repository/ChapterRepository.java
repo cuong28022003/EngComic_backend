@@ -4,6 +4,7 @@ import mobile.model.Entity.Chapter;
 import mobile.model.Entity.Comic;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
@@ -17,6 +18,7 @@ public interface ChapterRepository  extends MongoRepository<Chapter, String> {
     Optional<Chapter> findById(String chapterId);
 
     Page<Chapter> findByComic(Comic comic, Pageable pageable);
+    List<Chapter> findAllByComic(Comic comic, Sort sort);
     Optional<Chapter> findByComicAndChapterNumber(Comic comic, int chapterNumber);
     int countAllByComic(Comic comic);
     void deleteAllByComic(Comic comic);

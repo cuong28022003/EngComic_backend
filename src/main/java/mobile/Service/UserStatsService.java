@@ -9,7 +9,12 @@ import java.util.List;
 
 public interface UserStatsService {
     UserStats addXp(ObjectId userId, int xpEarned);
+    UserStats addDiamond(ObjectId userId, int diamondEarned);
     UserStats getStatsByUserId(ObjectId userId);
+    UserStats updateStreak(ObjectId userId);
+    UserStats saveUserStats(UserStats userStats);
 
     Page<UserStatsResponse> getTopUsersWithStats(int limit);
+
+    UserStats upgradePremium(ObjectId userId, int days, int cost);
 }

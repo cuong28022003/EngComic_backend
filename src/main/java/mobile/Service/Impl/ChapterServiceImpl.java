@@ -28,6 +28,11 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    public List<Chapter> findAllByComic(Comic comic) {
+        return  chapterRepository.findAllByComic(comic, Sort.by("chapterNumber"));
+    }
+
+    @Override
     public Chapter findById(String chapterId) {
         return chapterRepository.findById(chapterId)
                 .orElseThrow(() -> new RuntimeException("Chapter not found with id: " + chapterId));

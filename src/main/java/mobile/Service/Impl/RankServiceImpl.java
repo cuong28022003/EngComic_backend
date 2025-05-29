@@ -1,12 +1,16 @@
 package mobile.Service.Impl;
 
+import lombok.RequiredArgsConstructor;
 import mobile.Service.CloudinaryService;
 import mobile.Service.RankService;
 import mobile.model.Entity.Rank;
 import mobile.model.payload.request.rank.CreateRankRequest;
+import mobile.model.payload.response.rank.RankResponse;
 import mobile.repository.RankRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,15 +18,35 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RankServiceImpl implements RankService {
     private final RankRepository rankRepository;
 
-    public RankServiceImpl(RankRepository rankRepository) {
-        this.rankRepository = rankRepository;
-    }
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+
+    @Override
+    public List<RankResponse> getAllRankWithCharacterAndPack() {
+        Aggregation aggregation = Aggregation.newAggregation(
+                // 1. JOIN rank.rewardCharacterId -> character._id
+                Aggregation.lookup("character", "rewardCharacterId", "_id", "rewardCharacter"),
+                Aggregation.unwind("rewardCharacter"), // Chắc chắn mỗi rank chỉ có 1 character
+
+                // 2. JOIN rewardCharacter.packId -> pack._id
+                Aggregation.lookup("pack", "rewardCharacter.packId", "_id", "rewardCharacter.pack"),
+                Aggregation.unwind("rewardCharacter.pack") // Nếu luôn có 1 pack
+        );
+
+        return mongoTemplate.aggregate(
+                aggregation,
+                "rank", // collection gốc
+                RankResponse.class
+        ).getMappedResults();
+    }
 
     @Override
     public List<Rank> getAllRank() {

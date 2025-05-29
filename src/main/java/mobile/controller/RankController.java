@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mobile.Service.RankService;
 import mobile.model.Entity.Rank;
 import mobile.model.payload.request.rank.CreateRankRequest;
+import mobile.model.payload.response.rank.RankResponse;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,10 @@ public class RankController {
     @GetMapping
     public List<Rank> getAllRanks() {
         return rankService.getAllRank();
+
+  @GetMapping("/fix")
+    public List<RankResponse> getAllRank() {
+        return rankService.getAllRankWithCharacterAndPack();
     }
 
     // Get rank by ID

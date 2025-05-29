@@ -25,4 +25,6 @@ public class Rank {
     private int minXp;
     private int maxXp;
     private String badge;
+    private int rewardDiamond;
+    private ObjectId rewardCharacterId;
 }

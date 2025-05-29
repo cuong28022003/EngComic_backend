@@ -114,7 +114,7 @@ public class CardController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCard(@PathVariable String id, HttpServletRequest request) {
+    public ResponseEntity<?> deleteCard(@PathVariable String id, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid token");
@@ -126,7 +126,7 @@ public class CardController {
 
         ObjectId cardId = new ObjectId(id);
         cardService.deleteById(cardId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("Card deleted successfully");
     }
 
     @PostMapping("/review")

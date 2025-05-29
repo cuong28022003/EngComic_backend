@@ -9,6 +9,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.rest.core.annotation.RestResource;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +34,7 @@ public class User {
     @JsonIgnore
     protected  String password;
     protected  String fullName;
-    protected   Date  birthdate;
+    protected LocalDate birthday;
     @CreatedDate
     protected   Date createdate;
     protected  String image;
@@ -50,7 +51,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.fullName = username;
-        this.birthdate = new Date();
+        this.birthday = LocalDate.now();
         this.createdate = new Date();
         this.image ="";
         this.active = true; // skip send active email

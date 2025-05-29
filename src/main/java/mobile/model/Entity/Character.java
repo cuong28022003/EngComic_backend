@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.Id;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -24,4 +26,8 @@ public class Character {
     private String imageUrl;
     private String description;
     private ObjectId packId; // ID của gói thẻ mà thẻ này thuộc về
+    private int bonusXp;
+    private int bonusDiamond;
+
+    private Map<String, Integer> skillsUsagePerDay; // {"DOUBLE_XP": 1, "SHOW_ANSWER": 2}
 }

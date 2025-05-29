@@ -3,6 +3,7 @@ package mobile.model.payload.request.user;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -12,7 +13,7 @@ import java.util.Date;
 @Data
 public class InfoUserRequest {
     protected  String fullName;
-    protected Date birthdate;
+    protected LocalDate birthday;
     protected  String image;
 
 }

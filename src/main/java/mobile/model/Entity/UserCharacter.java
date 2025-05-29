@@ -9,18 +9,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.Id;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @RestResource(exported = false)
-@Document(collection = "user_card")
-public class UserCharacterCard {
+@Document(collection = "user_character")
+public class UserCharacter {
     @Id
     private ObjectId id;
     private ObjectId userId;
-    private ObjectId cardId;
-    private Date obtainedAt;
+    private ObjectId characterId;
+    private LocalDateTime obtainedAt;
 }

@@ -21,6 +21,6 @@ public class Pack {
     private ObjectId id;
 
     private String name; // "One Piece", "Naruto", ...
-    private String coverImageUrl; // ảnh gói thẻ
+    private String imageUrl; // ảnh gói thẻ
     private String description;
 }
