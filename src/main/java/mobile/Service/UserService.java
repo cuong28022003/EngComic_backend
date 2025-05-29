@@ -4,8 +4,11 @@ import mobile.model.Entity.Role;
 import mobile.model.Entity.User;
 import mobile.model.payload.request.user.InfoUserRequest;
 import org.bson.types.ObjectId;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -20,7 +23,7 @@ public interface UserService {
     Boolean existsByEmail(String email);
     Boolean existsByUsername(String username);
     User findByUsername(String username);
-    User updateUserInfo(User user, InfoUserRequest userInfo);
+    User updateUserInfo(ObjectId userId, String fullName, LocalDate birthday, MultipartFile image);
     User updateUserPassword(User user, String password);
     User deleteUser(String username);
     User updateActive(User user);

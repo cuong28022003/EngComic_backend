@@ -18,7 +18,7 @@ public class CardMapping {
         response.setDeckId(card.getDeckId().toHexString());
         response.setFront(card.getFront());
         response.setBack(card.getBack());
-        response.setIPA(card.getIPA());
+        response.setIPA(card.getIpa());
         response.setImage(card.getImage());
         response.setAudio(card.getAudio());
         response.setTags(card.getTags());
@@ -32,7 +32,7 @@ public class CardMapping {
         card.setDeckId(new ObjectId(request.getDeckId()));
         card.setFront(request.getFront());
         card.setBack(request.getBack());
-        card.setIPA(request.getIPA());
+        card.setIpa(request.getIPA());
         card.setImage(request.getImage());
         card.setAudio(request.getAudio());
         card.setTags(request.getTags());

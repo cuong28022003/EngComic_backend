@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeckStatisticsResponse {
+    private long totalCards;
     private long totalNew;
     private long totalEasy;
     private long totalHard;

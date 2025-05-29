@@ -17,9 +17,5 @@ public class DeckResponse {
     protected String description;
     protected Date createAt;
     protected Date updateAt;
-    protected long totalNew;
-    protected long totalEasy;
-    protected long totalHard;
-    protected long totalDue;
     protected DeckStatisticsResponse stats;
 }

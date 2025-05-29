@@ -25,9 +25,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,12 +52,12 @@ public class UserResource {
 
     @GetMapping("/info")
     @ResponseBody
-    public ResponseEntity<SuccessResponse>  getInfo(HttpServletRequest request) throws Exception {
+    public ResponseEntity<SuccessResponse> getInfo(HttpServletRequest request) throws Exception {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String accessToken = authorizationHeader.substring("Bearer ".length());
 
-            if(jwtUtils.validateExpiredToken(accessToken) == true){
+            if (jwtUtils.validateExpiredToken(accessToken) == true) {
                 throw new BadCredentialsException("access token is  expired");
             }
 
@@ -64,41 +67,35 @@ public class UserResource {
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Info user");
             response.setSuccess(true);
-            response.getData().put("userInfo",user);
+            response.getData().put("userInfo", user);
 
-            return new ResponseEntity<SuccessResponse>(response,HttpStatus.OK);
-        }
-        else
-        {
+            return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
+        } else {
             throw new BadCredentialsException("access token is missing");
         }
     }
-    @PutMapping("/{username}")
+
+    @PutMapping("/{userId}")
     @ResponseBody
-    public ResponseEntity<SuccessResponse>  updateInfo(@RequestBody @Valid InfoUserRequest userInfo, BindingResult errors, HttpServletRequest request) throws Exception {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-
-            if(jwtUtils.validateExpiredToken(accessToken) == true){
-                throw new BadCredentialsException("access token is  expired");
-            }
-
-            User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
-            user = userService.updateUserInfo(user,userInfo);
-
-            SuccessResponse response = new SuccessResponse();
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Update info successful");
-            response.setSuccess(true);
-            response.getData().put("userInfo",user);
-
-            return new ResponseEntity<SuccessResponse>(response,HttpStatus.OK);
+    public ResponseEntity<UserResponse> updateInfo(@PathVariable String userId, @RequestParam String fullName,
+                                                   @RequestParam String birthday,
+                                                   @RequestParam(required = false) MultipartFile image,
+                                                   HttpServletRequest request) throws Exception {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
-        else
-        {
-            throw new BadCredentialsException("access token is missing");
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
         }
+        User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
+        if (!userId.equals(user.getId().toHexString())) {
+            throw new RuntimeException("Unauthorized access");
+        }
+
+        User updatedUser = userService.updateUserInfo(new ObjectId(userId), fullName, LocalDate.parse(birthday), image);
+        return ResponseEntity.ok(UserMapping.mapToUserResponse(updatedUser));
     }
 
     @GetMapping("/{userId}")
@@ -113,59 +110,58 @@ public class UserResource {
 
     @PutMapping("/info/password")
     @ResponseBody
-    public ResponseEntity<SuccessResponse>  updatePassword(@RequestBody @Valid ChangePassRequest pass, BindingResult errors, HttpServletRequest request) throws Exception {
+    public ResponseEntity<SuccessResponse> updatePassword(@RequestBody @Valid ChangePassRequest pass, BindingResult errors, HttpServletRequest request) throws Exception {
         if (errors.hasErrors()) {
             throw new MethodArgumentNotValidException(errors);
         }
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String accessToken = authorizationHeader.substring("Bearer ".length());
 
-            if(jwtUtils.validateExpiredToken(accessToken) == true){
+            if (jwtUtils.validateExpiredToken(accessToken) == true) {
                 throw new BadCredentialsException("access token is expired");
             }
 
             String username = jwtUtils.getUserNameFromJwtToken(accessToken);
-            User user= userService.findByUsername(username);
+            User user = userService.findByUsername(username);
 
 
-            if(user == null){
+            if (user == null) {
                 throw new HttpMessageNotReadableException("user is not existed");
             }
 
-            if(pass == null){
+            if (pass == null) {
                 throw new HttpMessageNotReadableException("password is not existed");
             }
 
-            if(!(passwordEncoder.matches(pass.getPassword(),user.getPassword()))){
+            if (!(passwordEncoder.matches(pass.getPassword(), user.getPassword()))) {
                 throw new BadCredentialsException("username or password is not matched");
             }
 
-            userService.updateUserPassword(user,pass.getNewPassword());
+            userService.updateUserPassword(user, pass.getNewPassword());
 
             SuccessResponse response = new SuccessResponse();
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("upadate password successful");
             response.setSuccess(true);
-            response.getData().put("username",username);
-            return new ResponseEntity<SuccessResponse>(response,HttpStatus.OK);
-        }
-        else
-        {
+            response.getData().put("username", username);
+            return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
+        } else {
             throw new BadCredentialsException("access token is missing");
         }
     }
+
     @DeleteMapping("")
     @ResponseBody
-    public ResponseEntity<SuccessResponse>  deleteUser(@RequestBody @Valid LoginRequest user, BindingResult errors, HttpServletRequest request) throws Exception {
+    public ResponseEntity<SuccessResponse> deleteUser(@RequestBody @Valid LoginRequest user, BindingResult errors, HttpServletRequest request) throws Exception {
         if (errors.hasErrors()) {
             throw new MethodArgumentNotValidException(errors);
         }
-       String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String accessToken = authorizationHeader.substring("Bearer ".length());
 
-            if(jwtUtils.validateExpiredToken(accessToken) == true){
+            if (jwtUtils.validateExpiredToken(accessToken) == true) {
                 throw new BadCredentialsException("access token is expired");
             }
 
@@ -173,15 +169,15 @@ public class UserResource {
             User userDeleted = userService.findByUsername(username);
 
 
-            if(userDeleted == null){
+            if (userDeleted == null) {
                 throw new HttpMessageNotReadableException("user is not existed");
             }
 
-            if(user == null){
+            if (user == null) {
                 throw new HttpMessageNotReadableException("user is not existed");
             }
 
-            if(!(passwordEncoder.matches(user.getPassword(),userDeleted.getPassword())&& username.equals(user.getUsername()))){
+            if (!(passwordEncoder.matches(user.getPassword(), userDeleted.getPassword()) && username.equals(user.getUsername()))) {
                 throw new BadCredentialsException("username or password is not matched");
             }
 
@@ -191,19 +187,18 @@ public class UserResource {
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("delete successful");
             response.setSuccess(true);
-            response.getData().put("username",username);
-            return new ResponseEntity<SuccessResponse>(response,HttpStatus.OK);
-        }
-        else
-        {
+            response.getData().put("username", username);
+            return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
+        } else {
             throw new BadCredentialsException("access token is missing");
         }
     }
-    private ResponseEntity SendErrorValid(String field, String message){
+
+    private ResponseEntity SendErrorValid(String field, String message) {
         ErrorResponseMap errorResponseMap = new ErrorResponseMap();
-        Map<String,String> temp =new HashMap<>();
+        Map<String, String> temp = new HashMap<>();
         errorResponseMap.setMessage("Field already taken");
-        temp.put(field,message+" has already used");
+        temp.put(field, message + " has already used");
         errorResponseMap.setStatus(HttpStatus.BAD_REQUEST.value());
         errorResponseMap.setDetails(temp);
         return ResponseEntity

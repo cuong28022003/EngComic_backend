@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Document(collection = "user_stats")
@@ -30,4 +31,6 @@ public class UserStats {
     private int longestStreak = 0;
     private LocalDate lastStudyDate = LocalDate.now().minusDays(1);
     private boolean isReceivedSeasonReward;
+    private boolean isPremium = false;
+    private LocalDateTime premiumExpiredAt;
 }

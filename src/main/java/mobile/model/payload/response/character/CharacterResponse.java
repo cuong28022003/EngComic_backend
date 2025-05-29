@@ -14,7 +14,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CharacterResponse {
-    private ObjectId id;
+    private String id;
     private String name;
     private String rarity;
     private String imageUrl;

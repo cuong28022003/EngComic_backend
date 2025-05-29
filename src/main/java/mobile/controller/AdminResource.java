@@ -1,11 +1,14 @@
 package mobile.controller;
 
 import mobile.Service.RoleService;
+import mobile.Service.TopupService;
 import mobile.Service.UserService;
 import mobile.Service.ComicService;
 import mobile.mapping.UserMapping;
 import mobile.model.Entity.Comic;
+import mobile.model.Entity.Topup;
 import mobile.model.Entity.User;
+import mobile.model.payload.request.topup.TopupRequest;
 import mobile.model.payload.request.user.DeleteUserRequest;
 import mobile.model.payload.request.user.RegisterAdminRequest;
 import mobile.model.payload.request.user.RoleToUserRequest;
@@ -40,6 +43,7 @@ public class AdminResource {
     private final UserService userService;
     private final RoleService roleService;
     private final ComicService comicService;
+    private final TopupService topupService;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -292,5 +296,11 @@ public class AdminResource {
         return ResponseEntity
                 .badRequest()
                 .body(errorResponseMap);
+    }
+
+    @PostMapping("/confirm-topup/{topupId}")
+    public ResponseEntity<Topup> confirmTopup(@PathVariable String topupId) {
+        Topup request = topupService.confirmTopup(new ObjectId(topupId));
+        return ResponseEntity.ok(request);
     }
 }

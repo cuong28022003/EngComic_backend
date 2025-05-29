@@ -15,4 +15,6 @@ public interface UserCharacterService {
     UserCharacter save(ObjectId userId, ObjectId characterId);
 
     List<UserCharacterResponse> findAllByUserId(ObjectId userId);
+
+    boolean isCharacterOwnedByUser(ObjectId userId, ObjectId id);
 }

@@ -15,4 +15,6 @@ public interface UserStatsService {
     UserStats saveUserStats(UserStats userStats);
 
     Page<UserStatsResponse> getTopUsersWithStats(int limit);
+
+    UserStats upgradePremium(ObjectId userId, int days, int cost);
 }

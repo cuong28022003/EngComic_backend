@@ -1,6 +1,7 @@
 package mobile.Service.Impl;
 
 import mobile.Handler.RecordNotFoundException;
+import mobile.Service.CloudinaryService;
 import mobile.Service.UserService;
 
 import mobile.mapping.UserMapping;
@@ -13,15 +14,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service @RequiredArgsConstructor @Transactional @Slf4j
 public class UserServiceImpl implements UserService {
 
-    final UserRepository userRepository;
-    final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final CloudinaryService cloudinaryService;
+
     @Override
     public User saveUser(User user,String roleName) {
         Optional<Role> role = roleRepository.findByName(roleName);
@@ -110,9 +116,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserInfo(User user, InfoUserRequest userInfo) {
-        user = UserMapping.UpdateUserInfoByUser(user,userInfo);
-        return userRepository.save(user);
+    public User updateUserInfo(ObjectId userId, String fullName, LocalDate birthday, MultipartFile image) {
+        User existingUser = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
+        existingUser.setFullName(fullName);
+        existingUser.setBirthday(birthday);
+        if (image != null && !image.isEmpty()) {
+            try {
+                String imageUrl = cloudinaryService.uploadFile(image);
+                existingUser.setImage(imageUrl);
+            } catch (Exception e) {
+                log.error("Error uploading image: {}", e.getMessage());
+                throw new RuntimeException("Failed to upload image");
+            }
+        }
+        return userRepository.save(existingUser);
     }
 
     @Override

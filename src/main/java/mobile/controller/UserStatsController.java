@@ -5,6 +5,7 @@ import mobile.Service.UserStatsService;
 import mobile.model.Entity.User;
 import mobile.model.Entity.UserStats;
 import mobile.model.payload.request.user.AddDiamondRequest;
+import mobile.model.payload.request.user.UpgradePremiumRequest;
 import mobile.model.payload.request.user.UserStatsRequest;
 import mobile.model.payload.response.user.UserStatsResponse;
 import mobile.security.JWT.JwtUtils;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user-stats")
@@ -78,5 +80,14 @@ public class UserStatsController {
         int diamond = addDiamondRequest.getDiamond();
         UserStats userStats = userStatsService.addDiamond(userId, diamond);
         return ResponseEntity.ok(userStats);
+    }
+
+    @PostMapping("/upgrade-premium")
+    public ResponseEntity<UserStats> upgradePremium(@RequestBody UpgradePremiumRequest upgradePremiumRequest, HttpServletRequest request) {
+        // Validate JWT token
+        ObjectId userId = new ObjectId(upgradePremiumRequest.getUserId());
+        int days = upgradePremiumRequest.getDays();
+        int cost = upgradePremiumRequest.getCost();
+        return ResponseEntity.ok(userStatsService.upgradePremium(userId, days, cost));
     }
 }

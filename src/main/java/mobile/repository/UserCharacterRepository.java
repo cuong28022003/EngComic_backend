@@ -13,4 +13,6 @@ import java.util.List;
 public interface UserCharacterRepository extends MongoRepository<UserCharacter, ObjectId> {
     Page<UserCharacter> findByUserId(ObjectId userId, Pageable pageable);
     List<UserCharacter> findByUserId(ObjectId userId);
+
+    boolean existsByUserIdAndCharacterId(ObjectId userId, ObjectId id);
 }

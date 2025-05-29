@@ -50,10 +50,11 @@ public class DeckServiceImpl implements DeckService {
     public DeckStatisticsResponse getDeckStatistics(ObjectId deckId) {
         List<Card> cards = cardService.findAllByDeckId(deckId);
 
+        long totalCards = cards.size();
         long totalNew = cards.stream().filter(r -> r.getReviewCount() == 0).count();
         long totalEasy = cards.stream().filter(r -> r.getEaseFactor() > 2.5).count();
         long totalHard = cards.stream().filter(r -> r.getEaseFactor() <= 2.0).count();
         long totalDue = cards.stream().filter(r -> r.getNextReview() != null && r.getNextReview().before(new Date())).count();
-        return new DeckStatisticsResponse(totalNew, totalEasy, totalHard, totalDue);
+        return new DeckStatisticsResponse(totalCards, totalNew, totalEasy, totalHard, totalDue);
     }
 }

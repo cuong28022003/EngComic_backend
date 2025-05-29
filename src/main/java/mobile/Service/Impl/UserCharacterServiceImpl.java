@@ -1,10 +1,12 @@
 package mobile.Service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import mobile.Service.CharacterUsageService;
 import mobile.Service.PackService;
 import mobile.Service.UserCharacterService;
 import mobile.mapping.CharacterMapping;
 import mobile.model.Entity.Character;
+import mobile.model.Entity.CharacterUsage;
 import mobile.model.Entity.Pack;
 import mobile.model.Entity.UserCharacter;
 import mobile.model.payload.response.character.UserCharacterResponse;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +29,7 @@ public class UserCharacterServiceImpl implements UserCharacterService {
     private final UserCharacterRepository userCharacterRepository;
     private final CharacterRepository characterRepository;
     private final PackService packService;
+    private final CharacterUsageService characterUsageService;
 
     @Override
     public Page<UserCharacterResponse> getCharactersByUserId(ObjectId userId, String searchTerm, String rarity,
@@ -38,7 +42,8 @@ public class UserCharacterServiceImpl implements UserCharacterService {
                 .map(userCharacter -> {
                     Character character = characterRepository.findById(userCharacter.getCharacterId()).orElse(null);
                     Pack pack = packService.getPackById(character.getPackId());
-                    return CharacterMapping.toUserCharacterResponse(userCharacter, character, pack);
+                    CharacterUsage characterUsage = characterUsageService.getOrCreateUsage(userId, character.getId(), LocalDate.now());
+                    return CharacterMapping.toUserCharacterResponse(userCharacter, character, pack, characterUsage);
                 })
                 .filter(response -> {
                     // Tìm kiếm theo searchTerm (name hoặc packName)
@@ -89,8 +94,15 @@ public class UserCharacterServiceImpl implements UserCharacterService {
                 .map(userCharacter -> {
                     Character character = characterRepository.findById(userCharacter.getCharacterId()).orElse(null);
                     Pack pack = packService.getPackById(character.getPackId());
-                    return CharacterMapping.toUserCharacterResponse(userCharacter, character, pack);
+                    CharacterUsage characterUsage = characterUsageService.getOrCreateUsage(userId, character.getId(), LocalDate.now());
+                    return CharacterMapping.toUserCharacterResponse(userCharacter, character, pack, characterUsage);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isCharacterOwnedByUser(ObjectId userId, ObjectId id) {
+        // Kiểm tra xem người dùng có sở hữu nhân vật với ID nhất định hay không
+        return userCharacterRepository.existsByUserIdAndCharacterId(userId, id);
     }
 }

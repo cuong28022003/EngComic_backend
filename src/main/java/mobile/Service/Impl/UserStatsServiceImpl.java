@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class UserStatsServiceImpl implements UserStatsService {
@@ -93,6 +94,40 @@ public class UserStatsServiceImpl implements UserStatsService {
             return UserMapping.mapToUserStatsResponse(user, userStats);
         });
         return topUsers;
+    }
+
+    @Override
+    public UserStats upgradePremium(ObjectId userId, int days, int cost) {
+        // Calculate required diamonds
+        if (cost == 0) {
+            throw new IllegalArgumentException("Invalid duration.");
+        }
+
+        // Fetch user stats
+        UserStats userStats = userStatsRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User not found."));
+
+        if (userStats.getDiamond() < cost) {
+            throw new RuntimeException("Not enough diamonds.");
+        }
+
+        // Deduct diamonds and upgrade to premium
+        userStats.setDiamond(userStats.getDiamond() - cost);
+        // Update premium status and expiration date
+        LocalDateTime currentExpiration = userStats.getPremiumExpiredAt();
+        if (currentExpiration != null && currentExpiration.isAfter(LocalDateTime.now())) {
+            // Add days to the existing expiration date
+            userStats.setPremiumExpiredAt(currentExpiration.plusDays(days));
+        } else {
+            // Set a new expiration date starting from now
+            userStats.setPremiumExpiredAt(LocalDateTime.now().plusDays(days));
+        }
+        userStats.setPremium(true);
+
+        // Save updated user stats
+        userStatsRepository.save(userStats);
+
+        return userStats;
     }
 
     @Override

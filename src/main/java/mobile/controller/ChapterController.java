@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 
@@ -51,6 +52,26 @@ public class ChapterController {
     @Autowired
     private Cloudinary cloudinary;
 
+    @GetMapping("/all")
+    public ResponseEntity<List<ChapterResponse>> getAllChaptersByComic(@RequestParam String url) {
+        Comic comic = comicService.findByUrl(url);
+        if (comic == null) {
+            throw new RecordNotFoundException("Không tìm thấy truyện với URL: " + url);
+        }
+
+        List<Chapter> chapters = chapterService.findAllByComic(comic);
+        if (chapters.isEmpty()) {
+            throw new RecordNotFoundException("Không có chương nào được đăng");
+        }
+
+        // Chuyển đổi danh sách Chapter sang ChapterResponse
+        List<ChapterResponse> chapterResponses = chapters.stream()
+                .map(chapter -> ChapterMapping.toChapterResponse(chapter, chapters.size()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(chapterResponses);
+    }
+
     @GetMapping("")
     public ResponseEntity<Page<Chapter>> getChaptersByComic(@RequestParam String url,
                                                             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
@@ -66,6 +87,8 @@ public class ChapterController {
         }
         return new ResponseEntity<Page<Chapter>>(chapterPage, HttpStatus.OK);
     }
+
+
 
     @GetMapping("/{url}/{chapterNumber}")
     @ResponseBody

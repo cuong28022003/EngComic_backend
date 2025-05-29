@@ -25,6 +25,7 @@ public class UserCharacterResponse {
     private int bonusDiamond;
 
     private Map<String, Integer> skillsUsagePerDay; // {"DOUBLE_XP": 1, "SHOW_ANSWER": 2}
+    private Map<String, Integer> usedSkills; // {"DOUBLE_XP": 1, "SHOW_ANSWER": 2} - số lần sử dụng kỹ năng trong ngày
 
     private LocalDateTime obtainedAt; // ngày nhận thẻ
 }
