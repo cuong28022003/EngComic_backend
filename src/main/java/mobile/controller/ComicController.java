@@ -1,9 +1,7 @@
 package mobile.controller;
 
 import mobile.Service.*;
-import mobile.mapping.ChapterMapping;
 import mobile.mapping.ComicMapping;
-import mobile.mapping.ReadingMapping;
 import mobile.model.Entity.*;
 import mobile.model.payload.request.novel.CreateComicRequest;
 import mobile.model.payload.request.novel.UpdateComicRequest;
@@ -40,6 +38,7 @@ public class ComicController {
     private final ReadingService readingService;
     private final SavedService savedService;
     private final RatingService ratingService;
+    private final ComicMapping comicMapping;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -55,7 +54,7 @@ public class ComicController {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
         Page<Comic> comicPage = comicService.getComics(pageable);
-        Page<ComicResponse> responsePage = comicPage.map(comic -> ComicMapping.EntityToComicResponse(comic));
+        Page<ComicResponse> responsePage = comicPage.map(comic -> comicMapping.toComicResponse(comic));
         return new ResponseEntity<Page<ComicResponse>>(responsePage, HttpStatus.OK);
     }
 
@@ -84,7 +83,7 @@ public class ComicController {
             throw new RecordNotFoundException("Không tìm thấy truyện phù hợp với tiêu chí.");
         }
 
-        Page<ComicResponse> responsePage = comicPage.map(comic -> ComicMapping.EntityToComicResponse(comic));
+        Page<ComicResponse> responsePage = comicPage.map(comic -> comicMapping.toComicResponse(comic));
         return new ResponseEntity<Page<ComicResponse>>(responsePage, HttpStatus.OK);
     }
 
@@ -146,7 +145,7 @@ public class ComicController {
                 throw new RecordNotFoundException("Không tìm thấy người dùng");
             }
             ObjectId comicId = new ObjectId(updateComicRequest.getId());
-            Optional<Comic> comic = comicService.findById(comicId);
+            Optional<Comic> comic = comicService.findComicById(comicId);
             if (!comic.isPresent()) {
                 throw new RecordNotFoundException("Không tìm thấy truyện");
             }
@@ -186,7 +185,7 @@ public class ComicController {
             if (comic.getUploader().getUsername().equals(user.getUsername())) {
                 readingService.deleteAllReadingByComic(comic);
                 chapterService.DeleteAllChapterByComic(comic);
-                savedService.DeleteSavedByComic(comic);
+//                savedService.DeleteSavedByComic(comic);
                 comicService.DeleteComic(comic);
             } else {
                 throw new BadCredentialsException("Không thể chỉnh sửa truyện của người khác");
@@ -210,10 +209,8 @@ public class ComicController {
                                                            @RequestParam(defaultValue = "20") int size,
                                                            @PathVariable String userId,
                                                            HttpServletRequest request) {
-        User user = userService.findById(new ObjectId(userId));
-        System.out.println(user.getId());
         Pageable pageable = PageRequest.of(page, size);
-        Page<Comic> comicList = comicService.findByUploader(user, pageable);
+        Page<Comic> comicList = comicService.findByUploaderId(new ObjectId(userId), pageable);
         if (comicList == null) {
             throw new RecordNotFoundException("Không tìm thấy truyện nào được đăng");
         }
@@ -252,7 +249,7 @@ public class ComicController {
 
         String status = request.get("status");
 
-        Optional<Comic> comicOpt = comicService.findById(new ObjectId(id));
+        Optional<Comic> comicOpt = comicService.findComicById(new ObjectId(id));
         if (!comicOpt.isPresent()) {
             throw new RecordNotFoundException("Không tìm thấy truyện với ID: " + id);
         }

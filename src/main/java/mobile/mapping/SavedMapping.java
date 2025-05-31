@@ -1,32 +1,28 @@
 package mobile.mapping;
 
+import lombok.RequiredArgsConstructor;
+import mobile.Service.ComicService;
 import mobile.model.Entity.Saved;
+import mobile.model.payload.response.ComicResponse;
 import mobile.model.payload.response.SavedResponse;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
+@RequiredArgsConstructor
 public class SavedMapping {
-    public static SavedResponse EntityToResponse(Saved saved){
+    private final ComicService comicService;
+
+    public SavedResponse toSavedResponse(Saved saved){
+        ComicResponse comic = comicService.findById(saved.getComicId());
         SavedResponse savedResponse = new SavedResponse();
-        savedResponse.setName(saved.getComic().getName());
-        savedResponse.setImage(saved.getComic().getImage());
-        savedResponse.setUrl(saved.getComic().getUrl());
-        savedResponse.setArtist(saved.getComic().getArtist());
-        savedResponse.setId(saved.getId());
+        savedResponse.setId(saved.getId().toHexString());
+        savedResponse.setUserId(saved.getUserId().toHexString());
+        savedResponse.setComic(comic);
+        savedResponse.setCreatedAt(saved.getCreatedAt());
         return savedResponse;
     }
-    public static List<SavedResponse> ListEntityToResponse(List<Saved> savedList){
-        List<SavedResponse> savedResponseList = new ArrayList<>();
-        for (Saved saved: savedList ) {
-            try{
-                savedResponseList.add(EntityToResponse(saved));
-            }
-            catch (Exception ex){
 
-            }
-
-        }
-        return savedResponseList;
-    }
 }

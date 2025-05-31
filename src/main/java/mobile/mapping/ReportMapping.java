@@ -2,11 +2,11 @@ package mobile.mapping;
 
 import mobile.model.Entity.Comic;
 import mobile.model.Entity.Report;
-import mobile.model.Entity.User;
 import mobile.model.payload.request.report.ReportRequest;
 import mobile.model.payload.response.ReportResponse;
 import mobile.Service.ComicService;
 import mobile.Service.UserService;
+import mobile.model.payload.response.user.UserResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,12 +49,12 @@ public class ReportMapping {
                 report.getUpdatedAt() != null ? formatter.format(report.getUpdatedAt().toInstant()) : null);
 
         // Fetch comic title with logging
-        Comic comic = comicService.findById(report.getComicId()).orElse(null);
+        Comic comic = comicService.findComicById(report.getComicId()).orElse(null);
         System.out.println("Comic for ID " + report.getComicId() + ": " + comic);
         response.setComicTitle(comic != null ? comic.getName() : "Unknown Comic");
 
         // Fetch username with logging
-        User user = userService.findById(report.getUserId());
+        UserResponse user = userService.findById(report.getUserId());
         System.out.println("User for ID " + report.getUserId() + ": " + user);
         response.setUsername(user != null ? user.getUsername() : "Anonymous");
 

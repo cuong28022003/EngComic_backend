@@ -6,6 +6,7 @@ import mobile.model.Entity.Comic;
 import mobile.repository.ChapterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mobile.repository.ComicRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import java.util.List;
 @Service @RequiredArgsConstructor @Transactional @Slf4j
 public class ChapterServiceImpl implements ChapterService {
      final ChapterRepository chapterRepository;
+     final ComicRepository comicRepository;
 
     @Override
     public Page<Chapter> findByComic(Comic comic, int page, int size) {
@@ -45,6 +47,8 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public Chapter findByComicAndChapterNumber(Comic comic, int chapterNumber) {
+        comic.setViews(comic.getViews() + 1);
+        comicRepository.save(comic); // Update the comic views count
         return chapterRepository.findByComicAndChapterNumber(comic, chapterNumber).get();
     }
 

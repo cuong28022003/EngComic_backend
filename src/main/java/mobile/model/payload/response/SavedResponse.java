@@ -5,13 +5,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 public class SavedResponse {
-    protected String name;
-    protected String image;
-    protected String url;
-    protected String artist;
-    protected ObjectId id;
+    private String id;
+    private String userId;
+    private ComicResponse comic;
+    private LocalDateTime createdAt;
 }

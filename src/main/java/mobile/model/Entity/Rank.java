@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.Id;
 
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@RestResource(exported = false)
 @Document(collection = "rank")
 public class Rank {
     @Id

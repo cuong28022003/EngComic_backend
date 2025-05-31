@@ -1,6 +1,5 @@
 package mobile.controller;
 
-import mobile.Handler.RecordNotFoundException;
 import mobile.Service.*;
 import mobile.mapping.ReportMapping;
 import mobile.model.Entity.Report;
@@ -71,7 +70,7 @@ public class ReportController {
     }
 
     @PostMapping
-    public ResponseEntity<ReportResponse> submitReport(
+    public ResponseEntity<ReportResponse> createReport(
             @RequestBody ReportRequest reportRequest,
             HttpServletRequest request) {
         String authHeader = request.getHeader(AUTHORIZATION);

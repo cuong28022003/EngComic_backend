@@ -30,4 +30,6 @@ public class Character {
     private int bonusDiamond;
 
     private Map<String, Integer> skillsUsagePerDay; // {"DOUBLE_XP": 1, "SHOW_ANSWER": 2}
+
+    private String version;
 }

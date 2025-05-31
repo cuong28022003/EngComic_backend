@@ -1,15 +1,25 @@
 package mobile.mapping;
 
+import lombok.RequiredArgsConstructor;
+import mobile.Service.UserService;
 import mobile.model.Entity.Rating;
 import mobile.model.payload.request.rating.RatingRequest;
 import mobile.model.payload.response.RatingResponse;
+import mobile.model.payload.response.user.UserResponse;
 import org.bson.types.ObjectId;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class RatingMapping {
-    public static RatingResponse entityToResponse(Rating rating) {
+    private final UserService userService;
+
+    public RatingResponse entityToResponse(Rating rating) {
+        UserResponse user = userService.findById(rating.getUserId());
+
         RatingResponse response = new RatingResponse();
         response.setId(rating.getId().toHexString());
-        response.setUserId(rating.getUserId().toHexString());
+        response.setUser(user);
         response.setComicId(rating.getComicId().toHexString());
         response.setRating(rating.getRating());
         response.setComment(rating.getComment());

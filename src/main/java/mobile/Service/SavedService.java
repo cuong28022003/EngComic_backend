@@ -2,15 +2,18 @@ package mobile.Service;
 
 import mobile.model.Entity.Comic;
 import mobile.model.Entity.Saved;
+import mobile.model.payload.response.SavedResponse;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface SavedService {
-    List<Saved> getSavedByUserId(ObjectId id);
-    Saved createSaved(Saved saved);
-    Saved deleteSaved(ObjectId userId, ObjectId comicId);
-    Saved getSaved(ObjectId userId, ObjectId comicId);
+    Page<SavedResponse> getByUserId(ObjectId userId, Pageable pageable);
+    SavedResponse create(ObjectId userId, ObjectId comicId);
+    void delete(ObjectId id);
+    SavedResponse getById(ObjectId id);
 
-    void DeleteSavedByComic(Comic findComic);
+    SavedResponse getByUserIdAndComicId(ObjectId userId, ObjectId comicId);
 }

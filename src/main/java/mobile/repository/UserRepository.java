@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @EnableMongoRepositories
 public interface UserRepository extends MongoRepository<User, ObjectId> {
+    Optional<User> findById(ObjectId id);
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);
     Boolean existsByUsername(String username);

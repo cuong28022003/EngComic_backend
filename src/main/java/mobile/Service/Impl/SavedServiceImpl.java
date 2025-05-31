@@ -3,14 +3,19 @@ package mobile.Service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mobile.Service.SavedService;
+import mobile.mapping.SavedMapping;
 import mobile.model.Entity.Comic;
 import mobile.model.Entity.Saved;
+import mobile.model.payload.response.SavedResponse;
 import mobile.repository.SavedRepository;
 import mobile.repository.UserRepository;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,26 +25,50 @@ import java.util.Optional;
 @Slf4j
 public class SavedServiceImpl implements SavedService {
     final SavedRepository savedRepository;
-    final UserRepository userRepository;
+    private final SavedMapping savedMapping;
+
     @Override
-    public List<Saved> getSavedByUserId(ObjectId id) {
-        return savedRepository.findByUserId(id);
-    }
-    @Override
-    public Saved createSaved(Saved saved) {
-        return savedRepository.save(saved);
-    }
-    @Override
-    public Saved deleteSaved(ObjectId userId, ObjectId comicId) {
-        return savedRepository.deleteByParam(userId, comicId);
-    }
-    @Override
-    public Saved getSaved(ObjectId userId, ObjectId comicId) {
-        return savedRepository.findByParam(userId, comicId);
+    public Page<SavedResponse> getByUserId(ObjectId userId, Pageable pageable) {
+      Page<Saved> saveds = savedRepository.findByUserId(userId, pageable);
+        return saveds.map(saved -> savedMapping.toSavedResponse(saved));
     }
 
     @Override
-    public void DeleteSavedByComic(Comic findComic) {
-        savedRepository.deleteByComic(findComic);
+    public SavedResponse create(ObjectId userId, ObjectId comicId) {
+        Saved saved = new Saved(userId, comicId);
+        savedRepository.save(saved);
+        return savedMapping.toSavedResponse(saved);
+    }
+
+    @Override
+    public void delete(ObjectId id) {
+        Optional<Saved> saved = savedRepository.findById(id);
+        if (saved.isPresent()) {
+            savedRepository.delete(saved.get());
+        } else {
+            log.warn("Saved with id {} not found", id);
+        }
+    }
+
+    @Override
+    public SavedResponse getById(ObjectId id) {
+        Optional<Saved> saved = savedRepository.findById(id);
+        if (saved.isPresent()) {
+            return savedMapping.toSavedResponse(saved.get());
+        } else {
+            log.warn("Saved with id {} not found", id);
+            return null; // or throw an exception
+        }
+    }
+
+    @Override
+    public SavedResponse getByUserIdAndComicId(ObjectId userId, ObjectId comicId) {
+        Optional<Saved> saved = savedRepository.findByUserIdAndComicId(userId, comicId);
+        if (saved.isPresent()) {
+            return savedMapping.toSavedResponse(saved.get());
+        } else {
+            log.warn("Saved with userId {} and comicId {} not found", userId, comicId);
+            return null; // or throw an exception
+        }
     }
 }

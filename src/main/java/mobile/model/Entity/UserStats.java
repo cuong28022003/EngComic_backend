@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.Id;
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@RestResource(exported = false)
 public class UserStats {
     @Id
     private ObjectId id;

@@ -8,6 +8,7 @@ import mobile.mapping.UserMapping;
 import mobile.model.Entity.Role;
 import mobile.model.Entity.User;
 import mobile.model.payload.request.user.InfoUserRequest;
+import mobile.model.payload.response.user.UserResponse;
 import mobile.repository.RoleRepository;
 import mobile.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final CloudinaryService cloudinaryService;
+    private final UserMapping userMapping;
 
     @Override
     public User saveUser(User user,String roleName) {
@@ -150,11 +152,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(ObjectId id) {
+    public UserResponse findById(ObjectId id) {
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty()){
             throw new RecordNotFoundException("User not found");
         }
-        return user.get();
+        return userMapping.mapToUserResponse(user.get());
     }
 }

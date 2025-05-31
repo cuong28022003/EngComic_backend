@@ -3,6 +3,7 @@ package mobile.Service;
 import mobile.model.Entity.Role;
 import mobile.model.Entity.User;
 import mobile.model.payload.request.user.InfoUserRequest;
+import mobile.model.payload.response.user.UserResponse;
 import org.bson.types.ObjectId;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,5 +28,5 @@ public interface UserService {
     User updateUserPassword(User user, String password);
     User deleteUser(String username);
     User updateActive(User user);
-    User findById(ObjectId id);
+    UserResponse findById(ObjectId id);
 }

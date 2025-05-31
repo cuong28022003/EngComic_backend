@@ -30,6 +30,7 @@ public class GachaServiceImpl implements GachaService {
 
     @Autowired
     private CharacterRepository characterRepository;
+    private final CharacterMapping characterMapping;
 
     private final UserStatsRepository userStatsRepository;
 
@@ -65,7 +66,7 @@ public class GachaServiceImpl implements GachaService {
                 // Lưu thẻ mới vào danh sách sở hữu của người dùng
                 userCharacterService.save(userId, drawn.getId());
             }
-            results.add(CharacterMapping.toCharacterResponse(drawn, pack));
+            results.add(characterMapping.toCharacterResponse(drawn));
         }
 
         // Trừ diamond

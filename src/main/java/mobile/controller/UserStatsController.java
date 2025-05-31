@@ -7,6 +7,7 @@ import mobile.model.Entity.UserStats;
 import mobile.model.payload.request.user.AddDiamondRequest;
 import mobile.model.payload.request.user.UpgradePremiumRequest;
 import mobile.model.payload.request.user.UserStatsRequest;
+import mobile.model.payload.response.user.UserFullInfoResponse;
 import mobile.model.payload.response.user.UserStatsResponse;
 import mobile.security.JWT.JwtUtils;
 import org.bson.types.ObjectId;
@@ -55,7 +56,7 @@ public class UserStatsController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserStats> getStats(@PathVariable String userId, HttpServletRequest request) {
+    public ResponseEntity<UserStatsResponse> getStats(@PathVariable String userId, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid token");
@@ -68,8 +69,9 @@ public class UserStatsController {
     }
 
     @GetMapping("/top-users")
-    public ResponseEntity<Page<UserStatsResponse>> getTopUsersWithStats(@RequestParam(defaultValue = "10") int limit) {
-        Page<UserStatsResponse> topUsers = userStatsService.getTopUsersWithStats(limit);
+    public ResponseEntity<Page<UserFullInfoResponse>> getTopUsersWithStats(@RequestParam(defaultValue = "10") int limit) {
+        Page<UserFullInfoResponse> topUsers = userStatsService.getTopUsersWithStats(limit);
+
         return ResponseEntity.ok(topUsers);
     }
 

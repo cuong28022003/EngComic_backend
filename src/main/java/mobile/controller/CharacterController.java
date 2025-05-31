@@ -2,9 +2,13 @@ package mobile.controller;
 
 import lombok.RequiredArgsConstructor;
 import mobile.Service.CharacterService;
+import mobile.Service.PackService;
 import mobile.Service.UserCharacterService;
+import mobile.mapping.CharacterMapping;
 import mobile.model.Entity.Character;
+import mobile.model.Entity.Pack;
 import mobile.model.payload.request.character.CharacterRequest;
+import mobile.model.payload.response.character.CharacterResponse;
 import mobile.model.payload.response.character.UserCharacterResponse;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -18,14 +22,17 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/character")
 public class CharacterController {
 
+    private final CharacterMapping characterMapping;
     private final CharacterService characterService;
     private final UserCharacterService userCharacterService;
+    private final PackService packService;
 
     @GetMapping
     public ResponseEntity<List<Character>> getAllCharacterCards() {
@@ -34,14 +41,14 @@ public class CharacterController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Character> getCharacterCardById(@PathVariable ObjectId id) {
-        Character character = characterService.findById(id);
+    public ResponseEntity<CharacterResponse> getCharacterCardById(@PathVariable ObjectId id) {
+        CharacterResponse character = characterService.findById(id);
         return ResponseEntity.ok(character);
     }
 
     @GetMapping("/user/{userId}/all")
-    public ResponseEntity<List<UserCharacterResponse>> getAllUserCharacters(@PathVariable String userId, HttpServletRequest request) {
-        List<UserCharacterResponse> userCharacters = userCharacterService.findAllByUserId(new ObjectId(userId));
+    public ResponseEntity<List<CharacterResponse>> getAllUserCharacters(@PathVariable String userId, HttpServletRequest request) {
+        List<CharacterResponse> userCharacters = userCharacterService.findAllByUserId(new ObjectId(userId));
         return ResponseEntity.ok(userCharacters);
     }
 
@@ -69,6 +76,7 @@ public class CharacterController {
                 new ObjectId(characterData.getPackId()),
                 characterData.getBonusXp(),
                 characterData.getBonusDiamond(),
+                characterData.getVersion(),
                 characterData.getSkillsUsagePerDay()
         );
         return ResponseEntity.ok(createdCard);
@@ -86,6 +94,7 @@ public class CharacterController {
                 image,
                 characterData.getBonusXp(),
                 characterData.getBonusDiamond(),
+                characterData.getVersion(),
                 characterData.getSkillsUsagePerDay()
         );
         return ResponseEntity.ok(updatedCard);
@@ -95,5 +104,16 @@ public class CharacterController {
     public ResponseEntity<Void> deleteCharacterCard(@PathVariable ObjectId id) {
         characterService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/version/{version}")
+    public ResponseEntity<List<CharacterResponse>> getCharactersByVersion(@PathVariable String version) {
+        List<Character> characters = characterService.findByVersion(version);
+        List<CharacterResponse> characterResponses = characters.stream()
+                .map(character -> {
+                    Pack pack = packService.getPackById(character.getPackId());
+                    return characterMapping.toCharacterResponse(character);
+                }).collect(Collectors.toList());
+        return ResponseEntity.ok(characterResponses);
     }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mobile.model.payload.response.user.UserResponse;
 
 @Getter
 @Setter
@@ -11,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RatingResponse {
     private String id;
-    private String userId;
+    private UserResponse user;
     private String comicId;
     private int rating;
     private String comment;

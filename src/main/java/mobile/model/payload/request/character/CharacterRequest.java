@@ -13,5 +13,6 @@ public class CharacterRequest {
     private String packId;
     private int bonusXp;
     private int bonusDiamond;
+    private String version;
     private Map<String, Integer> skillsUsagePerDay;
 }

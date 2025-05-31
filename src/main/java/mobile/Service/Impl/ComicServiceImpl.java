@@ -2,11 +2,14 @@ package mobile.Service.Impl;
 
 import mobile.Service.ComicService;
 
+import mobile.mapping.ComicMapping;
 import mobile.model.Entity.Comic;
 import mobile.model.Entity.User;
+import mobile.model.payload.response.ComicResponse;
 import mobile.repository.ComicRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mobile.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +25,9 @@ import java.util.Optional;
 @Transactional
 @Slf4j
 public class ComicServiceImpl implements ComicService {
+    private final UserRepository userRepository;
     final ComicRepository comicRepository;
+    private final ComicMapping comicMapping;
 
     @Override
     public Page<Comic> getComics(Pageable pageable) {
@@ -50,7 +55,9 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    public Page<Comic> findByUploader(User user, Pageable pageable) {
+    public Page<Comic> findByUploaderId(ObjectId userId, Pageable pageable) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
         return comicRepository.findByUploader(user, pageable);
     }
 
@@ -61,7 +68,7 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    public Optional<Comic> findById(ObjectId id) {
+    public Optional<Comic> findComicById(ObjectId id) {
         return comicRepository.findBy_id(id);
     }
 
@@ -113,5 +120,12 @@ public class ComicServiceImpl implements ComicService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public ComicResponse findById(ObjectId id) {
+        Comic comic = comicRepository.findBy_id(id)
+                .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
+        return comicMapping.toComicResponse(comic);
     }
 }

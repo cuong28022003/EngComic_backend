@@ -7,7 +7,10 @@ import mobile.model.Entity.Topup;
 import mobile.model.payload.request.topup.TopupRequest;
 import mobile.repository.TopupRepository;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,5 +63,10 @@ public class TopupServiceImpl implements TopupService {
 
         topup.setCanceled(true); // Set the canceled flag to true
         topupRepository.save(topup); // Save the updated topup
+    }
+
+    @Override
+    public Page<Topup> findAll(Pageable pageable) {
+        return topupRepository.findAll(pageable);
     }
 }

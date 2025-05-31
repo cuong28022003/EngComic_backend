@@ -47,8 +47,8 @@ public class RatingController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Page<Rating> ratings = ratingService.getRatingsForComic(new ObjectId(comicId), PageRequest.of(page, size));
-        return ResponseEntity.ok(ratings.map(RatingMapping::entityToResponse));
+        Page<RatingResponse> ratings = ratingService.getRatingsForComic(new ObjectId(comicId), PageRequest.of(page, size));
+        return ResponseEntity.ok(ratings);
     }
 
     @PostMapping
@@ -64,7 +64,7 @@ public class RatingController {
 
         Rating rating = RatingMapping.requestToEntity(ratingRequest);
 
-        return ResponseEntity.ok(RatingMapping.entityToResponse(ratingService.createOrUpdateRating(rating)));
+        return ResponseEntity.ok(ratingService.createOrUpdateRating(rating));
     }
 
     @GetMapping("/summary/{comicId}")

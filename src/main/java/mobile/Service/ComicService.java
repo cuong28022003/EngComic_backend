@@ -1,7 +1,7 @@
 package mobile.Service;
 
 import mobile.model.Entity.Comic;
-import mobile.model.Entity.User;
+import mobile.model.payload.response.ComicResponse;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +18,11 @@ public interface ComicService {
 
     Page<Comic> findByGenre(String genre, Pageable pageable);
 
-    Page<Comic> findByUploader(User user, Pageable pageable);
+    Page<Comic> findByUploaderId(ObjectId userId, Pageable pageable);
 
     Comic findByUrl(String url);
 
-    Optional<Comic> findById(ObjectId id);
+    Optional<Comic> findComicById(ObjectId id);
 
     void saveComic(Comic newComic);
 
@@ -49,4 +49,6 @@ public interface ComicService {
     boolean deleteComicByUrl(String url);
 
 //    List<Comic> findByUploaderContaining(ObjectId id);
+
+    ComicResponse findById(ObjectId id);
 }

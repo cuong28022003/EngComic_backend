@@ -22,6 +22,7 @@ public class CharacterResponse {
     private Pack pack;
     private int bonusXp;
     private int bonusDiamond;
+    private String version; // phiên bản của thẻ, dùng để quản lý các thay đổi trong tương lai
 
     private Map<String, Integer> skillsUsagePerDay; // {"DOUBLE_XP": 1, "SHOW_ANSWER": 2}
 }

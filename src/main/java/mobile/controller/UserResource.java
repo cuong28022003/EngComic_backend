@@ -41,7 +41,7 @@ import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class UserResource {
     private static final Logger LOGGER = LogManager.getLogger(AdminResource.class);
-
+    private final UserMapping userMapping;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -95,17 +95,13 @@ public class UserResource {
         }
 
         User updatedUser = userService.updateUserInfo(new ObjectId(userId), fullName, LocalDate.parse(birthday), image);
-        return ResponseEntity.ok(UserMapping.mapToUserResponse(updatedUser));
+        return ResponseEntity.ok(userMapping.mapToUserResponse(updatedUser));
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable String userId, HttpServletRequest request) {
-        User user = userService.findById(new ObjectId(userId));
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        UserResponse userResponse = UserMapping.mapToUserResponse(user);
-        return ResponseEntity.ok(userResponse);
+        UserResponse user = userService.findById(new ObjectId(userId));
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping("/info/password")

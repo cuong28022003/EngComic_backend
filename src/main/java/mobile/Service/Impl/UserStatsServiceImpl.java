@@ -1,5 +1,6 @@
 package mobile.Service.Impl;
 
+import lombok.RequiredArgsConstructor;
 import mobile.Service.RankService;
 import mobile.Service.UserService;
 import mobile.Service.UserStatsService;
@@ -7,7 +8,9 @@ import mobile.mapping.UserMapping;
 import mobile.model.Entity.Rank;
 import mobile.model.Entity.User;
 import mobile.model.Entity.UserStats;
+import mobile.model.payload.response.user.UserFullInfoResponse;
 import mobile.model.payload.response.user.UserStatsResponse;
+import mobile.repository.UserRepository;
 import mobile.repository.UserStatsRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class UserStatsServiceImpl implements UserStatsService {
+    private final UserMapping userMapping;
+    private final UserRepository userRepository;
 
     @Autowired
     private UserStatsRepository userStatsRepository;
@@ -42,9 +48,6 @@ public class UserStatsServiceImpl implements UserStatsService {
                 });
 
         stats.setXp(stats.getXp() + xpEarned);
-
-        Rank rank = rankService.getRankByXp(stats.getXp());
-        stats.setRank(rank);
 
         LocalDate today = LocalDate.now();
         LocalDate lastStudyDate = stats.getLastStudyDate();
@@ -76,22 +79,31 @@ public class UserStatsServiceImpl implements UserStatsService {
     }
 
     @Override
-    public UserStats getStatsByUserId(ObjectId userId) {
-        return userStatsRepository.findByUserId(userId)
+    public UserStatsResponse getStatsByUserId(ObjectId userId) {
+        UserStats userStats = userStatsRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     UserStats newStats = new UserStats();
                     newStats.setUserId(userId);
-                    newStats.setRank(rankService.getRankByXp(0));
                     return userStatsRepository.save(newStats);
                 });
+        if (userStats.getLastStudyDate().isEqual(LocalDate.now())) {
+            userStats.setCurrentStreak(userStats.getCurrentStreak());
+        } else if (userStats.getLastStudyDate().isEqual(LocalDate.now().minusDays(1))) {
+            userStats.setCurrentStreak(userStats.getCurrentStreak());
+        } else {
+            userStats.setCurrentStreak(0);
+        }
+        userStatsRepository.save(userStats);
+        return userMapping.mapToUserStatsResponse(userStats);
     }
 
     @Override
-    public Page<UserStatsResponse> getTopUsersWithStats(int limit) {
+    public Page<UserFullInfoResponse> getTopUsersWithStats(int limit) {
         Page<UserStats> topStats = userStatsRepository.findAll(PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "xp")));
-        Page<UserStatsResponse> topUsers = topStats.map(userStats -> {
-            User user = userService.findById(userStats.getUserId());
-            return UserMapping.mapToUserStatsResponse(user, userStats);
+        Page<UserFullInfoResponse> topUsers = topStats.map(userStats -> {
+            User user = userRepository.findById(userStats.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userStats.getUserId()));
+            return userMapping.toUserFullInfoResponse(user, userStats);
         });
         return topUsers;
     }

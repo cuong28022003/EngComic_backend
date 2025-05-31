@@ -12,7 +12,7 @@ import org.bson.types.ObjectId;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RankResponse {
-    private ObjectId id;
+    private String id;
     private String name;
     private int minXp;
     private int maxXp;

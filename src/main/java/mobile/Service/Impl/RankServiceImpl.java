@@ -3,12 +3,14 @@ package mobile.Service.Impl;
 import lombok.RequiredArgsConstructor;
 import mobile.Service.CloudinaryService;
 import mobile.Service.RankService;
+import mobile.mapping.RankMapping;
 import mobile.model.Entity.Rank;
 import mobile.model.payload.request.rank.CreateRankRequest;
 import mobile.model.payload.response.rank.RankResponse;
 import mobile.repository.RankRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RankServiceImpl implements RankService {
     private final RankRepository rankRepository;
+
+    private final RankMapping rankMapping;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -38,7 +42,10 @@ public class RankServiceImpl implements RankService {
 
                 // 2. JOIN rewardCharacter.packId -> pack._id
                 Aggregation.lookup("pack", "rewardCharacter.packId", "_id", "rewardCharacter.pack"),
-                Aggregation.unwind("rewardCharacter.pack") // Nếu luôn có 1 pack
+                Aggregation.unwind("rewardCharacter.pack"), // Nếu luôn có 1 pack
+
+                // 3. Sắp xếp theo minXp giảm dần
+                Aggregation.sort(Sort.by(Sort.Direction.DESC, "minXp"))
         );
 
         return mongoTemplate.aggregate(
@@ -59,11 +66,13 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
-    public Rank createRank(String name, int minXp, int maxXp, MultipartFile badge) {
+    public Rank createRank(String name, int minXp, int maxXp, int rewardDiamond, String rewardCharacterId, MultipartFile badge) {
         Rank rank = new Rank();
         rank.setName(name);
         rank.setMinXp(minXp);
         rank.setMaxXp(maxXp);
+        rank.setRewardDiamond(rewardDiamond);
+        rank.setRewardCharacterId(new ObjectId(rewardCharacterId));
         try {
             String imageUrl = cloudinaryService.uploadFile(badge);
             rank.setBadge(imageUrl);
@@ -74,13 +83,15 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
-    public Rank updateRank(ObjectId id, String name, int minXp, int maxXp, MultipartFile badge) {
+    public Rank updateRank(ObjectId id, String name, int minXp, int maxXp, int rewardDiamond, String rewardCharacterId, MultipartFile badge) {
         Rank rank = rankRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Rank not found"));
 
         rank.setName(name);
         rank.setMinXp(minXp);
         rank.setMaxXp(maxXp);
+        rank.setRewardDiamond(rewardDiamond);
+        rank.setRewardCharacterId(new ObjectId(rewardCharacterId));
 
         if (badge != null && !badge.isEmpty()) {
             try {
@@ -100,10 +111,12 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
-    public Rank getRankByXp(int xp) {
-        return rankRepository.findAll().stream()
-                .filter(rank -> xp >= rank.getMinXp() && xp <= rank.getMaxXp())
-                .findFirst()
-                .orElse(null);
-    }
+public RankResponse getRankByXp(int xp) {
+            Rank rank = rankRepository.findAll().stream()
+                    .filter(r -> xp >= r.getMinXp() && xp <= r.getMaxXp())
+                    .findFirst()
+                    .orElse(null);
+
+            return rankMapping.toRankResponse(rank);
+        }
 }

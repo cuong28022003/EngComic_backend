@@ -19,6 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,162 +50,88 @@ public class SavedResource {
     JwtUtils jwtUtils;
 
     @PostMapping("")
-    @ResponseBody
-    public ResponseEntity<SuccessResponse> createSaved(@RequestBody @Valid SavedRequest savedRequest
+    public ResponseEntity<SavedResponse> createSaved(@RequestBody SavedRequest savedRequest
                                                         , HttpServletRequest request){
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-
-            if(jwtUtils.validateExpiredToken(accessToken) == true){
-                throw new BadCredentialsException("access token is expired");
-            }
-
-            String username = jwtUtils.getUserNameFromJwtToken(accessToken);
-            User user= userService.findByUsername(username);
-            System.out.println(user.getId());
-            if(user == null){
-                throw new HttpMessageNotReadableException("user is not existed");
-            }
-
-            Comic comic = comicService.findByUrl(savedRequest.getUrl());
-            if(comic == null){
-                throw new RecordNotFoundException("Novel is not existed");
-            }
-
-            Saved isSaved = savedService.getSaved(user.getId(), comic.getId());
-            if (isSaved != null){
-                throw new IllegalArgumentException("Novel is already saved");
-            }
-
-            Saved saved = new Saved(user, comic);
-            savedService.createSaved(saved);
-
-            SuccessResponse response = new SuccessResponse();
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Saved novel successful");
-            response.setSuccess(true);
-            response.getData().put("username",username);
-            return new ResponseEntity<SuccessResponse>(response,HttpStatus.OK);
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
-        else
-        {
-            throw new BadCredentialsException("access token is missing");
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
         }
+
+        ObjectId userId = new ObjectId(savedRequest.getUserId());
+        ObjectId comicId = new ObjectId(savedRequest.getComicId());
+        SavedResponse savedResponse = savedService.create(userId, comicId);
+        return ResponseEntity.ok(savedResponse);
     }
 
 
 
     @GetMapping("/user/{userId}")
     @ResponseBody
-    public ResponseEntity<List<SavedResponse>> getSavedByUserId(@PathVariable String userId, HttpServletRequest request){
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-
-            if(jwtUtils.validateExpiredToken(accessToken) == true){
-                throw new BadCredentialsException("access token is expired");
-            }
-
-            String username = jwtUtils.getUserNameFromJwtToken(accessToken);
-            User user= userService.findByUsername(username);
-
-            if(user == null){
-                throw new HttpMessageNotReadableException("user is not existed");
-            }
-
-            List<Saved> savedList = savedService.getSavedByUserId(new ObjectId(userId));
-            if(savedList == null){
-                throw new RecordNotFoundException("Saved is not existed");
-            }
-            List<SavedResponse> savedResponseList = SavedMapping.ListEntityToResponse(savedList);
-
-            return new ResponseEntity<List<SavedResponse>>(savedResponseList,HttpStatus.OK);
+    public ResponseEntity<Page<SavedResponse>> getSavedByUserId(@PathVariable String userId, @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, HttpServletRequest request){
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
-        else
-        {
-            throw new BadCredentialsException("access token is missing");
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
         }
+
+        Page<SavedResponse> savedResponses = savedService.getByUserId(new ObjectId(userId), PageRequest.of(page, size));
+        return ResponseEntity.ok(savedResponses);
+
     }
 
-    @GetMapping("/{url}")
+    @GetMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> checkSavedByUsername(@PathVariable String url,HttpServletRequest request){
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-
-            if(jwtUtils.validateExpiredToken(accessToken) == true){
-                throw new BadCredentialsException("access token is expired");
-            }
-
-            String username = jwtUtils.getUserNameFromJwtToken(accessToken);
-            User user= userService.findByUsername(username);
-
-            if(user == null){
-                throw new HttpMessageNotReadableException("user is not existed");
-            }
-            Comic comic = comicService.findByUrl(url);
-            if(comic == null){
-                throw new HttpMessageNotReadableException("Novel is not existed");
-            }
-            SuccessResponse response = new SuccessResponse();
-            response.setStatus(HttpStatus.OK.value());
-            response.setSuccess(true);
-
-            Saved saved = savedService.getSaved(user.getId(), comic.getId());
-            if(saved == null){
-                response.getData().put("saved",false);
-            }
-            else
-                response.getData().put("saved",true);
-            return new ResponseEntity<SuccessResponse>(response,HttpStatus.OK);
+    public SavedResponse checkSavedByUsername(@PathVariable String id,HttpServletRequest request){
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
-        else
-        {
-            throw new BadCredentialsException("access token is missing");
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
         }
+
+        return savedService.getById(new ObjectId(id));
+
     }
-    @DeleteMapping("")
+    @DeleteMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> deleteSaved(@RequestBody @Valid SavedRequest savedRequest
+    public ResponseEntity<?> deleteSaved(@PathVariable String id
             , HttpServletRequest request){
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-
-            if(jwtUtils.validateExpiredToken(accessToken) == true){
-                throw new BadCredentialsException("access token is expired");
-            }
-
-            String username = jwtUtils.getUserNameFromJwtToken(accessToken);
-            User user= userService.findByUsername(username);
-
-            if(user == null){
-                throw new HttpMessageNotReadableException("user is not existed");
-            }
-
-            Comic comic = comicService.findByUrl(savedRequest.getUrl());
-            if(comic == null){
-                throw new RecordNotFoundException("Novel is not existed");
-            }
-
-            Saved deleteSaved = savedService.deleteSaved(user.getId(), comic.getId());
-            if(deleteSaved == null){
-                throw new RecordNotFoundException("Saved is not existed");
-            }
-
-            SuccessResponse response = new SuccessResponse();
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Unsaved novel successful");
-            response.setSuccess(true);
-            response.getData().put("username",deleteSaved);
-            return new ResponseEntity<SuccessResponse>(response,HttpStatus.OK);
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
-        else
-        {
-            throw new BadCredentialsException("access token is missing");
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
         }
+
+        savedService.delete(new ObjectId(id));
+        return ResponseEntity.ok("Saved novel deleted successfully");
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<SavedResponse> checkSavedByUserIdAndComicId(@RequestParam String userId, @RequestParam String comicId, HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
+        }
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
+        }
+
+        SavedResponse savedResponse = savedService.getByUserIdAndComicId(new ObjectId(userId), new ObjectId(comicId));
+        return ResponseEntity.ok(savedResponse);
     }
 
 }

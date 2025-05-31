@@ -9,4 +9,5 @@ import java.util.List;
 public interface CharacterRepository extends MongoRepository<Character, ObjectId> {
     List<Character> findByRarity(String rarity);
     List<Character> findByPackId(ObjectId packId);
+    List<Character> findByVersion(String version);
 }

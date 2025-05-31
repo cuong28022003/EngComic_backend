@@ -16,11 +16,11 @@ public interface RankService {
 
     Rank getRankById(ObjectId id);
 
-    Rank createRank(String name, int minXp, int maxXp, MultipartFile badge);
+    Rank createRank(String name, int minXp, int maxXp, int rewardDiamond, String rewardCharacterId, MultipartFile badge);
 
-    Rank updateRank(ObjectId id, String name, int minXp, int maxXp, MultipartFile badge);
+    Rank updateRank(ObjectId id, String name, int minXp, int maxXp, int rewardDiamond, String rewardCharacterId, MultipartFile badge);
 
     void deleteRank(ObjectId id);
 
-    Rank getRankByXp(int xp);
+    RankResponse getRankByXp(int xp);
 }

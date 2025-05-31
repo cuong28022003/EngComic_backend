@@ -9,8 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 public class SavedRequest {
-    @NonNull
-    protected String url;
-
+    private String userId;
+    private String comicId;
 }
 

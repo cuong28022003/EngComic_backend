@@ -1,16 +1,27 @@
 package mobile.mapping;
 
+import lombok.RequiredArgsConstructor;
+import mobile.Service.RankService;
+import mobile.Service.UserService;
+import mobile.model.Entity.Rank;
 import mobile.model.Entity.User;
 import mobile.model.Entity.UserStats;
 import mobile.model.payload.request.user.InfoUserRequest;
 import mobile.model.payload.request.user.RegisterAdminRequest;
 import mobile.model.payload.request.authenticate.RegisterRequest;
+import mobile.model.payload.response.rank.RankResponse;
+import mobile.model.payload.response.user.UserFullInfoResponse;
 import mobile.model.payload.response.user.UserResponse;
 import mobile.model.payload.response.user.UserStatsResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class UserMapping {
+
+    private final RankService rankService;
 
     public static User registerToEntity(RegisterRequest registerRequest) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -37,22 +48,24 @@ public class UserMapping {
         return user;
     }
 
-    public static UserStatsResponse mapToUserStatsResponse(User user, UserStats userStats) {
+    public UserStatsResponse mapToUserStatsResponse(UserStats userStats) {
+
         return new UserStatsResponse(
-                user.getId().toHexString(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getImage(),
+                userStats.getId().toHexString(),
+                userStats.getUserId().toHexString(),
                 userStats.getXp(),
+                userStats.getDiamond(),
+                rankService.getRankByXp(userStats.getXp()),
                 userStats.getCurrentStreak(),
                 userStats.getLongestStreak(),
-                userStats.getRank().getName(),
-                userStats.getRank().getBadge(),
-                userStats.getLastStudyDate()
+                userStats.getLastStudyDate(),
+                userStats.isReceivedSeasonReward(),
+                userStats.isPremium(),
+                userStats.getPremiumExpiredAt()
         );
     }
 
-    public static UserResponse mapToUserResponse(User user) {
+    public UserResponse mapToUserResponse(User user) {
         return new UserResponse(
                 user.getId().toHexString(),
                 user.getUsername(),
@@ -61,6 +74,12 @@ public class UserMapping {
                 user.getImage(),
                 user.getBirthday()
         );
+    }
+
+    public UserFullInfoResponse toUserFullInfoResponse(User user, UserStats userStats) {
+        UserResponse userResponse = mapToUserResponse(user);
+        UserStatsResponse userStatsResponse = mapToUserStatsResponse(userStats);
+        return new UserFullInfoResponse(userResponse, userStatsResponse);
     }
 
 }

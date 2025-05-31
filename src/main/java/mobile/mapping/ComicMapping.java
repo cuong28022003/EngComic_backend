@@ -1,11 +1,15 @@
 package mobile.mapping;
 
+import lombok.RequiredArgsConstructor;
 import mobile.model.Entity.Comic;
 import mobile.model.payload.request.novel.CreateComicRequest;
 import mobile.model.payload.request.novel.UpdateComicRequest;
 import mobile.model.payload.response.ComicDetailResponse;
 import mobile.model.payload.response.ComicResponse;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class ComicMapping {
     public static Comic CreateRequestToComic(CreateComicRequest createComicRequest){
         Comic newComic = new Comic();
@@ -46,7 +50,7 @@ public class ComicMapping {
         oldComic.setGenre(updateComicRequest.getGenre());   
     }
 
-    public static ComicResponse EntityToComicResponse(Comic comic){
+    public ComicResponse toComicResponse(Comic comic){
         ComicResponse comicResponse = new ComicResponse();
         comicResponse.setImage(comic.getImage());
         comicResponse.setName(comic.getName());

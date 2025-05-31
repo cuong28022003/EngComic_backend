@@ -3,9 +3,11 @@ package mobile.Service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mobile.Service.RatingService;
+import mobile.mapping.RatingMapping;
 import mobile.model.Entity.Comic;
 import mobile.model.Entity.Rating;
 import mobile.model.Entity.User;
+import mobile.model.payload.response.RatingResponse;
 import mobile.repository.RatingRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,15 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Service @RequiredArgsConstructor
+@Service
 @Transactional
 @Slf4j
+@RequiredArgsConstructor
 public class RatingServiceImpl implements RatingService {
     @Autowired
     private RatingRepository ratingRepository;
+
+    private final RatingMapping ratingMapping;
 
 //    public Rating rateComic(Comic comic, User user, int rating) {
 //        Rating existingRating = ratingRepository.findByComicAndUser(comic, user);
@@ -56,14 +61,18 @@ public class RatingServiceImpl implements RatingService {
 //        ratingRepository.deleteByComicAndUser(comic, user);
 //    }
 
-    public Page<Rating> getRatingsForComic(ObjectId comicId, Pageable pageable) {
-        return ratingRepository.findByComicIdOrderByCreatedAtDesc(comicId, pageable);
+    public Page<RatingResponse> getRatingsForComic(ObjectId comicId, Pageable pageable) {
+        Page<Rating> ratings = ratingRepository.findByComicIdOrderByCreatedAtDesc(comicId, pageable);
+        return ratings.map(rating -> {
+            RatingResponse response = ratingMapping.entityToResponse(rating);
+            return response;
+        });
     }
 
-    public Rating createOrUpdateRating(Rating rating) {
+    public RatingResponse createOrUpdateRating(Rating rating) {
         Optional<Rating> existing = ratingRepository.findByComicIdAndUserId(rating.getComicId(), rating.getUserId());
         existing.ifPresent(r -> rating.setId(r.getId())); // update nếu đã tồn tại
-        return ratingRepository.save(rating);
+        return ratingMapping.entityToResponse(ratingRepository.save(rating));
     }
 
     @Override
