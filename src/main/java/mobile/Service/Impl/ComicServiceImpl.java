@@ -1,20 +1,20 @@
 package mobile.Service.Impl;
 
-import mobile.Service.ComicService;
+import mobile.Service.*;
 
 import mobile.mapping.ComicMapping;
 import mobile.model.Entity.Comic;
 import mobile.model.Entity.User;
-import mobile.model.payload.response.ComicResponse;
-import mobile.repository.ComicRepository;
+import mobile.model.payload.response.comic.ComicResponse;
+import mobile.repository.comic.ComicRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mobile.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -28,103 +28,104 @@ public class ComicServiceImpl implements ComicService {
     private final UserRepository userRepository;
     final ComicRepository comicRepository;
     private final ComicMapping comicMapping;
+    private final CloudinaryService cloudinaryService;
+    private final ChapterService chapterService;
+    private final SavedService savedService;
+    private final ReadingService readingService;
+    private final RatingService ratingService;
 
     @Override
-    public Page<Comic> getComics(Pageable pageable) {
+    public Page<ComicResponse> getComics(Pageable pageable) {
         log.info("Fetching all Comics with status != 'LOCK', page: " + pageable.getPageNumber() + " page size: "
                 + pageable.getPageSize());
-        return comicRepository.findAllByStatusNot("LOCK", pageable);
+        Page<Comic> comics = comicRepository.findAllByStatusNot("LOCK", pageable);
+        return comics.map(comic -> comicMapping.toComicResponse(comic));
     }
 
     @Override
-    public Page<Comic> findByName(String value, Pageable pageable) {
-        log.info("Searching  Novel value: " + value);
-        return comicRepository.findByNameContainingIgnoreCase(value, pageable);
-    }
-
-    @Override
-    public Page<Comic> findByGenre(String value, Pageable pageable) {
-        log.info("Searching Novel by theloai: " + value);
-        return comicRepository.findByGenreContainingIgnoreCase(value, pageable);
-    }
-
-    @Override
-    public Page<Comic> findByArtist(String value, Pageable pageable) {
-        log.info("Searching Novel value: " + value);
-        return comicRepository.findByArtistContainingIgnoreCase(value, pageable);
-    }
-
-    @Override
-    public Page<Comic> findByUploaderId(ObjectId userId, Pageable pageable) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        return comicRepository.findByUploader(user, pageable);
-    }
-
-    @Override
-    public Comic findByUrl(String url) {
-        log.info("Fetching  Novel: " + url);
-        return comicRepository.findByUrl(url);
-    }
-
-    @Override
-    public Optional<Comic> findComicById(ObjectId id) {
-        return comicRepository.findBy_id(id);
-    }
-
-    @Override
-    public void saveComic(Comic newComic) {
-        comicRepository.save(newComic);
-    }
-
-    @Override
-    public List<Comic> getAllComics() {
-        log.info("Fetching all Novels ");
-        return comicRepository.findAll();
-    }
-
-    @Override
-    public List<Comic> findAllByStatus(String status, Pageable pageable) {
-        log.info("Fetching  Novel status: " + status);
-        return comicRepository.findAllByStatus(status, pageable);
-    }
-
-    @Override
-    public List<Comic> SearchByTypeAndName(String type, String value, Pageable pageable) {
-        log.info("Searching  Novel type: " + type + " value: " + value);
-        return comicRepository.findAllByGenreContainsAndNameContainsAllIgnoreCase(type, value, pageable);
-    }
-
-    @Override
-    public void DeleteComic(Comic comic) {
-        comicRepository.delete(comic);
-    }
-
-    @Override
-    public List<Comic> SearchByNameAndGenre(String name, String genre, Pageable pageable) {
-        return comicRepository.findByNameContainingIgnoreCaseAndGenreContainingIgnoreCase(name, genre, pageable);
-    }
-
-    @Override
-    public Comic incrementViews(String url) {
-        Comic comic = comicRepository.findByUrl(url);
+    public void incrementViews(ObjectId id) {
+        Comic comic = comicRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
         comic.setViews(comic.getViews() + 1);
-        return comicRepository.save(comic);
+        comicRepository.save(comic);
     }
 
     @Override
-    public boolean deleteComicByUrl(String url) {
-        Comic comic = comicRepository.findByUrl(url);
-        if (comic != null) {
-            comicRepository.delete(comic);
-            return true;
+    public ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image) {
+        log.info("Creating new Comic with name: " + name);
+        Comic comic = new Comic();
+        comic.setName(name);
+        comic.setUrl(url);
+        comic.setDescription(description);
+        comic.setGenre(genre);
+        comic.setArtist(artist);
+        comic.setUploaderId(uploaderId);
+        comic.setViews(0);
+        comic.setStatus("NONE");
+
+        if (image != null && !image.isEmpty()) {
+            try {
+                String imageUrl = cloudinaryService.uploadFile(image);
+                comic.setImageUrl(imageUrl);
+                log.info("Image uploaded successfully for comic: " + name);
+            } catch (Exception e) {
+                log.error("Error saving image for comic: " + name, e);
+                throw new RuntimeException("Failed to save image for comic: " + name);
+            }
         }
-        return false;
+
+        return comicMapping.toComicResponse(comicRepository.save(comic));
+    }
+
+    @Override
+    public ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image) {
+        log.info("Updating Comic with id: " + id);
+        Comic comic = comicRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
+
+        comic.setName(name);
+        comic.setUrl(url);
+        comic.setDescription(description);
+        comic.setGenre(genre);
+        comic.setArtist(artist);
+        comic.setUploaderId(uploaderId);
+
+        if (image != null && !image.isEmpty()) {
+            try {
+                String imageUrl = cloudinaryService.uploadFile(image);
+                comic.setImageUrl(imageUrl);
+                log.info("Image updated successfully for comic: " + name);
+            } catch (Exception e) {
+                log.error("Error updating image for comic: " + name, e);
+                throw new RuntimeException("Failed to update image for comic: " + name);
+            }
+        }
+
+        return comicMapping.toComicResponse(comicRepository.save(comic));
+    }
+
+    @Override
+    public Page<ComicResponse> searchComics(String keyword, String genre, String artist, ObjectId uploaderId, String sortBy, String sortDir, Pageable pageable) {
+        Page<Comic> comics = comicRepository.searchComics(keyword, genre, artist, uploaderId, sortBy, sortDir, pageable);
+        return  comics.map(comic -> comicMapping.toComicResponse(comic));
+    }
+
+    @Override
+    public void deleteById(ObjectId id) {
+        log.info("Deleting Comic with id: " + id);
+        Comic comic = comicRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
+        ratingService.deleteAllRatingsByComicId(id);
+        readingService.deleteAllReadingByComicId(id);
+        savedService.deleteAllByComicId(id);
+        chapterService.deleteAllByComicId(id);
+        comicRepository.deleteById(id);
+        log.info("Comic deleted successfully with id: " + id);
     }
 
     @Override
     public ComicResponse findById(ObjectId id) {
-        Comic comic = comicRepository.findBy_id(id)
+        Comic comic = comicRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
         return comicMapping.toComicResponse(comic);
     }

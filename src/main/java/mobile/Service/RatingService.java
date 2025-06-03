@@ -11,11 +11,13 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface RatingService {
-    double calculateAverageRating(Comic comic);
-    int getTotalReviews(Comic comic);
+    double calculateAverageRating(ObjectId comicId);
+    int getTotalReviews(ObjectId comicId);
 
     Page<RatingResponse> getRatingsForComic(ObjectId comicId, Pageable pageable);
-    RatingResponse createOrUpdateRating(Rating rating);
+    RatingResponse createOrUpdateRating(ObjectId userId, ObjectId comicId, String comment, int rating);
     List<Rating> getRatingsByComicId(ObjectId comicId);
+
+    void deleteAllRatingsByComicId(ObjectId comicId);
 
 }

@@ -8,8 +8,6 @@ import mobile.mapping.UserMapping;
 import mobile.model.Entity.Comic;
 import mobile.model.Entity.Topup;
 import mobile.model.Entity.User;
-import mobile.model.payload.request.topup.TopupRequest;
-import mobile.model.payload.request.user.DeleteUserRequest;
 import mobile.model.payload.request.user.RegisterAdminRequest;
 import mobile.model.payload.request.user.RoleToUserRequest;
 import mobile.Handler.HttpMessageNotReadableException;
@@ -47,22 +45,6 @@ public class AdminResource {
 
     @Autowired
     AuthenticationManager authenticationManager;
-
-    @DeleteMapping("/comics/{url}")
-    public ResponseEntity<String> deleteComic(@PathVariable String url) {
-        boolean isDeleted = comicService.deleteComicByUrl(url);
-
-        if (isDeleted) {
-            return ResponseEntity.ok("Comic deleted successfully.");
-        } else {
-            return ResponseEntity.status(404).body("Comic not found.");
-        }
-    }
-
-    @GetMapping("/comics")
-    public List<Comic> getAllComics() {
-        return comicService.getAllComics();
-    }
 
     @GetMapping("/users")
     @ResponseBody
@@ -303,5 +285,22 @@ public class AdminResource {
     public ResponseEntity<Topup> confirmTopup(@PathVariable String topupId) {
         Topup request = topupService.confirmTopup(new ObjectId(topupId));
         return ResponseEntity.ok(request);
+    }
+
+    @DeleteMapping("/comic/{id}")
+    public ResponseEntity<SuccessResponse> deleteComic(@PathVariable String id) {
+        try {
+            comicService.deleteById(new ObjectId(id));
+
+            // Tạo phản hồi thành công
+            SuccessResponse response = new SuccessResponse();
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Xóa truyện thành công");
+            response.setSuccess(true);
+            response.getData().put("comicId", id);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            throw new RuntimeException("Xóa truyện thất bại: " + ex.getMessage());
+        }
     }
 }

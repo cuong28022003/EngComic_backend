@@ -1,4 +1,4 @@
-package mobile.repository;
+package mobile.repository.user_character;
 
 import mobile.model.Entity.UserCharacter;
 import org.bson.types.ObjectId;
@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import java.util.List;
 
 @EnableMongoRepositories
-public interface UserCharacterRepository extends MongoRepository<UserCharacter, ObjectId> {
+public interface UserCharacterRepository extends MongoRepository<UserCharacter, ObjectId>, UserCharacterRepositoryCustom {
     Page<UserCharacter> findByUserId(ObjectId userId, Pageable pageable);
     List<UserCharacter> findByUserId(ObjectId userId);
 

@@ -62,9 +62,12 @@ public class RatingController {
             throw new RuntimeException("Token expired");
         }
 
-        Rating rating = RatingMapping.requestToEntity(ratingRequest);
+        ObjectId userId = new ObjectId(ratingRequest.getUserId());
+        ObjectId comicId = new ObjectId(ratingRequest.getComicId());
+        String comment = ratingRequest.getComment();
+        int ratingValue = ratingRequest.getRating();
 
-        return ResponseEntity.ok(ratingService.createOrUpdateRating(rating));
+        return ResponseEntity.ok(ratingService.createOrUpdateRating(userId, comicId, comment, ratingValue));
     }
 
     @GetMapping("/summary/{comicId}")

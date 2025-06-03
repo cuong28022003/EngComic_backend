@@ -22,7 +22,7 @@ public class Character {
     @Id
     private ObjectId id;
     private String name;
-    private String rarity; // COMMON, RARE, SSR...
+    private String rarity; // C, R, SR, SSR
     private String imageUrl;
     private String description;
     private ObjectId packId; // ID của gói thẻ mà thẻ này thuộc về
@@ -31,5 +31,5 @@ public class Character {
 
     private Map<String, Integer> skillsUsagePerDay; // {"DOUBLE_XP": 1, "SHOW_ANSWER": 2}
 
-    private String version;
+    private String version; //SEASON_1,..
 }

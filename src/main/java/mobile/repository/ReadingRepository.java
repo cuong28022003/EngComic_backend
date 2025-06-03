@@ -18,13 +18,15 @@ import java.util.Optional;
 
 @EnableMongoRepositories
 public interface ReadingRepository  extends MongoRepository<Reading, ObjectId> {
-    void deleteAllByComic(Comic comic);
-    Page<Reading> findByUser(User user, Pageable pageable);
-    Reading findByComicAndUser(Comic comic, User user);
+    @Query("{ 'userId': ?0 }")
+    Page<Reading> findByUserId(ObjectId userId, Pageable pageable);
 
-    @Query("{'user._id':?0, 'comic._id':?1}")
-    Optional<Reading> findWithParam(ObjectId userId, ObjectId novelId);
-    @Query("{}")
-    List<Reading> find(Pageable pageable);
+    @Query("{ 'comicId': ?0 }")
+    List<Reading> findByComicId(ObjectId comicId);
+
+    @Query("{ 'userId': ?0, 'comicId': ?1 }")
+    Optional<Reading> findByUserIdAndComicId(ObjectId userId, ObjectId comicId);
+
+    void deleteAllByComicId(ObjectId comicId);
 
 }

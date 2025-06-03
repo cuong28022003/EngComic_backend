@@ -1,37 +1,26 @@
 package mobile.controller;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import lombok.RequiredArgsConstructor;
 import mobile.Handler.RecordNotFoundException;
-import mobile.Service.ChapterService;
-import mobile.Service.ComicService;
-import mobile.Service.ReadingService;
-import mobile.Service.UserService;
+import mobile.Service.*;
 import mobile.mapping.ChapterMapping;
 import mobile.model.Entity.Chapter;
 import mobile.model.Entity.Comic;
-import mobile.model.Entity.Reading;
 import mobile.model.Entity.User;
-import mobile.model.payload.request.chapter.CreateChapterRequest;
-import mobile.model.payload.request.chapter.DeleteChapterRequest;
-import mobile.model.payload.request.chapter.UpdateChapterRequest;
-import mobile.model.payload.response.ChapterResponse;
-import mobile.model.payload.response.SuccessResponse;
+import mobile.model.payload.response.comic.ComicResponse;
+import mobile.model.payload.response.chapter.ChapterResponse;
 import mobile.security.JWT.JwtUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.google.common.net.HttpHeaders.AUTHORIZATION;
@@ -45,256 +34,124 @@ public class ChapterController {
     private final ComicService comicService;
     private final UserService userService;
     private final ReadingService readingService;
+    private final CloudinaryService cloudinaryService;
 
     @Autowired
     JwtUtils jwtUtils;
 
-    @Autowired
-    private Cloudinary cloudinary;
+//    @GetMapping("/all")
+//    public ResponseEntity<List<ChapterResponse>> getAllChaptersByComic(@RequestParam String url) {
+//        Comic comic = comicService.findByUrl(url);
+//        if (comic == null) {
+//            throw new RecordNotFoundException("Không tìm thấy truyện với URL: " + url);
+//        }
+//
+//        List<Chapter> chapters = chapterService.findAllByComic(comic);
+//        if (chapters.isEmpty()) {
+//            throw new RecordNotFoundException("Không có chương nào được đăng");
+//        }
+//
+//        // Chuyển đổi danh sách Chapter sang ChapterResponse
+//        List<ChapterResponse> chapterResponses = chapters.stream()
+//                .map(chapter -> ChapterMapping.toChapterResponse(chapter, chapters.size()))
+//                .collect(Collectors.toList());
+//
+//        return ResponseEntity.ok(chapterResponses);
+//    }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ChapterResponse>> getAllChaptersByComic(@RequestParam String url) {
-        Comic comic = comicService.findByUrl(url);
-        if (comic == null) {
-            throw new RecordNotFoundException("Không tìm thấy truyện với URL: " + url);
-        }
+    @GetMapping("/comic/{comicId}")
+    public ResponseEntity<Page<ChapterResponse>> getChaptersByComicId(@PathVariable String comicId,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-        List<Chapter> chapters = chapterService.findAllByComic(comic);
-        if (chapters.isEmpty()) {
-            throw new RecordNotFoundException("Không có chương nào được đăng");
-        }
-
-        // Chuyển đổi danh sách Chapter sang ChapterResponse
-        List<ChapterResponse> chapterResponses = chapters.stream()
-                .map(chapter -> ChapterMapping.toChapterResponse(chapter, chapters.size()))
-                .collect(Collectors.toList());
+       Page<ChapterResponse> chapterResponses = chapterService.findByComicId(new ObjectId(comicId), PageRequest.of(page, size));
 
         return ResponseEntity.ok(chapterResponses);
     }
 
-    @GetMapping("")
-    public ResponseEntity<Page<Chapter>> getChaptersByComic(@RequestParam String url,
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-
-        Comic comic = comicService.findByUrl(url);
-        if (comic == null) {
-            throw new RecordNotFoundException("Không tìm thấy truyện: " + url);
-        }
-
-        Page<Chapter> chapterPage = chapterService.findByComic(comic, page, size);
-        if (chapterPage == null) {
-            throw new RecordNotFoundException("Không có chương nào được đăng");
-        }
-        return new ResponseEntity<Page<Chapter>>(chapterPage, HttpStatus.OK);
+    @GetMapping("/{id}")
+    public ResponseEntity<ChapterResponse> getChapter(@PathVariable String id) {
+        ChapterResponse chapterResponse = chapterService.findById(new ObjectId(id));
+        return ResponseEntity.ok(chapterResponse);
     }
 
-
-
-    @GetMapping("/{url}/{chapterNumber}")
-    @ResponseBody
-    public ResponseEntity<ChapterResponse> getChapter(
-            @PathVariable String url,
-            @PathVariable String chapterNumber,
-            HttpServletRequest request) {
-        // Tìm kiếm truyện theo URL
-        Comic comic = comicService.findByUrl(url);
-        if (comic == null) {
-            throw new RecordNotFoundException("Không tìm thấy truyện với URL: " + url);
-        }
-
-        // Tìm chapter theo số chương và đầu truyện
-        Chapter chapter = chapterService.findByComicAndChapterNumber(comic, Integer.parseInt(chapterNumber));
-        if (chapter == null) {
-            throw new RecordNotFoundException("Không tìm thấy chương " + chapterNumber);
-        }
-
-        int totalChapters = chapterService.countChaptersByComic(comic);
-
-        // Kiểm tra access token trong header
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-        }
-
-        ChapterResponse chapterResponse = ChapterMapping.toChapterResponse(chapter, totalChapters);
-
+    @GetMapping
+    public ResponseEntity<ChapterResponse> getChapterByComicIdAndChapterNumber(@RequestParam String comicId,
+            @RequestParam int chapterNumber) {
+        ChapterResponse chapterResponse = chapterService.findByComicIdAndChapterNumber(new ObjectId(comicId), chapterNumber);
         return ResponseEntity.ok(chapterResponse);
     }
 
     @PostMapping("")
-    public ResponseEntity<SuccessResponse> CreateChapter(
+    public ResponseEntity<ChapterResponse> CreateChapter(
             @RequestParam("name") String name,
-            @RequestParam("url") String url,
-            @RequestParam("images") MultipartFile[] images,
-            @RequestParam(value = "cover", required = false) MultipartFile cover,
+            @RequestParam("comicId") String comicId,
+            @RequestParam("chapterNumber") int chapterNumber,
+            @RequestParam("pages") MultipartFile[] pages,
+            @RequestParam(value = "image", required = false) MultipartFile image,
             HttpServletRequest request) {
-
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-
-            // Kiểm tra token
-            if (jwtUtils.validateExpiredToken(accessToken)) {
-                throw new BadCredentialsException("access token đã hết hạn");
-            }
-
-            // Tìm thông tin người dùng từ token
-            User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
-            if (user == null) {
-                throw new RecordNotFoundException("Không tìm thấy người dùng");
-            }
-
-            // Tìm truyện qua URL
-            Comic comic = comicService.findByUrl(url);
-            if (comic == null) {
-                throw new RecordNotFoundException("Không tìm thấy truyện");
-            }
-
-            // Kiểm tra quyền chỉnh sửa
-            if (!comic.getUploader().getUsername().equals(user.getUsername())) {
-                throw new BadCredentialsException("Không thể chỉnh sửa truyện của người khác");
-            }
-
-            // Upload từng ảnh lên Cloudinary
-            List<String> files = new ArrayList<>();
-            String coverUrl = null;
-            try {
-                for (MultipartFile file : images) {
-                    Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-                    String imageUrl = (String) uploadResult.get("secure_url");
-                    files.add(imageUrl);
-                }
-
-                // Upload cover nếu có, nếu không lấy ảnh đầu tiên làm cover
-                if (cover != null) {
-                    Map coverUploadResult = cloudinary.uploader().upload(cover.getBytes(), ObjectUtils.emptyMap());
-                    coverUrl = (String) coverUploadResult.get("secure_url");
-                } else if (!files.isEmpty()) {
-                    coverUrl = files.get(0);
-                }
-            } catch (IOException e) {
-                SuccessResponse errorResponse = new SuccessResponse();
-                errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                errorResponse.setMessage("Upload failed: " + e.getMessage());
-                errorResponse.setSuccess(false);
-                return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-
-            // Tạo chương mới
-            int chapterNumber = chapterService.countChaptersByComic(comic) + 1;
-            String fullTitle = "Chương " + chapterNumber + ": " + name;
-
-            Chapter newChapter = new Chapter();
-            newChapter.setComic(comic);
-            newChapter.setImages(files);
-            newChapter.setChapterNumber(chapterNumber);
-            newChapter.setName(fullTitle);
-            newChapter.setCover(coverUrl);
-
-            chapterService.SaveChapter(newChapter);
-
-            // Trả phản hồi thành công
-            SuccessResponse response = new SuccessResponse();
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Đăng chương mới thành công");
-            response.setSuccess(true);
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } else {
-            throw new BadCredentialsException("Không tìm thấy access token");
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
+        }
+        User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
+
+        ComicResponse comic = comicService.findById(new ObjectId(comicId));
+
+        if (!comic.getUploaderId().equals(user.getId().toHexString())) {
+            throw new RuntimeException("Unauthorized access");
+        }
+
+        ChapterResponse chapterResponse = chapterService.createChapter(name, chapterNumber, new ObjectId(comicId), pages, image);
+        return ResponseEntity.ok(chapterResponse);
     }
 
-    @PutMapping("/{chapterNumber}")
-    @ResponseBody
-    public ResponseEntity<SuccessResponse> UpdateChapter(@RequestBody UpdateChapterRequest updateChapterRequest,
+    @PutMapping("/{id}")
+    public ResponseEntity<ChapterResponse> updateChapter(
+            @PathVariable String id,
+            @RequestParam (value = "name", required = false) String name,
+            @RequestParam(value = "comicId", required = false) String comicId,
+            @RequestParam (value = "chapterNumber", required = false) Integer chapterNumber,
+            @RequestParam(value = "pages", required = false) MultipartFile[] pages,
+            @RequestParam(value = "image", required = false) MultipartFile image,
             HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-
-            if (jwtUtils.validateExpiredToken(accessToken) == true) {
-                throw new BadCredentialsException("access token đã hết hạn");
-            }
-
-            User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
-
-            if (user == null)
-                throw new RecordNotFoundException("Không tìm thấy người dùng");
-
-            if (updateChapterRequest.getContent().length() < 10) {
-                throw new BadCredentialsException("Nội dung phải dài hơn 10 ký tự");
-            }
-            Comic comic = comicService.findByUrl(updateChapterRequest.getUrl());
-            if (comic == null) {
-                throw new RecordNotFoundException("Không tìm thấy truyện");
-            }
-            Chapter chapter = chapterService.findByComicAndChapterNumber(comic,
-                    updateChapterRequest.getChapnumber());
-            if (chapter == null) {
-                throw new RecordNotFoundException("Không tìm thấy chương cần chỉnh sửa");
-            }
-            if (comic.getUploader().getUsername().equals(user.getUsername())) {
-                String name = updateChapterRequest.getName();
-                chapter.setName(name);
-                // chapter.setContent(updateChapterRequest.getContent());
-                chapterService.SaveChapter(chapter);
-            } else {
-                throw new BadCredentialsException("Không thể chỉnh sửa truyện của người khác");
-            }
-
-            SuccessResponse response = new SuccessResponse();
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Cập nhật chương thành công");
-            response.setSuccess(true);
-            return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
-        } else {
-            throw new BadCredentialsException("Không tìm thấy access token");
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
+        }
+        User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
+        ComicResponse comic = comicService.findById(new ObjectId(comicId));
+        if (!comic.getUploaderId().equals(user.getId().toHexString())) {
+            throw new RuntimeException("Unauthorized access");
+        }
+
+        ChapterResponse chapterResponse = chapterService.updateChapter(new ObjectId(id), name, chapterNumber, new ObjectId(comicId), pages, image);
+
+        return ResponseEntity.ok(chapterResponse);
     }
 
-    @DeleteMapping("")
-    public ResponseEntity<SuccessResponse> DeleteChapter(@RequestBody DeleteChapterRequest deleteChapterRequest,
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> DeleteChapter(@PathVariable String id,
             HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-
-            if (jwtUtils.validateExpiredToken(accessToken) == true) {
-                throw new BadCredentialsException("access token đã hết hạn");
-            }
-
-            User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
-
-            if (user == null)
-                throw new RecordNotFoundException("Không tìm thấy người dùng");
-
-            Comic comic = comicService.findByUrl(deleteChapterRequest.getUrl());
-            if (comic == null) {
-                throw new RecordNotFoundException("Không tìm thấy truyện");
-            }
-            Chapter chapter = chapterService.findByComicAndChapterNumber(comic,
-                    deleteChapterRequest.getChapterNumber());
-            if (chapter == null) {
-                throw new RecordNotFoundException("Không tìm thấy chương cần chỉnh sửa");
-            }
-
-            if (comic.getUploader().getUsername().equals(user.getUsername())) {
-                chapterService.DeleteChapter(chapter);
-            } else {
-                throw new BadCredentialsException("Không thể chỉnh sửa truyện của người khác");
-            }
-
-            SuccessResponse response = new SuccessResponse();
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Xóa chương thành công");
-            response.setSuccess(true);
-            return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
-        } else {
-            throw new BadCredentialsException("Không tìm thấy access token");
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
+        }
+        User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
+
+        chapterService.deleteChapter(new ObjectId(id));
+        return ResponseEntity.ok("Chapter deleted successfully");
     }
 
 }

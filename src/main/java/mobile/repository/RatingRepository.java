@@ -18,4 +18,6 @@ public interface RatingRepository extends MongoRepository<Rating, ObjectId> {
     Optional<Rating> findByComicIdAndUserId(ObjectId comicId, ObjectId userId);
     Page<Rating> findByComicId(ObjectId comicId, Pageable pageable);
     List<Rating> findByComicId(ObjectId comicId);
+
+    void deleteAllByComicId(ObjectId comicId);
 }

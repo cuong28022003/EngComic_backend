@@ -11,9 +11,9 @@ import lombok.*;
 public class UpdateComicRequest {
     protected String id;
     protected String name;
+    protected String url;
     protected String genre;
     protected String artist;
-    protected String url;
-    protected String image;
     protected String description;
+    protected String uploaderId;
 }

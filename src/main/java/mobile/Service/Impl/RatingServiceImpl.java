@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,15 +41,18 @@ public class RatingServiceImpl implements RatingService {
 //        return ratingRepository.save(existingRating);
 //    }
 //
-    public double calculateAverageRating(Comic comic) {
-//        List<Rating> ratings = ratingRepository.findByComic(comic);
-//        return ratings.stream().mapToInt(Rating::getRating).average().orElse(0);
-        return 0;
+    @Override
+    public double calculateAverageRating(ObjectId comicId) {
+        List<Rating> ratings = ratingRepository.findByComicId(comicId);
+        if (ratings.isEmpty()) {
+            return 0.0;
+        }
+        return ratings.stream().mapToDouble(Rating::getRating).sum();
     }
 
-    public int getTotalReviews(Comic comic) {
-//        return ratingRepository.findByComic(comic).size();
-        return 0;
+    @Override
+    public int getTotalReviews(ObjectId comicId) {
+        return ratingRepository.findByComicId(comicId).size();
     }
 //
 //    @Override
@@ -69,14 +73,40 @@ public class RatingServiceImpl implements RatingService {
         });
     }
 
-    public RatingResponse createOrUpdateRating(Rating rating) {
-        Optional<Rating> existing = ratingRepository.findByComicIdAndUserId(rating.getComicId(), rating.getUserId());
-        existing.ifPresent(r -> rating.setId(r.getId())); // update nếu đã tồn tại
+    public RatingResponse createOrUpdateRating(ObjectId userId, ObjectId comicId, String comment, int ratingValue) {
+        Optional<Rating> existing = ratingRepository.findByComicIdAndUserId(comicId, userId);
+        if (existing.isPresent()) {
+            // Update existing rating
+            Rating existingRating = existing.get();
+            existingRating.setRating(ratingValue);
+            existingRating.setComment(comment);
+            existingRating.setCreatedAt(existingRating.getCreatedAt());
+            existingRating.setUpdatedAt(LocalDateTime.now());
+            return ratingMapping.entityToResponse(ratingRepository.save(existingRating));
+        } else {
+            // Create new rating
+            Rating rating = new Rating();
+            rating.setUserId(userId);
+            rating.setComicId(comicId);
+            rating.setRating(ratingValue);
+            rating.setComment(comment);
+            rating.setCreatedAt(LocalDateTime.now());
+            rating.setUpdatedAt(LocalDateTime.now());
         return ratingMapping.entityToResponse(ratingRepository.save(rating));
+        }
     }
 
     @Override
     public List<Rating> getRatingsByComicId(ObjectId comicId) {
         return ratingRepository.findByComicId(comicId);
+    }
+
+    @Override
+    public void deleteAllRatingsByComicId(ObjectId comicId) {
+        if (comicId == null) {
+            throw new IllegalArgumentException("Comic ID cannot be null");
+        }
+        ratingRepository.deleteAllByComicId(comicId);
+        log.info("Deleted all ratings for comic with id: {}", comicId);
     }
 }

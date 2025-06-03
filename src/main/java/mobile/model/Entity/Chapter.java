@@ -5,15 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -23,16 +21,13 @@ import java.util.List;
 @Document(collection = "chapter")
 public class Chapter {
     @Id
-    protected String id;
+    protected ObjectId id;
     protected int chapterNumber;
-    @DBRef
-    protected Comic comic;
+    protected ObjectId comicId;
     protected String name;
-    protected String cover;
-    protected List<String> images; // Danh sách URL ảnh
-    @CreatedDate
-    protected Date createAt;
-    @LastModifiedDate
-    protected Date updateAt;
+    protected String imageUrl;
+    protected List<Map<Integer,String>> pageUrls; // Danh sách URL ảnh
+    protected LocalDateTime createdAt = LocalDateTime.now();
+    protected LocalDateTime updatedAt;
 }
 

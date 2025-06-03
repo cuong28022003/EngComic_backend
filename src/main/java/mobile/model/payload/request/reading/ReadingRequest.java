@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 public class ReadingRequest {
+    protected String userId;
+    protected String comicId;
     protected int chapterNumber;
-    protected String url;
-
 }

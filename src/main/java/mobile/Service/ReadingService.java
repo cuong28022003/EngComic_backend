@@ -1,21 +1,18 @@
 package mobile.Service;
 
 import mobile.model.Entity.Comic;
-import mobile.model.Entity.User;
 
-import mobile.model.Entity.Reading;
+import mobile.model.payload.response.reading.ReadingResponse;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Optional;
-
 
 public interface ReadingService {
-   void saveReading(Reading reading);
-   Page<Reading> getReadings(User user, Pageable pageable);
-   void deleteAllReadingByComic(Comic comic);
-   Optional<Reading> getReading(User user, Comic comic);
-   Reading save(Reading reading);
+   Page<ReadingResponse> getReadingsByUserId(ObjectId userId, Pageable pageable);
+   void deleteAllReadingByComicId(ObjectId comicId);
 
-   Reading findByComicAndUser(Comic comic, User user);
+   ReadingResponse findByUserIdAndComicId(ObjectId userId, ObjectId comicId);
+
+   ReadingResponse createReading(ObjectId userId, ObjectId comicId, int chapterNumber);
 }

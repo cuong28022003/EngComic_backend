@@ -6,6 +6,7 @@ import mobile.model.payload.request.report.ReportRequest;
 import mobile.model.payload.response.ReportResponse;
 import mobile.Service.ComicService;
 import mobile.Service.UserService;
+import mobile.model.payload.response.comic.ComicResponse;
 import mobile.model.payload.response.user.UserResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class ReportMapping {
                 report.getUpdatedAt() != null ? formatter.format(report.getUpdatedAt().toInstant()) : null);
 
         // Fetch comic title with logging
-        Comic comic = comicService.findComicById(report.getComicId()).orElse(null);
+        ComicResponse comic = comicService.findById(report.getComicId());
         System.out.println("Comic for ID " + report.getComicId() + ": " + comic);
         response.setComicTitle(comic != null ? comic.getName() : "Unknown Comic");
 

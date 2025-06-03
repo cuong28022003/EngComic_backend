@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RatingRequest {
-    private String id;
     private String userId;
     private String comicId;
     private int rating;

@@ -27,4 +27,17 @@ public class CloudinaryServiceImpl implements CloudinaryService {
         ));
         return uploadResult.get("secure_url").toString(); // Return the secure URL of the uploaded file
     }
+
+    @Override
+    public void deleteFile(String fileUrl) throws IOException {
+        // Extract public_id from the file URL
+        String publicId = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.lastIndexOf("."));
+
+        // Call Cloudinary API to delete the file
+        Map<?, ?> deleteResult = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+
+        if (!"ok".equals(deleteResult.get("result"))) {
+            throw new RuntimeException("Failed to delete file from Cloudinary");
+        }
+    }
 }

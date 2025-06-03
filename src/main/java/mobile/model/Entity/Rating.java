@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.rest.core.annotation.RestResource;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -24,8 +25,6 @@ public class Rating {
     protected ObjectId comicId;
     protected int rating;
     protected String comment;
-    @CreatedDate
-    protected Date createdAt;
-    @LastModifiedDate
-    protected Date updatedAt;
+    protected LocalDateTime createdAt = LocalDateTime.now();
+    protected LocalDateTime updatedAt;
 }

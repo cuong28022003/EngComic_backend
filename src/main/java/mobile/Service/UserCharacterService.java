@@ -18,4 +18,6 @@ public interface UserCharacterService {
     List<CharacterResponse> findAllByUserId(ObjectId userId);
 
     boolean isCharacterOwnedByUser(ObjectId userId, ObjectId id);
+
+    Page<UserCharacterResponse> searchUserCharacters(String name, String rarity, ObjectId userId, Pageable pageable);
 }

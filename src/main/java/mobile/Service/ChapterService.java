@@ -1,23 +1,26 @@
 package mobile.Service;
 
-import mobile.model.Entity.Chapter;
-import mobile.model.Entity.Comic;
+import mobile.model.payload.response.chapter.ChapterResponse;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ChapterService {
-    Page<Chapter> findByComic(Comic comic, int page, int size);
-    List<Chapter> findAllByComic(Comic comic);
-    Chapter findById(String chapterId);
-    int countChaptersByComic(Comic comic);
+    Page<ChapterResponse> findByComicId(ObjectId comicId, Pageable pageable);
+    ChapterResponse findById(ObjectId chapterId);
+    ChapterResponse findByComicIdAndChapterNumber(ObjectId comicId, Integer chapterNumber);
+    ChapterResponse createChapter(String name, Integer chapterNumber, ObjectId comicId, MultipartFile[] pages, MultipartFile image);
+    ChapterResponse updateChapter(ObjectId chapterId, String name, Integer chapterNumber, ObjectId comicId, MultipartFile[] pages, MultipartFile image);
+    void deleteChapter(ObjectId chapterId);
+    void deleteAllByComicId(ObjectId comicId);
 
-
-    Chapter findByComicAndChapterNumber(Comic comic, int chapterNumber);
-    List<Object> getNameAndChapnumber(ObjectId id, Pageable pageable);
-    void DeleteAllChapterByComic(Comic comic);
-    void SaveChapter(Chapter chapter);
-    void DeleteChapter(Chapter chapter);
+//    void SaveChapter(Chapter chapter);
+//    List<Chapter> findAllByComic(Comic comic);
+    int countChaptersByComicId(ObjectId comicId);
+//
+//
+//    Chapter findByComicAndChapterNumber(Comic comic, int chapterNumber);
+//    List<Object> getNameAndChapnumber(ObjectId id, Pageable pageable);
+//    void DeleteAllChapterByComic(Comic comic);
 }

@@ -16,5 +16,6 @@ import java.util.Optional;
 @EnableMongoRepositories
 public interface SavedRepository extends MongoRepository<Saved, ObjectId> {
     Page<Saved> findByUserId(ObjectId userId, Pageable pageable);
+    List<Saved> findAllByComicId(ObjectId userId);
     Optional<Saved> findByUserIdAndComicId(ObjectId userId, ObjectId comicId);
 }

@@ -3,7 +3,7 @@ package mobile.model.payload.response;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.ObjectId;
+import mobile.model.payload.response.comic.ComicResponse;
 
 import java.time.LocalDateTime;
 

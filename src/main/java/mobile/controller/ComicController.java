@@ -4,8 +4,9 @@ import mobile.Service.*;
 import mobile.mapping.ComicMapping;
 import mobile.model.Entity.*;
 import mobile.model.payload.request.novel.CreateComicRequest;
-import mobile.model.payload.request.novel.UpdateComicRequest;
 import mobile.model.payload.response.*;
+import mobile.model.payload.response.comic.ComicResponse;
+import mobile.repository.comic.ComicRepository;
 import mobile.security.JWT.JwtUtils;
 import mobile.Handler.RecordNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import com.cloudinary.Cloudinary;
+import org.springframework.web.multipart.MultipartFile;
 
 import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 
@@ -39,199 +41,171 @@ public class ComicController {
     private final SavedService savedService;
     private final RatingService ratingService;
     private final ComicMapping comicMapping;
+    private final CloudinaryService cloudinaryService;
+    private final ComicRepository comicRepository;
 
     @Autowired
     JwtUtils jwtUtils;
-    @Autowired
-    private Cloudinary cloudinary;
 
-    @GetMapping("/")
+    @GetMapping("")
     @ResponseBody
     public ResponseEntity<Page<ComicResponse>> getComics(@RequestParam(defaultValue = "None") String status,
-            @RequestParam(defaultValue = "name") String sort, @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "desc") String order,
-            @RequestParam(defaultValue = "3") int size) {
+                                                         @RequestParam(defaultValue = "name") String sort,
+                                                         @RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "desc") String order,
+                                                         @RequestParam(defaultValue = "3") int size) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
-        Page<Comic> comicPage = comicService.getComics(pageable);
-        Page<ComicResponse> responsePage = comicPage.map(comic -> comicMapping.toComicResponse(comic));
-        return new ResponseEntity<Page<ComicResponse>>(responsePage, HttpStatus.OK);
+        Page<ComicResponse> comicPage = comicService.getComics(pageable);
+        return ResponseEntity.ok(comicPage);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ComicResponse> getComicById(@PathVariable String id) {
+        ObjectId comicId = new ObjectId(id);
+        ComicResponse comicResponse = comicService.findById(comicId);
+        if (comicResponse == null) {
+            throw new RecordNotFoundException("Comic not found with id: " + id);
+        }
+        return ResponseEntity.ok(comicResponse);
     }
 
     @GetMapping("/search")
-    @ResponseBody
     public ResponseEntity<Page<ComicResponse>> searchComic(
-            @RequestParam(defaultValue = "") String artist,
-            @RequestParam(defaultValue = "") String genre,
-            @RequestParam(defaultValue = "") String name,
-            @RequestParam(defaultValue = "name") String sort,
-            @RequestParam(defaultValue = "desc") String order,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false) String artist,
+            @RequestParam(required = false) String uploaderId,
+            @RequestParam(defaultValue = "views") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size) {
-        Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
-        Page<Comic> comicPage;
-        if (!name.isEmpty()) {
-            comicPage = comicService.findByName(name, pageable);
-        } else if (!genre.isEmpty()) {
-            comicPage = comicService.findByGenre(genre, pageable);
-        } else {
-            comicPage = comicService.findByArtist(artist, pageable);
+        Pageable pageable = PageRequest.of(page, size);
+        // xử lý trường hợp uploaderId = null -> k chuyển qua ObjectId đuược
+        ObjectId uploaderObjectId = null;
+        if (uploaderId != null && !uploaderId.isBlank()) {
+            try {
+                uploaderObjectId = new ObjectId(uploaderId); // chỉ khi hợp lệ
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body(Page.empty()); // hoặc throw custom exception
+            }
         }
-
-        if (comicPage == null || comicPage.isEmpty()) {
-            throw new RecordNotFoundException("Không tìm thấy truyện phù hợp với tiêu chí.");
-        }
-
-        Page<ComicResponse> responsePage = comicPage.map(comic -> comicMapping.toComicResponse(comic));
-        return new ResponseEntity<Page<ComicResponse>>(responsePage, HttpStatus.OK);
-    }
-
-    @GetMapping("/{url}")
-    @ResponseBody
-    public ResponseEntity<ComicDetailResponse> getComicByUrl(@PathVariable String url) {
-        Comic comic = comicService.findByUrl(url);
-        int chapterCount = chapterService.countChaptersByComic(comic);
-        List<Rating> ratings = ratingService.getRatingsByComicId(comic.getId());
-        double averageRating = ratings.stream().mapToInt(Rating::getRating).average().orElse(0.0);
-        int totalRatings = ratings.size();
-        ComicDetailResponse comicDetailResponse = ComicMapping.EntityToComicDetailResponse(comic, chapterCount,
-                averageRating, totalRatings);
-        if (comicDetailResponse == null) {
-            throw new RecordNotFoundException("Không tìm thấy truyện");
-        }
-        return new ResponseEntity<ComicDetailResponse>(comicDetailResponse, HttpStatus.OK);
+        Page<ComicResponse> comicPage = comicService.searchComics(keyword, genre, artist, uploaderObjectId, sortBy, sortDir, pageable);
+        return ResponseEntity.ok(comicPage);
     }
 
     @PostMapping("")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> createComic(@RequestBody CreateComicRequest createComicRequest,
+    public ResponseEntity<ComicResponse> createComic(@RequestPart("data") CreateComicRequest createComicRequest,
+            @RequestPart("image") MultipartFile image,
             HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-            if (jwtUtils.validateExpiredToken(accessToken)) {
-                throw new BadCredentialsException("Access token đã hết hạn");
-            }
-            User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
-            if (user == null) {
-                throw new RecordNotFoundException("Không tìm thấy người dùng");
-            }
-            Comic newComic = ComicMapping.CreateRequestToComic(createComicRequest);
-            newComic.setUploader(user);
-            comicService.saveComic(newComic);
-            SuccessResponse response = new SuccessResponse();
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Đăng truyện mới thành công");
-            response.setSuccess(true);
-            return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
-        } else {
-            throw new BadCredentialsException("Không tìm thấy access token");
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
+        }
+
+        String name = createComicRequest.getName();
+        String url = createComicRequest.getUrl();
+        String description = createComicRequest.getDescription();
+        String genre = createComicRequest.getGenre();
+        String artist = createComicRequest.getArtist();
+        ObjectId uploaderId = new ObjectId(createComicRequest.getUploaderId());
+
+        ComicResponse comicResponse = comicService.create(name, url, description, genre, artist, uploaderId, image);
+        return ResponseEntity.ok(comicResponse);
     }
 
-    @PutMapping("/{url}")
+    @PutMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> updateComic(@RequestBody UpdateComicRequest updateComicRequest,
+    public ResponseEntity<ComicResponse> updateComic(@PathVariable String id,
+                                                     @RequestPart("data") CreateComicRequest updateComicRequest,
+                                                        @RequestPart(value = "image", required = false) MultipartFile image,
             HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
+        }
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
+        }
+
+        ObjectId comicId = new ObjectId(id);
+        String name = updateComicRequest.getName();
+        String url = updateComicRequest.getUrl();
+        String description = updateComicRequest.getDescription();
+        String genre = updateComicRequest.getGenre();
+        String artist = updateComicRequest.getArtist();
+        ObjectId uploaderId = new ObjectId(updateComicRequest.getUploaderId());
+
+        ComicResponse comicResponse = comicService.update(comicId, name, url, description, genre, artist, uploaderId, image);
+
+        return ResponseEntity.ok(comicResponse);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteComic(@PathVariable String id, HttpServletRequest request) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-            if (jwtUtils.validateExpiredToken(accessToken)) {
-                throw new BadCredentialsException("Access token đã hết hạn");
-            }
-            User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
-            if (user == null) {
-                throw new RecordNotFoundException("Không tìm thấy người dùng");
-            }
-            ObjectId comicId = new ObjectId(updateComicRequest.getId());
-            Optional<Comic> comic = comicService.findComicById(comicId);
-            if (!comic.isPresent()) {
-                throw new RecordNotFoundException("Không tìm thấy truyện");
-            }
-            Comic oldComic = comic.get();
-            if (oldComic.getUploader().getUsername().equals(user.getUsername())) {
-                ComicMapping.UpdateRequestToComic(updateComicRequest, oldComic);
-                comicService.saveComic(oldComic);
-            } else {
-                throw new BadCredentialsException("Không thể chỉnh sửa truyện của người khác");
-            }
-            SuccessResponse response = new SuccessResponse();
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Cập nhật truyện thành công");
-            response.setSuccess(true);
-            return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
-        } else {
-            throw new BadCredentialsException("Không tìm thấy access token");
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
+        }
+        User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
+
+        ComicResponse comic = comicService.findById(new ObjectId(id));
+
+//        if (!comic.getUploaderId().equals(user.getId().toHexString())) {
+//            throw new RuntimeException("Unauthorized access");
+//        }
+
+        comicService.deleteById(new ObjectId(id));
+
+        return ResponseEntity.ok("Comic deleted successfully");
     }
 
-    @DeleteMapping("/{url}")
-    public ResponseEntity<SuccessResponse> deleteComic(@PathVariable String url, HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-            if (jwtUtils.validateExpiredToken(accessToken)) {
-                throw new BadCredentialsException("Access token đã hết hạn");
-            }
-            User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
-            if (user == null) {
-                throw new RecordNotFoundException("Không tìm thấy người dùng");
-            }
-            Comic comic = comicService.findByUrl(url);
-            if (comic == null) {
-                throw new RecordNotFoundException("Không tìm thấy truyện");
-            }
-            if (comic.getUploader().getUsername().equals(user.getUsername())) {
-                readingService.deleteAllReadingByComic(comic);
-                chapterService.DeleteAllChapterByComic(comic);
-//                savedService.DeleteSavedByComic(comic);
-                comicService.DeleteComic(comic);
-            } else {
-                throw new BadCredentialsException("Không thể chỉnh sửa truyện của người khác");
-            }
-            SuccessResponse response = new SuccessResponse();
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Xóa truyện thành công");
-            response.setSuccess(true);
-            return new ResponseEntity<SuccessResponse>(response, HttpStatus.OK);
-        } else {
-            throw new BadCredentialsException("Không có access token");
+    @PostMapping("/{comicId}/view")
+    public ResponseEntity<?> viewComic(@PathVariable String comicId, HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid token");
         }
+        String accessToken = authHeader.substring("Bearer ".length());
+        if (jwtUtils.validateExpiredToken(accessToken)) {
+            throw new RuntimeException("Token expired");
+        }
+        User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
+
+        ComicResponse comicResponse = comicService.findById(new ObjectId(comicId));
+        if (comicResponse == null) {
+            throw new RecordNotFoundException("Comic not found with id: " + comicId);
+        }
+
+        comicService.incrementViews(new ObjectId(comicId));
+
+        return ResponseEntity.ok("Comic viewed successfully");
     }
 
-
-
-    @GetMapping("/uploader/{userId}")
-    public ResponseEntity<Page<Comic>> getComicsByUploaderId(@RequestParam(defaultValue = "None") String status,
-                                                           @RequestParam(defaultValue = "name") String sort,
-                                                           @RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "20") int size,
-                                                           @PathVariable String userId,
-                                                           HttpServletRequest request) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Comic> comicList = comicService.findByUploaderId(new ObjectId(userId), pageable);
-        if (comicList == null) {
-            throw new RecordNotFoundException("Không tìm thấy truyện nào được đăng");
-        }
-        return new ResponseEntity<Page<Comic>>(comicList, HttpStatus.OK);
-    }
-
-    @PatchMapping("/{url}/increment-views")
-    public ResponseEntity<Comic> incrementViews(@PathVariable String url) {
-        try {
-            Comic updatedComic = comicService.incrementViews(url);
-            return ResponseEntity.ok(updatedComic);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(null);
-        }
+    //temporary
+    @GetMapping("/admin")
+    public ResponseEntity<List<Comic>> getAllComicsForAdmin() {
+        List<Comic> comics = comicRepository.findAll();
+        return ResponseEntity.ok(comics);
     }
 
     @PutMapping("/{id}/status")
     @ResponseBody
     public ResponseEntity<SuccessResponse> updateComicStatus(@PathVariable String id,
-            @RequestBody Map<String, String> request,
-            HttpServletRequest httpRequest) {
+                                                             @RequestBody Map<String, String> request,
+                                                             HttpServletRequest httpRequest) {
         String authorizationHeader = httpRequest.getHeader(AUTHORIZATION);
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new BadCredentialsException("Không tìm thấy access token");
@@ -249,14 +223,14 @@ public class ComicController {
 
         String status = request.get("status");
 
-        Optional<Comic> comicOpt = comicService.findComicById(new ObjectId(id));
+        Optional<Comic> comicOpt = comicRepository.findById(new ObjectId(id));
         if (!comicOpt.isPresent()) {
             throw new RecordNotFoundException("Không tìm thấy truyện với ID: " + id);
         }
 
         Comic comic = comicOpt.get();
         comic.setStatus(status);
-        comicService.saveComic(comic);
+        comicRepository.save(comic);
 
         SuccessResponse response = new SuccessResponse();
         response.setStatus(HttpStatus.OK.value());

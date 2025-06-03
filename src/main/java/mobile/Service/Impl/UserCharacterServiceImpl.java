@@ -6,6 +6,7 @@ import mobile.Service.CharacterUsageService;
 import mobile.Service.PackService;
 import mobile.Service.UserCharacterService;
 import mobile.mapping.CharacterMapping;
+import mobile.mapping.UserCharacterMapping;
 import mobile.model.Entity.Character;
 import mobile.model.Entity.CharacterUsage;
 import mobile.model.Entity.Pack;
@@ -13,7 +14,7 @@ import mobile.model.Entity.UserCharacter;
 import mobile.model.payload.response.character.CharacterResponse;
 import mobile.model.payload.response.character.UserCharacterResponse;
 import mobile.repository.CharacterRepository;
-import mobile.repository.UserCharacterRepository;
+import mobile.repository.user_character.UserCharacterRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +34,7 @@ public class UserCharacterServiceImpl implements UserCharacterService {
     private final PackService packService;
     private final CharacterUsageService characterUsageService;
     private final CharacterService characterService;
+    private final UserCharacterMapping userCharacterMapping;
 
     @Override
     public Page<UserCharacterResponse> getCharactersByUserId(ObjectId userId, String searchTerm, String rarity,
@@ -107,46 +108,12 @@ public class UserCharacterServiceImpl implements UserCharacterService {
         return userCharacterRepository.existsByUserIdAndCharacterId(userId, id);
     }
 
-    private List<UserCharacterResponse> searchCharactersAndPacks(List<UserCharacterResponse> characters, String searchTerm) {
-        if (searchTerm == null || searchTerm.isEmpty()) return characters;
-
-        String lowerSearchTerm = searchTerm.toLowerCase();
-        return characters.stream()
-                .filter(response ->
-                        (response.getName() != null && response.getName().toLowerCase().contains(lowerSearchTerm)) ||
-                                (response.getPack().getName() != null && response.getPack().getName().toLowerCase().contains(lowerSearchTerm))
-                )
-                .collect(Collectors.toList());
+    @Override
+    public Page<UserCharacterResponse> searchUserCharacters(String name, String rarity, ObjectId userId, Pageable pageable) {
+        Page<UserCharacter> userCharacters = userCharacterRepository.searchUserCharacters(name, rarity, userId, pageable);
+        Page<UserCharacterResponse> userCharacterResponses = userCharacters.map(userCharacter -> {
+            return userCharacterMapping.mapToUserCharacterResponse(userCharacter);
+        });
+        return userCharacterResponses;
     }
-
-    private List<UserCharacterResponse> filterCharactersByRarity(List<UserCharacterResponse> characters, String rarity) {
-        if (rarity == null || rarity.isEmpty()) return characters;
-
-        return characters.stream()
-                .filter(response -> rarity.equalsIgnoreCase(response.getRarity()))
-                .collect(Collectors.toList());
-    }
-
-    private List<UserCharacterResponse> sortCharacters(List<UserCharacterResponse> characters, String sortBy, String sortDirection) {
-        Comparator<UserCharacterResponse> comparator;
-
-        if ("name".equalsIgnoreCase(sortBy)) {
-            comparator = Comparator.comparing(UserCharacterResponse::getName, String.CASE_INSENSITIVE_ORDER);
-        } else if ("obtainedAt".equalsIgnoreCase(sortBy)) {
-            comparator = Comparator.comparing(UserCharacterResponse::getObtainedAt);
-        } else {
-            // Mặc định không sắp xếp
-            return characters;
-        }
-
-        if ("desc".equalsIgnoreCase(sortDirection)) {
-            comparator = comparator.reversed();
-        }
-
-        return characters.stream()
-                .sorted(comparator)
-                .collect(Collectors.toList());
-    }
-
-
 }

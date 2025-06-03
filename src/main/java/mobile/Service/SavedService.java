@@ -16,4 +16,6 @@ public interface SavedService {
     SavedResponse getById(ObjectId id);
 
     SavedResponse getByUserIdAndComicId(ObjectId userId, ObjectId comicId);
+
+    void deleteAllByComicId(ObjectId comicId);
 }

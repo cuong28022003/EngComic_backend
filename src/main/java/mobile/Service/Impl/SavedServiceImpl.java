@@ -71,4 +71,15 @@ public class SavedServiceImpl implements SavedService {
             return null; // or throw an exception
         }
     }
+
+    @Override
+    public void deleteAllByComicId(ObjectId comicId) {
+        List<Saved> savedList = savedRepository.findAllByComicId(comicId);
+        if (!savedList.isEmpty()) {
+            savedRepository.deleteAll(savedList);
+            log.info("Deleted all saved entries for comicId: {}", comicId);
+        } else {
+            log.warn("No saved entries found for comicId: {}", comicId);
+        }
+    }
 }

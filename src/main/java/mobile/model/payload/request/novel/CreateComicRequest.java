@@ -7,12 +7,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-
 public class CreateComicRequest {
     protected String name;
     protected String genre;
     protected String artist;
     protected String url;
-    protected String image;
     protected String description;
+    protected String uploaderId;
 }

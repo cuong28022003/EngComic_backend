@@ -53,16 +53,19 @@ public class CharacterController {
     }
 
     @GetMapping("/user/{userId}")
-    public Page<UserCharacterResponse> searchFilterAndSortCharacters(
+    public ResponseEntity<Page<UserCharacterResponse>> searchFilterAndSortCharacters(
             @PathVariable String userId,
-            @RequestParam(required = false) String searchTerm, // Search by name or packName
+            @RequestParam(required = false) String searchTerm, // Search by name
             @RequestParam(required = false) String rarity,   // Filter by rarity
-            @RequestParam(defaultValue = "name") String sortBy, // Sort by name, rarity, or obtainedAt
-            @RequestParam(defaultValue = "asc") String sortDirection, // Sort direction: asc or desc
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) { // Pagination parameters
-        return userCharacterService.getCharactersByUserId(
-                new ObjectId(userId), searchTerm, rarity, sortBy, sortDirection, PageRequest.of(page, size));
+        Page<UserCharacterResponse> userCharacters = userCharacterService.searchUserCharacters(
+                searchTerm,
+                rarity,
+                new ObjectId(userId),
+                PageRequest.of(page, size)
+        );
+        return ResponseEntity.ok(userCharacters);
     }
 
     @PostMapping
