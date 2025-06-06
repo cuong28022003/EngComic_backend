@@ -33,6 +33,7 @@ public class Comic {
     protected String artist;
     protected String genre;
     protected String imageUrl;
+    protected String backgroundUrl;
     protected ObjectId uploaderId;
     protected int views;
     protected String status = "NONE";

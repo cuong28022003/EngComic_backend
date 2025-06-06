@@ -18,7 +18,7 @@ public class CardMapping {
         response.setDeckId(card.getDeckId().toHexString());
         response.setFront(card.getFront());
         response.setBack(card.getBack());
-        response.setIPA(card.getIpa());
+        response.setIpa(card.getIpa());
         response.setImage(card.getImage());
         response.setAudio(card.getAudio());
         response.setTags(card.getTags());

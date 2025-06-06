@@ -15,8 +15,8 @@ public interface ComicService {
     void deleteById(ObjectId id);
     ComicResponse findById(ObjectId id);
     //fixed
-    ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image);
-    ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image);
+    ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage);
+    ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage);
 
     Page<ComicResponse> getComics(Pageable pageable);
 

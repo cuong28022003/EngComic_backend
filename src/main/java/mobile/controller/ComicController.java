@@ -50,7 +50,7 @@ public class ComicController {
     @GetMapping("")
     @ResponseBody
     public ResponseEntity<Page<ComicResponse>> getComics(@RequestParam(defaultValue = "None") String status,
-                                                         @RequestParam(defaultValue = "name") String sort,
+                                                         @RequestParam(defaultValue = "updatedAt") String sort,
                                                          @RequestParam(defaultValue = "0") int page,
                                                          @RequestParam(defaultValue = "desc") String order,
                                                          @RequestParam(defaultValue = "3") int size) {
@@ -97,7 +97,7 @@ public class ComicController {
     @PostMapping("")
     @ResponseBody
     public ResponseEntity<ComicResponse> createComic(@RequestPart("data") CreateComicRequest createComicRequest,
-            @RequestPart("image") MultipartFile image,
+            @RequestPart("image") MultipartFile image, @RequestParam("background") MultipartFile background,
             HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -115,7 +115,7 @@ public class ComicController {
         String artist = createComicRequest.getArtist();
         ObjectId uploaderId = new ObjectId(createComicRequest.getUploaderId());
 
-        ComicResponse comicResponse = comicService.create(name, url, description, genre, artist, uploaderId, image);
+        ComicResponse comicResponse = comicService.create(name, url, description, genre, artist, uploaderId, image, background);
         return ResponseEntity.ok(comicResponse);
     }
 
@@ -124,6 +124,7 @@ public class ComicController {
     public ResponseEntity<ComicResponse> updateComic(@PathVariable String id,
                                                      @RequestPart("data") CreateComicRequest updateComicRequest,
                                                         @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "background", required = false) MultipartFile background,
             HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -142,7 +143,7 @@ public class ComicController {
         String artist = updateComicRequest.getArtist();
         ObjectId uploaderId = new ObjectId(updateComicRequest.getUploaderId());
 
-        ComicResponse comicResponse = comicService.update(comicId, name, url, description, genre, artist, uploaderId, image);
+        ComicResponse comicResponse = comicService.update(comicId, name, url, description, genre, artist, uploaderId, image, background);
 
         return ResponseEntity.ok(comicResponse);
 

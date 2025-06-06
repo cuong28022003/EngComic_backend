@@ -17,6 +17,7 @@ public class ComicResponse {
     protected String genre;
     protected String artist;
     protected String imageUrl;
+    protected String backgroundUrl;
     protected String uploaderId;
     protected int views;
     protected double rating;

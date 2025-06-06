@@ -16,7 +16,7 @@ public class CardResponse {
     protected String deckId;
     protected String front;
     protected String back;
-    protected String IPA;
+    protected String ipa;
     protected String image;
     protected String audio;
     protected Set<String> tags;

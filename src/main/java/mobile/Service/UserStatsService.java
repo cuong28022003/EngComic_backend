@@ -5,6 +5,7 @@ import mobile.model.payload.response.user.UserFullInfoResponse;
 import mobile.model.payload.response.user.UserStatsResponse;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface UserStatsService {
     UserStats updateStreak(ObjectId userId);
     UserStats saveUserStats(UserStats userStats);
 
-    Page<UserFullInfoResponse> getTopUsersWithStats(int limit);
+    Page<UserFullInfoResponse> getTopUsersWithStats(Pageable pageable);
 
     UserStats upgradePremium(ObjectId userId, int days, int cost);
 }

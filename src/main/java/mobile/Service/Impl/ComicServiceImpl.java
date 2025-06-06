@@ -51,7 +51,7 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    public ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image) {
+    public ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage) {
         log.info("Creating new Comic with name: " + name);
         Comic comic = new Comic();
         comic.setName(name);
@@ -73,12 +73,22 @@ public class ComicServiceImpl implements ComicService {
                 throw new RuntimeException("Failed to save image for comic: " + name);
             }
         }
+        if (backgroundImage != null && !backgroundImage.isEmpty()) {
+            try {
+                String backgroundUrl = cloudinaryService.uploadFile(backgroundImage);
+                comic.setBackgroundUrl(backgroundUrl);
+                log.info("Background image uploaded successfully for comic: " + name);
+            } catch (Exception e) {
+                log.error("Error saving background image for comic: " + name, e);
+                throw new RuntimeException("Failed to save background image for comic: " + name);
+            }
+        }
 
         return comicMapping.toComicResponse(comicRepository.save(comic));
     }
 
     @Override
-    public ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image) {
+    public ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage) {
         log.info("Updating Comic with id: " + id);
         Comic comic = comicRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
@@ -98,6 +108,16 @@ public class ComicServiceImpl implements ComicService {
             } catch (Exception e) {
                 log.error("Error updating image for comic: " + name, e);
                 throw new RuntimeException("Failed to update image for comic: " + name);
+            }
+        }
+        if (backgroundImage != null && !backgroundImage.isEmpty()) {
+            try {
+                String backgroundUrl = cloudinaryService.uploadFile(backgroundImage);
+                comic.setBackgroundUrl(backgroundUrl);
+                log.info("Background image updated successfully for comic: " + name);
+            } catch (Exception e) {
+                log.error("Error updating background image for comic: " + name, e);
+                throw new RuntimeException("Failed to update background image for comic: " + name);
             }
         }
 

@@ -16,6 +16,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -98,8 +99,10 @@ public class UserStatsServiceImpl implements UserStatsService {
     }
 
     @Override
-    public Page<UserFullInfoResponse> getTopUsersWithStats(int limit) {
-        Page<UserStats> topStats = userStatsRepository.findAll(PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "xp")));
+    public Page<UserFullInfoResponse> getTopUsersWithStats(Pageable pageable) {
+        Page<UserStats> topStats = userStatsRepository.findAll(
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "xp"))
+        );
         Page<UserFullInfoResponse> topUsers = topStats.map(userStats -> {
             User user = userRepository.findById(userStats.getUserId())
                     .orElseThrow(() -> new RuntimeException("User not found with id: " + userStats.getUserId()));

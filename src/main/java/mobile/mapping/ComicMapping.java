@@ -57,6 +57,7 @@ public class ComicMapping {
         ComicResponse comicResponse = new ComicResponse();
         comicResponse.setId(comic.getId().toHexString());
         comicResponse.setImageUrl(comic.getImageUrl());
+        comicResponse.setBackgroundUrl(comic.getBackgroundUrl());
         comicResponse.setName(comic.getName());
         comicResponse.setArtist(comic.getArtist());
         comicResponse.setUrl(comic.getUrl());

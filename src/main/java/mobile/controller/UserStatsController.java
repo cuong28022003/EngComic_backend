@@ -13,6 +13,7 @@ import mobile.security.JWT.JwtUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,8 +70,9 @@ public class UserStatsController {
     }
 
     @GetMapping("/top-users")
-    public ResponseEntity<Page<UserFullInfoResponse>> getTopUsersWithStats(@RequestParam(defaultValue = "10") int limit) {
-        Page<UserFullInfoResponse> topUsers = userStatsService.getTopUsersWithStats(limit);
+    public ResponseEntity<Page<UserFullInfoResponse>> getTopUsersWithStats(@RequestParam(defaultValue = "10") int size,
+                                                                           @RequestParam(defaultValue = "0") int page) {
+        Page<UserFullInfoResponse> topUsers = userStatsService.getTopUsersWithStats(PageRequest.of(page, size));
 
         return ResponseEntity.ok(topUsers);
     }
