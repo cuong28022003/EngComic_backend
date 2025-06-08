@@ -17,7 +17,7 @@ public class CorsConfig {
                registry.addMapping("/**")
                        .allowedMethods("GET","POST","DELETE","PUT", "PATCH", "OPTIONS")
                        .allowedHeaders("*")
-                       .allowedOrigins("http://localhost:3000/","https://tranduy26913.github.io/","https://eng-comic.vercel.app/")
+                       .allowedOrigins("http://localhost:3000/","https://tranduy26913.github.io/","https://eng-comic-frontend.vercel.app/")
                        .allowCredentials(true)
                        .maxAge(3600);
             }
