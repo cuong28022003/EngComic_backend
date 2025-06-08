@@ -11,7 +11,8 @@ import java.util.Map;
 @Service
 public class TranslatorServiceImpl implements TranslatorService {
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String PYTHON_API_URL = "http://localhost:5000/api/ipa-meaning";
+//    private final String PYTHON_API_URL = "http://localhost:5000/api/ipa-meaning";
+    private final String PYTHON_API_URL = "https://web-production-b5c49.up.railway.app/api/ipa-meaning";
 
     @Override
     public TranslatorResponse getIpaAndMeaning(String text) {
