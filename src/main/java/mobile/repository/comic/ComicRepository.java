@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @EnableMongoRepositories
 public interface ComicRepository extends MongoRepository<Comic, ObjectId>, ComicRepositoryCustom {
+    Page<Comic> findAll(Pageable pageable);
 //    Page<Comic> findAllBy_idNotNull(Pageable pageable);
 //
 //    Page<Comic> findByNameContainingIgnoreCase(String value, Pageable pageable);

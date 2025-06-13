@@ -60,6 +60,19 @@ public class ComicController {
         return ResponseEntity.ok(comicPage);
     }
 
+    @GetMapping("/admin")
+    @ResponseBody
+    public ResponseEntity<Page<ComicResponse>> getComicsAdmin(@RequestParam(defaultValue = "None") String status,
+                                                         @RequestParam(defaultValue = "updatedAt") String sort,
+                                                         @RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "desc") String order,
+                                                         @RequestParam(defaultValue = "3") int size) {
+        Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
+        Page<ComicResponse> comicPage = comicService.getComicsAdmin(pageable);
+        return ResponseEntity.ok(comicPage);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ComicResponse> getComicById(@PathVariable String id) {
         ObjectId comicId = new ObjectId(id);
@@ -195,12 +208,12 @@ public class ComicController {
         return ResponseEntity.ok("Comic viewed successfully");
     }
 
-    //temporary
-    @GetMapping("/admin")
-    public ResponseEntity<List<Comic>> getAllComicsForAdmin() {
-        List<Comic> comics = comicRepository.findAll();
-        return ResponseEntity.ok(comics);
-    }
+//    //temporary
+//    @GetMapping("/admin")
+//    public ResponseEntity<List<Comic>> getAllComicsForAdmin() {
+//        List<Comic> comics = comicRepository.findAll();
+//        return ResponseEntity.ok(comics);
+//    }
 
     @PutMapping("/{id}/status")
     @ResponseBody

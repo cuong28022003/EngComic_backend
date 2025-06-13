@@ -4,7 +4,6 @@ import mobile.Service.*;
 
 import mobile.mapping.ComicMapping;
 import mobile.model.Entity.Comic;
-import mobile.model.Entity.User;
 import mobile.model.payload.response.comic.ComicResponse;
 import mobile.repository.comic.ComicRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +32,19 @@ public class ComicServiceImpl implements ComicService {
     private final RatingService ratingService;
 
     @Override
+    public Page<ComicResponse> getComicsAdmin(Pageable pageable) {
+        Page<Comic> comics = comicRepository.findAll(pageable);
+        return comics.map(comic -> comicMapping.toComicResponse(comic));
+    }
+
+    @Override
     public Page<ComicResponse> getComics(Pageable pageable) {
         log.info("Fetching all Comics with status != 'LOCK', page: " + pageable.getPageNumber() + " page size: "
                 + pageable.getPageSize());
         Page<Comic> comics = comicRepository.findAllByStatusNot("LOCK", pageable);
         return comics.map(comic -> comicMapping.toComicResponse(comic));
     }
+
 
     @Override
     public void incrementViews(ObjectId id) {
