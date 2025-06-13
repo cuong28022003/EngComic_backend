@@ -3,8 +3,10 @@ package mobile.mapping;
 import lombok.RequiredArgsConstructor;
 import mobile.Service.ChapterService;
 import mobile.Service.RatingService;
+import mobile.Service.UserService;
 import mobile.model.Entity.Comic;
 import mobile.model.payload.response.comic.ComicResponse;
+import mobile.model.payload.response.user.UserResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,6 +15,7 @@ public class ComicMapping {
 
     private final RatingService ratingService;
     private final ChapterService chapterService;
+    private final UserService userService;
 
 //    public static Comic CreateRequestToComic(CreateComicRequest createComicRequest){
 //        Comic newComic = new Comic();
@@ -54,6 +57,7 @@ public class ComicMapping {
 //    }
 
     public ComicResponse toComicResponse(Comic comic){
+        UserResponse uploaderResponse = userService.findById(comic.getUploaderId());
         ComicResponse comicResponse = new ComicResponse();
         comicResponse.setId(comic.getId().toHexString());
         comicResponse.setImageUrl(comic.getImageUrl());
@@ -68,7 +72,7 @@ public class ComicMapping {
         comicResponse.setGenre(comic.getGenre());
         comicResponse.setStatus(comic.getStatus());
         comicResponse.setTotalChapters(chapterService.countChaptersByComicId(comic.getId()));
-        comicResponse.setUploaderId(comic.getUploaderId().toHexString());
+        comicResponse.setUploader(uploaderResponse);
         comicResponse.setCreatedAt(comic.getCreatedAt());
         return comicResponse;
     }

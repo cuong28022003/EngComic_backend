@@ -101,7 +101,7 @@ public class ChapterController {
 
         ComicResponse comic = comicService.findById(new ObjectId(comicId));
 
-        if (!comic.getUploaderId().equals(user.getId().toHexString())) {
+        if (!comic.getUploader().getId().equals(user.getId().toHexString())) {
             throw new RuntimeException("Unauthorized access");
         }
 
@@ -128,7 +128,7 @@ public class ChapterController {
         }
         User user = userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
         ComicResponse comic = comicService.findById(new ObjectId(comicId));
-        if (!comic.getUploaderId().equals(user.getId().toHexString())) {
+        if (!comic.getUploader().getId().equals(user.getId().toHexString())) {
             throw new RuntimeException("Unauthorized access");
         }
 

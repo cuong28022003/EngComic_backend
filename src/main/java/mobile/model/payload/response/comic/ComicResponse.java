@@ -3,6 +3,7 @@ package mobile.model.payload.response.comic;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mobile.model.payload.response.user.UserResponse;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +19,7 @@ public class ComicResponse {
     protected String artist;
     protected String imageUrl;
     protected String backgroundUrl;
-    protected String uploaderId;
+    protected UserResponse uploader;
     protected int views;
     protected double rating;
     protected int totalRatings;
