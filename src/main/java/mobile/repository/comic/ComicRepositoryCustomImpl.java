@@ -41,6 +41,8 @@ public class ComicRepositoryCustomImpl implements ComicRepositoryCustom{
             criteriaList.add(Criteria.where("uploaderId").is(uploaderId));
         }
 
+        criteriaList.add(Criteria.where("status").ne("LOCK"));
+
         if (!criteriaList.isEmpty()) {
             query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
         }
