@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface ComicRepositoryCustom {
-    Page<Comic> searchComics(String keyword, String genre, String artist, ObjectId uploaderId, String sortBy, String sortDir, Pageable pageable);
+    Page<Comic> searchComics(String keyword, String genre, String artist, ObjectId uploaderId, String status, String englishLevel, String sortBy, String sortDir, Pageable pageable);
 }

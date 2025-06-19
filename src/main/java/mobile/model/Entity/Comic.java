@@ -36,8 +36,9 @@ public class Comic {
     protected String backgroundUrl;
     protected ObjectId uploaderId;
     protected int views;
-    protected String status = "NONE";
+    protected String status = "PENDING";
     protected LocalDateTime createdAt = LocalDateTime.now();
     protected LocalDateTime updateAt;
 
+    protected String englishLevel;
 }

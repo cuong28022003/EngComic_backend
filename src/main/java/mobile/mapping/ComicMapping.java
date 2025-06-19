@@ -74,6 +74,7 @@ public class ComicMapping {
         comicResponse.setTotalChapters(chapterService.countChaptersByComicId(comic.getId()));
         comicResponse.setUploader(uploaderResponse);
         comicResponse.setCreatedAt(comic.getCreatedAt());
+        comicResponse.setEnglishLevel(comic.getEnglishLevel());
         return comicResponse;
     }
 }

@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ComicService {
-    Page<ComicResponse> searchComics(String keyword, String genre, String artist, ObjectId uploaderId, String sortBy, String sortDir, Pageable pageable);
+    Page<ComicResponse> searchComics(String keyword, String genre, String artist, ObjectId uploaderId, String status, String englishLevel, String sortBy, String sortDir, Pageable pageable);
     void deleteById(ObjectId id);
     ComicResponse findById(ObjectId id);
     //fixed
-    ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage);
-    ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage);
+    ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage, String englishLevel);
+    ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage, String englishLevel);
 
     Page<ComicResponse> getComicsAdmin(Pageable pageable);
 

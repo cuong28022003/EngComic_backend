@@ -89,6 +89,8 @@ public class ComicController {
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) String artist,
             @RequestParam(required = false) String uploaderId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String englishLevel,
             @RequestParam(defaultValue = "views") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir,
             @RequestParam(defaultValue = "0") int page,
@@ -103,7 +105,7 @@ public class ComicController {
                 return ResponseEntity.badRequest().body(Page.empty()); // hoặc throw custom exception
             }
         }
-        Page<ComicResponse> comicPage = comicService.searchComics(keyword, genre, artist, uploaderObjectId, sortBy, sortDir, pageable);
+        Page<ComicResponse> comicPage = comicService.searchComics(keyword, genre, artist, uploaderObjectId, status, englishLevel, sortBy, sortDir, pageable);
         return ResponseEntity.ok(comicPage);
     }
 
@@ -127,8 +129,9 @@ public class ComicController {
         String genre = createComicRequest.getGenre();
         String artist = createComicRequest.getArtist();
         ObjectId uploaderId = new ObjectId(createComicRequest.getUploaderId());
+        String englishLevel = createComicRequest.getEnglishLevel();
 
-        ComicResponse comicResponse = comicService.create(name, url, description, genre, artist, uploaderId, image, background);
+        ComicResponse comicResponse = comicService.create(name, url, description, genre, artist, uploaderId, image, background, englishLevel);
         return ResponseEntity.ok(comicResponse);
     }
 
@@ -155,8 +158,9 @@ public class ComicController {
         String genre = updateComicRequest.getGenre();
         String artist = updateComicRequest.getArtist();
         ObjectId uploaderId = new ObjectId(updateComicRequest.getUploaderId());
+        String englishLevel = updateComicRequest.getEnglishLevel();
 
-        ComicResponse comicResponse = comicService.update(comicId, name, url, description, genre, artist, uploaderId, image, background);
+        ComicResponse comicResponse = comicService.update(comicId, name, url, description, genre, artist, uploaderId, image, background, englishLevel);
 
         return ResponseEntity.ok(comicResponse);
 

@@ -19,7 +19,7 @@ public class ComicRepositoryCustomImpl implements ComicRepositoryCustom{
     private MongoTemplate mongoTemplate;
 
     @Override
-    public Page<Comic> searchComics(String keyword, String genre, String artist, ObjectId uploaderId, String sortBy, String sortDir, Pageable pageable) {
+    public Page<Comic> searchComics(String keyword, String genre, String artist, ObjectId uploaderId, String status, String englishLevel, String sortBy, String sortDir, Pageable pageable) {
         Query query = new Query().with(pageable);
         List<Criteria> criteriaList = new ArrayList<>();
 
@@ -41,7 +41,13 @@ public class ComicRepositoryCustomImpl implements ComicRepositoryCustom{
             criteriaList.add(Criteria.where("uploaderId").is(uploaderId));
         }
 
-        criteriaList.add(Criteria.where("status").ne("LOCK"));
+        if (status != null && !status.isBlank()) {
+            criteriaList.add(Criteria.where("status").is(status));
+        }
+
+        if (englishLevel != null && !englishLevel.isBlank()) {
+            criteriaList.add(Criteria.where("englishLevel").is(englishLevel));
+        }
 
         if (!criteriaList.isEmpty()) {
             query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));

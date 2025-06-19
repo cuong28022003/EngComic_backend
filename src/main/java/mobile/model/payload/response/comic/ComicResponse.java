@@ -27,4 +27,6 @@ public class ComicResponse {
     protected String status;
     protected LocalDateTime createdAt;
     protected LocalDateTime updatedAt;
+
+    protected String englishLevel;
 }

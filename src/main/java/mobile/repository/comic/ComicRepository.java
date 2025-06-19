@@ -30,7 +30,7 @@ public interface ComicRepository extends MongoRepository<Comic, ObjectId>, Comic
 //
     Page<Comic> findAllByStatusNot(String status, Pageable pageable);
 //
-//    List<Comic> findAllByStatus(String status, Pageable pageable);
+    Page<Comic> findAllByStatus(String status, Pageable pageable);
 //
 //    List<Comic> findAllByGenreContainsAndNameContainsAllIgnoreCase(String type, String value, Pageable pageable);
 //

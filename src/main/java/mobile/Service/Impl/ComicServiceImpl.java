@@ -39,9 +39,9 @@ public class ComicServiceImpl implements ComicService {
 
     @Override
     public Page<ComicResponse> getComics(Pageable pageable) {
-        log.info("Fetching all Comics with status != 'LOCK', page: " + pageable.getPageNumber() + " page size: "
+        log.info("Fetching all Comics with status = 'ACTIVE', page: " + pageable.getPageNumber() + " page size: "
                 + pageable.getPageSize());
-        Page<Comic> comics = comicRepository.findAllByStatusNot("LOCK", pageable);
+        Page<Comic> comics = comicRepository.findAllByStatus("ACTIVE", pageable);
         return comics.map(comic -> comicMapping.toComicResponse(comic));
     }
 
@@ -55,7 +55,7 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    public ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage) {
+    public ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage, String englishLevel) {
         log.info("Creating new Comic with name: " + name);
         Comic comic = new Comic();
         comic.setName(name);
@@ -65,7 +65,8 @@ public class ComicServiceImpl implements ComicService {
         comic.setArtist(artist);
         comic.setUploaderId(uploaderId);
         comic.setViews(0);
-        comic.setStatus("NONE");
+        comic.setStatus("PENDING");
+        comic.setEnglishLevel(englishLevel);
 
         if (image != null && !image.isEmpty()) {
             try {
@@ -92,7 +93,7 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    public ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage) {
+    public ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage, String englishLevel) {
         log.info("Updating Comic with id: " + id);
         Comic comic = comicRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
@@ -103,6 +104,7 @@ public class ComicServiceImpl implements ComicService {
         comic.setGenre(genre);
         comic.setArtist(artist);
         comic.setUploaderId(uploaderId);
+        comic.setEnglishLevel(englishLevel);
 
         if (image != null && !image.isEmpty()) {
             try {
@@ -129,9 +131,9 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    public Page<ComicResponse> searchComics(String keyword, String genre, String artist, ObjectId uploaderId, String sortBy, String sortDir, Pageable pageable) {
-        Page<Comic> comics = comicRepository.searchComics(keyword, genre, artist, uploaderId, sortBy, sortDir, pageable);
-        return  comics.map(comic -> comicMapping.toComicResponse(comic));
+    public Page<ComicResponse> searchComics(String keyword, String genre, String artist, ObjectId uploaderId, String status, String englishLevel, String sortBy, String sortDir, Pageable pageable) {
+        Page<Comic> comics = comicRepository.searchComics(keyword, genre, artist, uploaderId, status, englishLevel, sortBy, sortDir, pageable);
+        return comics.map(comic -> comicMapping.toComicResponse(comic));
     }
 
     @Override

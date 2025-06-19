@@ -14,4 +14,5 @@ public class CreateComicRequest {
     protected String url;
     protected String description;
     protected String uploaderId;
+    protected String englishLevel;
 }
