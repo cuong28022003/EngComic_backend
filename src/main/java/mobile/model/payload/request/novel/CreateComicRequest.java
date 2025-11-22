@@ -15,4 +15,5 @@ public class CreateComicRequest {
     protected String description;
     protected String uploaderId;
     protected String englishLevel;
+    protected String ageRating;
 }

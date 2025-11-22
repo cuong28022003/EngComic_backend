@@ -55,7 +55,7 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    public ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage, String englishLevel) {
+    public ComicResponse create(String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage, String englishLevel, String ageRating) {
         log.info("Creating new Comic with name: " + name);
         Comic comic = new Comic();
         comic.setName(name);
@@ -67,10 +67,14 @@ public class ComicServiceImpl implements ComicService {
         comic.setViews(0);
         comic.setStatus("PENDING");
         comic.setEnglishLevel(englishLevel);
+        comic.setAgeRating(ageRating);
+        comicRepository.save(comic);
+
+        String folder = String.format("comics/%s", comic.getId());
 
         if (image != null && !image.isEmpty()) {
             try {
-                String imageUrl = cloudinaryService.uploadFile(image);
+                String imageUrl = cloudinaryService.uploadFile(image, folder);
                 comic.setImageUrl(imageUrl);
                 log.info("Image uploaded successfully for comic: " + name);
             } catch (Exception e) {
@@ -80,7 +84,7 @@ public class ComicServiceImpl implements ComicService {
         }
         if (backgroundImage != null && !backgroundImage.isEmpty()) {
             try {
-                String backgroundUrl = cloudinaryService.uploadFile(backgroundImage);
+                String backgroundUrl = cloudinaryService.uploadFile(backgroundImage, folder);
                 comic.setBackgroundUrl(backgroundUrl);
                 log.info("Background image uploaded successfully for comic: " + name);
             } catch (Exception e) {
@@ -93,7 +97,7 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    public ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage, String englishLevel) {
+    public ComicResponse update(ObjectId id, String name, String url, String description, String genre, String artist, ObjectId uploaderId, MultipartFile image, MultipartFile backgroundImage, String englishLevel, String ageRating) {
         log.info("Updating Comic with id: " + id);
         Comic comic = comicRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
@@ -105,10 +109,20 @@ public class ComicServiceImpl implements ComicService {
         comic.setArtist(artist);
         comic.setUploaderId(uploaderId);
         comic.setEnglishLevel(englishLevel);
+        comic.setAgeRating(ageRating);
+
+        String folder = String.format("comics/%s", comic.getId());
 
         if (image != null && !image.isEmpty()) {
             try {
-                String imageUrl = cloudinaryService.uploadFile(image);
+                // Delete old image if it exists
+                if (comic.getImageUrl() != null) {
+                    cloudinaryService.deleteFile(comic.getImageUrl());
+                    log.info("Deleted old image for comic: " + name);
+                }
+
+                // Upload new image
+                String imageUrl = cloudinaryService.uploadFile(image, folder);
                 comic.setImageUrl(imageUrl);
                 log.info("Image updated successfully for comic: " + name);
             } catch (Exception e) {
@@ -118,7 +132,14 @@ public class ComicServiceImpl implements ComicService {
         }
         if (backgroundImage != null && !backgroundImage.isEmpty()) {
             try {
-                String backgroundUrl = cloudinaryService.uploadFile(backgroundImage);
+                // Delete old background image if it exists
+                if (comic.getBackgroundUrl() != null) {
+                    cloudinaryService.deleteFile(comic.getBackgroundUrl());
+                    log.info("Deleted old background image for comic: " + name);
+                }
+
+                // Upload new background image
+                String backgroundUrl = cloudinaryService.uploadFile(backgroundImage, folder);
                 comic.setBackgroundUrl(backgroundUrl);
                 log.info("Background image updated successfully for comic: " + name);
             } catch (Exception e) {
@@ -141,6 +162,28 @@ public class ComicServiceImpl implements ComicService {
         log.info("Deleting Comic with id: " + id);
         Comic comic = comicRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
+
+        if (comic.getImageUrl() != null) {
+            try {
+                cloudinaryService.deleteFile(comic.getImageUrl());
+                log.info("Deleted imageUrl for comic with id: " + id);
+            } catch (Exception e) {
+                log.error("Error deleting imageUrl for comic with id: " + id, e);
+                throw new RuntimeException("Failed to delete imageUrl for comic with id: " + id);
+            }
+        }
+
+        // Delete backgroundUrl
+        if (comic.getBackgroundUrl() != null) {
+            try {
+                cloudinaryService.deleteFile(comic.getBackgroundUrl());
+                log.info("Deleted backgroundUrl for comic with id: " + id);
+            } catch (Exception e) {
+                log.error("Error deleting backgroundUrl for comic with id: " + id, e);
+                throw new RuntimeException("Failed to delete backgroundUrl for comic with id: " + id);
+            }
+        }
+
         ratingService.deleteAllRatingsByComicId(id);
         readingService.deleteAllReadingByComicId(id);
         savedService.deleteAllByComicId(id);

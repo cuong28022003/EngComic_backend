@@ -29,4 +29,5 @@ public class ComicResponse {
     protected LocalDateTime updatedAt;
 
     protected String englishLevel;
+    protected String ageRating;
 }

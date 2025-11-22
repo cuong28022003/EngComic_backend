@@ -18,7 +18,7 @@ import javax.persistence.Id;
 @Document(collection = "pack")
 public class Pack {
     @Id
-    private ObjectId id;
+    private String id;
 
     private String name; // "One Piece", "Naruto", ...
     private String imageUrl; // ảnh gói thẻ

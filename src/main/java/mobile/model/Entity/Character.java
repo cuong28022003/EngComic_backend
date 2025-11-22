@@ -25,11 +25,25 @@ public class Character {
     private String rarity; // C, R, SR, SSR
     private String imageUrl;
     private String description;
-    private ObjectId packId; // ID của gói thẻ mà thẻ này thuộc về
+    private String packId; // ID của gói thẻ mà thẻ này thuộc về
     private int bonusXp;
     private int bonusDiamond;
 
     private Map<String, Integer> skillsUsagePerDay; // {"DOUBLE_XP": 1, "SHOW_ANSWER": 2}
 
     private String version; //SEASON_1,..
+    private String type; // "ENEMY", "ALLY"
+
+    private double scale;
+    private Position position;
+    private int width;
+    private int height;
+    private Offset offset;
+    private AttackBox attackBox;
+    private CharacterStats stats;
+
+    // Các animation tương ứng với code JS: sprites.idle, sprites.run, ...
+    private Map<String, SpriteData> sprites;
+
+    private String transformationCharacterId; // ID của nhân vật biến hình
 }

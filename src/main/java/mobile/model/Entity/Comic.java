@@ -41,4 +41,5 @@ public class Comic {
     protected LocalDateTime updateAt;
 
     protected String englishLevel;
+    protected String ageRating; // "ALL", "13+", "16+", "18+"
 }

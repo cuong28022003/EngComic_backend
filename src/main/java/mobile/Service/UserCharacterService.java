@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface UserCharacterService {
-    Page<UserCharacterResponse> getCharactersByUserId(ObjectId userId, String searchTerm, String rarity,
-                                                      String sortBy, String sortDirection, Pageable pageable);
 
     UserCharacter save(ObjectId userId, ObjectId characterId);
 
@@ -19,5 +17,5 @@ public interface UserCharacterService {
 
     boolean isCharacterOwnedByUser(ObjectId userId, ObjectId id);
 
-    Page<UserCharacterResponse> searchUserCharacters(String name, String rarity, ObjectId userId, Pageable pageable);
+    Page<CharacterResponse> searchUserCharacters(String name, String rarity, ObjectId userId, Pageable pageable);
 }

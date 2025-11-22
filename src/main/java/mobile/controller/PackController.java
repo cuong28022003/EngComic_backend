@@ -25,7 +25,7 @@ public class PackController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pack> getPackById(@PathVariable ObjectId id) {
+    public ResponseEntity<Pack> getPackById(@PathVariable String id) {
         return ResponseEntity.ok(packService.getPackById(id));
     }
 
@@ -35,14 +35,14 @@ public class PackController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pack> updatePack(@PathVariable ObjectId id, @RequestParam String name,
+    public ResponseEntity<Pack> updatePack(@PathVariable String id, @RequestParam String name,
                                            @RequestParam String description,
                                            @RequestParam(required = false) MultipartFile image) {
         return ResponseEntity.ok(packService.updatePack(id, name, description, image));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePack(@PathVariable ObjectId id) {
+    public ResponseEntity<Void> deletePack(@PathVariable String id) {
         packService.deletePack(id);
         return ResponseEntity.noContent().build();
     }

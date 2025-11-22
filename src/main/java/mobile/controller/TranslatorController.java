@@ -5,10 +5,8 @@ import mobile.Service.TranslatorService;
 import mobile.model.payload.request.translator.TranslatorRequest;
 import mobile.model.payload.response.translator.TranslatorResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/translator")
@@ -19,6 +17,12 @@ public class TranslatorController {
     @PostMapping("/ipa-meaning")
     public ResponseEntity<TranslatorResponse> getIpaAndMeaning(@RequestBody TranslatorRequest request) {
         TranslatorResponse response = translatorService.getIpaAndMeaning(request.getText());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/ocr")
+    public ResponseEntity<TranslatorResponse> extractText(@RequestParam("image")MultipartFile image) {
+        TranslatorResponse response = translatorService.extractTextFromImage(image);
         return ResponseEntity.ok(response);
     }
 }

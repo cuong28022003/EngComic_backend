@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TranslatorResponse {
+    private String text;
     private String ipa;
     private String meaning;
 }

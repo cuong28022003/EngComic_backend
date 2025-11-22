@@ -1,4 +1,4 @@
-package mobile.repository;
+package mobile.repository.character;
 
 import mobile.model.Entity.Character;
 import org.bson.types.ObjectId;
@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface CharacterRepository extends MongoRepository<Character, ObjectId> {
     List<Character> findByRarity(String rarity);
-    List<Character> findByPackId(ObjectId packId);
+    List<Character> findByPackId(String packId);
     List<Character> findByVersion(String version);
+    List<Character> findByType(String type);
 }

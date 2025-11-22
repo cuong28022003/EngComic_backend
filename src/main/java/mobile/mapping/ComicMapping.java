@@ -17,45 +17,6 @@ public class ComicMapping {
     private final ChapterService chapterService;
     private final UserService userService;
 
-//    public static Comic CreateRequestToComic(CreateComicRequest createComicRequest){
-//        Comic newComic = new Comic();
-//        newComic.setName(createComicRequest.getName());
-//        newComic.setArtist(createComicRequest.getArtist());
-//        newComic.setGenre(createComicRequest.getGenre());
-//        newComic.setUrl(createComicRequest.getUrl());
-//        newComic.setRating(0);
-//        newComic.setDescription(createComicRequest.getDescription());
-//        newComic.setUploader();
-//        return newComic;
-//    }
-
-//    public static ComicDetailResponse EntityToComicDetailResponse(Comic comic, int chapterCount, double rating, int ratingCount){
-//        ComicDetailResponse comicDetailResponse = new ComicDetailResponse();
-//        comicDetailResponse.setId(comic.getId().toString());
-//        comicDetailResponse.setImage(comic.getImageUrl());
-//        comicDetailResponse.setName(comic.getName());
-//        comicDetailResponse.setArtist(comic.getArtist());
-//        comicDetailResponse.setUrl(comic.getUrl());
-//        comicDetailResponse.setAverageRating(rating);
-//        comicDetailResponse.setDescription(comic.getDescription());
-//        comicDetailResponse.setUploader(comic.getUploader().getFullName());
-//        comicDetailResponse.setViews(comic.getViews());
-//        comicDetailResponse.setTotalRatings(ratingCount);
-//        comicDetailResponse.setChapterCount(chapterCount);
-//        comicDetailResponse.setGenre(comic.getGenre());
-//        comicDetailResponse.setStatus(comic.getStatus());
-//        return comicDetailResponse;
-//    }
-
-//    public static void UpdateRequestToComic(UpdateComicRequest updateComicRequest, Comic oldComic){
-//        oldComic.setImageUrl(updateComicRequest.getImage());
-//        oldComic.setName(updateComicRequest.getName());
-//        oldComic.setArtist(updateComicRequest.getArtist());
-//        oldComic.setUrl(updateComicRequest.getUrl());
-//        oldComic.setDescription(updateComicRequest.getDescription());
-//        oldComic.setGenre(updateComicRequest.getGenre());
-//    }
-
     public ComicResponse toComicResponse(Comic comic){
         UserResponse uploaderResponse = userService.findById(comic.getUploaderId());
         ComicResponse comicResponse = new ComicResponse();
@@ -75,6 +36,7 @@ public class ComicMapping {
         comicResponse.setUploader(uploaderResponse);
         comicResponse.setCreatedAt(comic.getCreatedAt());
         comicResponse.setEnglishLevel(comic.getEnglishLevel());
+        comicResponse.setAgeRating(comic.getAgeRating());
         return comicResponse;
     }
 }

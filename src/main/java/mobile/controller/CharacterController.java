@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/character")
+@RequestMapping("/api/characters")
 public class CharacterController {
 
     private final CharacterMapping characterMapping;
@@ -41,25 +41,28 @@ public class CharacterController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CharacterResponse> getCharacterCardById(@PathVariable ObjectId id) {
+    public ResponseEntity<CharacterResponse> getCharacterCardById(@PathVariable String id) {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("The given id must not be null or empty!");
+        }
         CharacterResponse character = characterService.findById(id);
         return ResponseEntity.ok(character);
     }
 
-    @GetMapping("/user/{userId}/all")
+    @GetMapping("/users/{userId}/all")
     public ResponseEntity<List<CharacterResponse>> getAllUserCharacters(@PathVariable String userId, HttpServletRequest request) {
         List<CharacterResponse> userCharacters = userCharacterService.findAllByUserId(new ObjectId(userId));
         return ResponseEntity.ok(userCharacters);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<UserCharacterResponse>> searchFilterAndSortCharacters(
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<Page<CharacterResponse>> searchFilterAndSortCharacters(
             @PathVariable String userId,
-            @RequestParam(required = false) String searchTerm, // Search by name
+            @RequestParam(required = false) String searchTerm, // Search by name or pack
             @RequestParam(required = false) String rarity,   // Filter by rarity
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) { // Pagination parameters
-        Page<UserCharacterResponse> userCharacters = userCharacterService.searchUserCharacters(
+        Page<CharacterResponse> userCharacters = userCharacterService.searchUserCharacters(
                 searchTerm,
                 rarity,
                 new ObjectId(userId),
@@ -76,7 +79,7 @@ public class CharacterController {
                 characterData.getDescription(),
                 characterData.getRarity(),
                 image,
-                new ObjectId(characterData.getPackId()),
+                characterData.getPackId(),
                 characterData.getBonusXp(),
                 characterData.getBonusDiamond(),
                 characterData.getVersion(),
@@ -118,5 +121,11 @@ public class CharacterController {
                     return characterMapping.toCharacterResponse(character);
                 }).collect(Collectors.toList());
         return ResponseEntity.ok(characterResponses);
+    }
+
+    @GetMapping("/random-enemies")
+    public ResponseEntity<List<CharacterResponse>> getRandomEnemies(@RequestParam int count) {
+        List<CharacterResponse> randomEnemies = characterService.findRandomEnemies(count);
+        return ResponseEntity.ok(randomEnemies);
     }
 }

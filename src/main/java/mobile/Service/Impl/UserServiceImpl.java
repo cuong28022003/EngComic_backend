@@ -124,7 +124,8 @@ public class UserServiceImpl implements UserService {
         existingUser.setBirthday(birthday);
         if (image != null && !image.isEmpty()) {
             try {
-                String imageUrl = cloudinaryService.uploadFile(image);
+                String folder = String.format("user/%s", existingUser.getUsername());
+                String imageUrl = cloudinaryService.uploadFile(image, folder);
                 existingUser.setImage(imageUrl);
             } catch (Exception e) {
                 log.error("Error uploading image: {}", e.getMessage());

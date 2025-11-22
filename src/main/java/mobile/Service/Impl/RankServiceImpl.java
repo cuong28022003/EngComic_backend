@@ -74,7 +74,7 @@ public class RankServiceImpl implements RankService {
         rank.setRewardDiamond(rewardDiamond);
         rank.setRewardCharacterId(new ObjectId(rewardCharacterId));
         try {
-            String imageUrl = cloudinaryService.uploadFile(badge);
+            String imageUrl = cloudinaryService.uploadFile(badge, "rank");
             rank.setBadge(imageUrl);
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload image", e);
@@ -95,7 +95,7 @@ public class RankServiceImpl implements RankService {
 
         if (badge != null && !badge.isEmpty()) {
             try {
-                String imageUrl = cloudinaryService.uploadFile(badge);
+                String imageUrl = cloudinaryService.uploadFile(badge, "rank");
                 rank.setBadge(imageUrl);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to upload image", e);

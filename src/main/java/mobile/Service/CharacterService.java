@@ -10,10 +10,11 @@ import java.util.Map;
 
 public interface CharacterService {
     List<Character> findAll();
-    CharacterResponse findById(ObjectId id);
-    Character create(String name, String description, String rarity, MultipartFile image, ObjectId packId, int bonusXp, int bonusDiamond, String version, Map<String, Integer> skillsUsagePerDay);
+    CharacterResponse findById(String id);
+    Character create(String name, String description, String rarity, MultipartFile image, String packId, int bonusXp, int bonusDiamond, String version, Map<String, Integer> skillsUsagePerDay);
     Character update(ObjectId id, String name, String description, String rarity, MultipartFile image, int bonusXp, int bonusDiamond, String version, Map<String, Integer> skillsUsagePerDay);
     void deleteById(ObjectId id);
 
     List<Character> findByVersion(String version);
+    List<CharacterResponse> findRandomEnemies(int count);
 }

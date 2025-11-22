@@ -6,15 +6,12 @@ import mobile.model.Entity.CharacterUsage;
 import mobile.model.Entity.Pack;
 import mobile.model.Entity.UserCharacter;
 import mobile.model.payload.response.character.UserCharacterResponse;
-import mobile.repository.CharacterRepository;
-import mobile.repository.CharacterUsageRepository;
+import mobile.repository.character.CharacterRepository;
 import mobile.repository.PackRepository;
 import org.springframework.stereotype.Component;
 import mobile.model.Entity.Character;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -45,7 +42,6 @@ public class UserCharacterMapping {
         response.setBonusDiamond(character.getBonusDiamond());
         response.setVersion(character.getVersion());
         response.setSkillsUsagePerDay(character.getSkillsUsagePerDay());
-        response.setUsedSkills(characterUsage.getUsedSkills());
         response.setObtainedAt(userCharacter.getObtainedAt());
         return response;
 

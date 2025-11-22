@@ -19,7 +19,7 @@ public class RankMapping {
         rankResponse.setMaxXp(rank.getMaxXp());
         rankResponse.setBadge(rank.getBadge());
         rankResponse.setRewardDiamond(rank.getRewardDiamond());
-        rankResponse.setRewardCharacter(characterService.findById(rank.getRewardCharacterId()));
+        rankResponse.setRewardCharacter(characterService.findById(rank.getRewardCharacterId().toHexString()));
         return rankResponse;
     }
 }

@@ -29,19 +29,13 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("api/comic")
+@RequestMapping("api/comics")
 @RequiredArgsConstructor
 public class ComicController {
     private static final Logger LOGGER = LogManager.getLogger(ComicController.class);
 
     private final UserService userService;
     private final ComicService comicService;
-    private final ChapterService chapterService;
-    private final ReadingService readingService;
-    private final SavedService savedService;
-    private final RatingService ratingService;
-    private final ComicMapping comicMapping;
-    private final CloudinaryService cloudinaryService;
     private final ComicRepository comicRepository;
 
     @Autowired
@@ -63,10 +57,10 @@ public class ComicController {
     @GetMapping("/admin")
     @ResponseBody
     public ResponseEntity<Page<ComicResponse>> getComicsAdmin(@RequestParam(defaultValue = "None") String status,
-                                                         @RequestParam(defaultValue = "updatedAt") String sort,
-                                                         @RequestParam(defaultValue = "0") int page,
-                                                         @RequestParam(defaultValue = "desc") String order,
-                                                         @RequestParam(defaultValue = "3") int size) {
+                                                              @RequestParam(defaultValue = "updatedAt") String sort,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "desc") String order,
+                                                              @RequestParam(defaultValue = "3") int size) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
         Page<ComicResponse> comicPage = comicService.getComicsAdmin(pageable);
@@ -112,8 +106,8 @@ public class ComicController {
     @PostMapping("")
     @ResponseBody
     public ResponseEntity<ComicResponse> createComic(@RequestPart("data") CreateComicRequest createComicRequest,
-            @RequestPart("image") MultipartFile image, @RequestParam("background") MultipartFile background,
-            HttpServletRequest request) {
+                                                     @RequestPart("image") MultipartFile image, @RequestParam("background") MultipartFile background,
+                                                     HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid token");
@@ -130,8 +124,9 @@ public class ComicController {
         String artist = createComicRequest.getArtist();
         ObjectId uploaderId = new ObjectId(createComicRequest.getUploaderId());
         String englishLevel = createComicRequest.getEnglishLevel();
+        String ageRating = createComicRequest.getAgeRating();
 
-        ComicResponse comicResponse = comicService.create(name, url, description, genre, artist, uploaderId, image, background, englishLevel);
+        ComicResponse comicResponse = comicService.create(name, url, description, genre, artist, uploaderId, image, background, englishLevel, ageRating);
         return ResponseEntity.ok(comicResponse);
     }
 
@@ -139,9 +134,9 @@ public class ComicController {
     @ResponseBody
     public ResponseEntity<ComicResponse> updateComic(@PathVariable String id,
                                                      @RequestPart("data") CreateComicRequest updateComicRequest,
-                                                        @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestParam(value = "background", required = false) MultipartFile background,
-            HttpServletRequest request) {
+                                                     @RequestPart(value = "image", required = false) MultipartFile image,
+                                                     @RequestParam(value = "background", required = false) MultipartFile background,
+                                                     HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid token");
@@ -159,8 +154,9 @@ public class ComicController {
         String artist = updateComicRequest.getArtist();
         ObjectId uploaderId = new ObjectId(updateComicRequest.getUploaderId());
         String englishLevel = updateComicRequest.getEnglishLevel();
+        String ageRating = updateComicRequest.getAgeRating();
 
-        ComicResponse comicResponse = comicService.update(comicId, name, url, description, genre, artist, uploaderId, image, background, englishLevel);
+        ComicResponse comicResponse = comicService.update(comicId, name, url, description, genre, artist, uploaderId, image, background, englishLevel, ageRating);
 
         return ResponseEntity.ok(comicResponse);
 

@@ -74,11 +74,14 @@ public class ChapterServiceImpl implements ChapterService {
         chapter.setName(name);
         chapter.setChapterNumber(chapterNumber);
         chapter.setComicId(comicId);
+        chapterRepository.save(chapter);
+
+        String folder = String.format("comics/%s/chapters/%s/", comic.getId(), chapter.getId().toHexString());
 
         // Upload image
         if (image != null) {
             try {
-                String imageUrl = cloudinaryService.uploadFile(image);
+                String imageUrl = cloudinaryService.uploadFile(image, folder);
                 chapter.setImageUrl(imageUrl);
             } catch (Exception e) {
                 log.error("Error uploading image: {}", e.getMessage());
@@ -98,7 +101,7 @@ public class ChapterServiceImpl implements ChapterService {
 
                     // Extract order from file name (e.g., "1.png" -> 1)
                     int order = Integer.parseInt(fileName.split("\\.")[0]);
-                    String pageUrl = cloudinaryService.uploadFile(page);
+                    String pageUrl = cloudinaryService.uploadFile(page, folder);
 
                     // Add the page with its order and URL
                     pageList.add(Map.of(order, pageUrl));
@@ -131,10 +134,16 @@ public class ChapterServiceImpl implements ChapterService {
         chapter.setChapterNumber(chapterNumber);
         chapter.setComicId(comicId);
 
+        String folder = String.format("comics/%s/chapters/%s/", comic.getId(), chapter.getId().toHexString());
+
         // Update image
         if (image != null) {
             try {
-                String imageUrl = cloudinaryService.uploadFile(image);
+                if (chapter.getImageUrl() != null) {
+                    cloudinaryService.deleteFile(chapter.getImageUrl());
+                }
+
+                String imageUrl = cloudinaryService.uploadFile(image, folder);
                 chapter.setImageUrl(imageUrl);
             } catch (Exception e) {
                 log.error("Error uploading image: {}", e.getMessage());
@@ -157,13 +166,22 @@ public class ChapterServiceImpl implements ChapterService {
 
                     // Extract order from file name (e.g., "1.png" -> 1)
                     int order = Integer.parseInt(fileName.split("\\.")[0]);
-                    String pageUrl = cloudinaryService.uploadFile(page);
+                    String pageUrl = cloudinaryService.uploadFile(page, folder);
 
                     // Check if the order already exists
                     boolean updated = false;
                     for (Map<Integer, String> existingPage : chapter.getPageUrls()) {
                         if (existingPage.containsKey(order)) {
-                            existingPage.put(order, pageUrl); // Update the URL
+                            // Delete the old page image from Cloudinary
+                            try {
+                                cloudinaryService.deleteFile(existingPage.get(order));
+                            } catch (Exception e) {
+                                log.error("Error deleting old page image: {}", e.getMessage());
+                                throw new RuntimeException("Failed to delete old page image");
+                            }
+
+                            // Update the URL
+                            existingPage.put(order, pageUrl);
                             updated = true;
                             break;
                         }
