@@ -9,5 +9,5 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface CharacterUsageRepository extends MongoRepository<CharacterUsage, ObjectId> {
-    Optional<CharacterUsage> findByUserIdAndCharacterIdAndDate(ObjectId userId, ObjectId characterId, LocalDate date);
+    Optional<CharacterUsage> findByUserIdAndCharacterIdAndDate(ObjectId userId, String characterId, LocalDate date);
 }

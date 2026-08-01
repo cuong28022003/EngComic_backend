@@ -9,19 +9,16 @@ import mobile.model.Entity.Character;
 import mobile.model.Entity.Pack;
 import mobile.model.payload.request.character.CharacterRequest;
 import mobile.model.payload.response.character.CharacterResponse;
-import mobile.model.payload.response.character.UserCharacterResponse;
+import mobile.model.payload.response.character.FullCharacterResponse;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -41,7 +38,7 @@ public class CharacterController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CharacterResponse> getCharacterCardById(@PathVariable String id) {
+    public ResponseEntity<CharacterResponse> getCharacterById(@PathVariable String id) {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("The given id must not be null or empty!");
         }
@@ -89,7 +86,7 @@ public class CharacterController {
     }
 
 @PutMapping("/{id}")
-    public ResponseEntity<Character> updateCharacterCard(@PathVariable ObjectId id,
+    public ResponseEntity<Character> updateCharacterCard(@PathVariable String id,
                                                          @RequestPart("data") CharacterRequest characterData,
                                                          @RequestPart("image") MultipartFile image) {
         Character updatedCard = characterService.update(
@@ -107,7 +104,7 @@ public class CharacterController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCharacterCard(@PathVariable ObjectId id) {
+    public ResponseEntity<Void> deleteCharacterCard(@PathVariable String id) {
         characterService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

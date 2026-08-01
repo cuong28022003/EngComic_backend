@@ -21,7 +21,7 @@ public class CharacterUsageServiceImpl  implements CharacterUsageService {
     private CharacterRepository characterRepository;
 
     @Override
-    public CharacterUsage getOrCreateUsage(ObjectId userId, ObjectId characterId, LocalDate date) {
+    public CharacterUsage getOrCreateUsage(ObjectId userId, String characterId, LocalDate date) {
         return usageRepository
                 .findByUserIdAndCharacterIdAndDate(userId, characterId, date)
                 .orElseGet(() -> {
@@ -31,7 +31,7 @@ public class CharacterUsageServiceImpl  implements CharacterUsageService {
     }
 
     @Override
-    public boolean canUseSkill(ObjectId userId, ObjectId characterId, LocalDate date, String skill) {
+    public boolean canUseSkill(ObjectId userId, String characterId, LocalDate date, String skill) {
         // Fetch the Character entity by characterId
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new IllegalArgumentException("Character not found with id: " + characterId));
@@ -49,7 +49,7 @@ public class CharacterUsageServiceImpl  implements CharacterUsageService {
     }
 
     @Override
-    public void markSkillUsed(ObjectId userId, ObjectId characterId, LocalDate date, String skill) {
+    public void markSkillUsed(ObjectId userId, String characterId, LocalDate date, String skill) {
         CharacterUsage usage = getOrCreateUsage(userId, characterId, date);
 
         int currentUsage = usage.getUsedSkills().getOrDefault(skill, 0);

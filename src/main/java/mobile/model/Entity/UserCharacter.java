@@ -21,6 +21,6 @@ public class UserCharacter {
     @Id
     private ObjectId id;
     private ObjectId userId;
-    private ObjectId characterId;
+    private String characterId;
     private LocalDateTime obtainedAt;
 }

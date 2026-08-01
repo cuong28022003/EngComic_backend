@@ -24,13 +24,13 @@ public class CharacterUsage {
     private ObjectId id;
 
     private ObjectId userId;
-    private ObjectId characterId;
+    private String characterId;
     private LocalDate date; // YYYY-MM-DD
 
     // Tên kỹ năng và số lần đã sử dụng trong ngày đó
     private Map<String, Integer> usedSkills;
 
-    public CharacterUsage(ObjectId userId, ObjectId characterId, LocalDate date, Map<String, Integer> usedSkills) {
+    public CharacterUsage(ObjectId userId, String characterId, LocalDate date, Map<String, Integer> usedSkills) {
         this.userId = userId;
         this.characterId = characterId;
         this.date = date;

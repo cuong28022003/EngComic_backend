@@ -11,11 +11,11 @@ import java.util.List;
 
 public interface UserCharacterService {
 
-    UserCharacter save(ObjectId userId, ObjectId characterId);
+    UserCharacter save(ObjectId userId, String characterId);
 
     List<CharacterResponse> findAllByUserId(ObjectId userId);
 
-    boolean isCharacterOwnedByUser(ObjectId userId, ObjectId id);
+    boolean isCharacterOwnedByUser(ObjectId userId, String id);
 
     Page<CharacterResponse> searchUserCharacters(String name, String rarity, ObjectId userId, Pageable pageable);
 }

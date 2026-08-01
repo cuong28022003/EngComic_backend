@@ -38,7 +38,7 @@ public class UserCharacterServiceImpl implements UserCharacterService {
     private final CharacterMapping characterMapping;
 
     @Override
-    public UserCharacter save(ObjectId userId, ObjectId characterId) {
+    public UserCharacter save(ObjectId userId, String characterId) {
         UserCharacter userCharacter = new UserCharacter();
         userCharacter.setUserId(userId);
         userCharacter.setCharacterId(characterId);
@@ -52,13 +52,13 @@ public class UserCharacterServiceImpl implements UserCharacterService {
         List<UserCharacter> userCharacters = userCharacterRepository.findByUserId(userId);
         return userCharacters.stream()
                 .map(userCharacter -> {
-                    return characterService.findById(userCharacter.getCharacterId().toHexString());
+                    return characterService.findById(userCharacter.getCharacterId());
                 })
                 .collect(Collectors.toList());
     }
 
     @Override
-    public boolean isCharacterOwnedByUser(ObjectId userId, ObjectId id) {
+    public boolean isCharacterOwnedByUser(ObjectId userId, String id) {
         // Kiểm tra xem người dùng có sở hữu nhân vật với ID nhất định hay không
         return userCharacterRepository.existsByUserIdAndCharacterId(userId, id);
     }

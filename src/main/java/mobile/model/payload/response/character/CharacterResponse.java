@@ -2,7 +2,6 @@ package mobile.model.payload.response.character;
 
 import lombok.*;
 import mobile.model.Entity.*;
-import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -29,7 +28,6 @@ public class CharacterResponse {
     private int frameWidth = 0;         // Chiều rộng 1 frame, mặc định là 0
     private int frameHeight = 0;        // Chiều cao 1 frame, mặc định là 0
     private int fps = 0;                // FPS, mặc định là 0
-    private Map<String, CharacterAnimation.AnimationInfo> animations = Map.of(); // Mặc định là Map rỗng
 
     @Data
     public static class AnimationInfo {
@@ -37,14 +35,5 @@ public class CharacterResponse {
         private int row = 0;      // Dòng trong sprite sheet, mặc định là 0
     }
 
-    private double scale;
-    private Position position;
-    private int width;
-    private int height;
-
-    private Offset offset;
-    private AttackBox attackBox;
-    private CharacterStats stats;
-    private Map<String, SpriteData> sprites;
     private String transformationCharacterId; // ID của nhân vật biến hình
 }

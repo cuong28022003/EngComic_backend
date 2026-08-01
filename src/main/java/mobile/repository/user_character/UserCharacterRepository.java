@@ -14,5 +14,5 @@ public interface UserCharacterRepository extends MongoRepository<UserCharacter, 
     Page<UserCharacter> findByUserId(ObjectId userId, Pageable pageable);
     List<UserCharacter> findByUserId(ObjectId userId);
 
-    boolean existsByUserIdAndCharacterId(ObjectId userId, ObjectId id);
+    boolean existsByUserIdAndCharacterId(ObjectId userId, String id);
 }

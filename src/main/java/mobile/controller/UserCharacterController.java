@@ -24,7 +24,7 @@ public class UserCharacterController {
     public ResponseEntity<UserCharacter> createUserCharacter(@RequestBody UserCharacterRequest userCharacter, HttpServletRequest request) {
 
         ObjectId userId = new ObjectId(userCharacter.getUserId());
-        ObjectId characterId = new ObjectId(userCharacter.getCharacterId());
+        String characterId = userCharacter.getCharacterId();
         return ResponseEntity.ok(userCharacterService.save(userId, characterId));
     }
 

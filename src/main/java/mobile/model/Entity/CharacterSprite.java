@@ -1,24 +1,24 @@
 package mobile.model.Entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.bson.types.ObjectId;
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
 import java.util.Map;
 
 @Data
-@Document(collection = "character_animations")
-public class CharacterAnimation {
+@Document(collection = "character_sprites")
+@AllArgsConstructor
+@NoArgsConstructor
+public class CharacterSprite {
     @Id
     private String id;
-
     private String characterId;
-
     /**
      * key: actionCode (vd: "0", "200")
-     * value: AnimationAction
+     * value: Map<frameIndex, SpriteFrame>
      */
-    private Map<String, AnimationAction> actions;
-
+    private Map<String, Map<String, SpriteFrame>> groups;
 }

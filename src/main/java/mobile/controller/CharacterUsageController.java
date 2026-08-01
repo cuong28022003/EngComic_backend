@@ -22,7 +22,7 @@ public class CharacterUsageController {
             @RequestBody CharacterUsageRequest request
     ) {
         ObjectId userId = new ObjectId(request.getUserId());
-        ObjectId characterId = new ObjectId(request.getCharacterId());
+        String characterId = request.getCharacterId();
         LocalDate date = LocalDate.parse(request.getDate());
         String skill = request.getSkill();
 
@@ -32,7 +32,7 @@ public class CharacterUsageController {
     @PostMapping("/use")
     public ResponseEntity<String> markSkillUsed(@RequestBody CharacterUsageRequest request) {
         ObjectId userId = new ObjectId(request.getUserId());
-        ObjectId characterId = new ObjectId(request.getCharacterId());
+        String characterId = request.getCharacterId();
         LocalDate date = LocalDate.parse(request.getDate());
         String skill = request.getSkill();
 
@@ -43,7 +43,7 @@ public class CharacterUsageController {
     @PostMapping("/use-skill")
     public ResponseEntity<Map<String, Object>> useSkill(@RequestBody CharacterUsageRequest request) {
         ObjectId userId = new ObjectId(request.getUserId());
-        ObjectId characterId = new ObjectId(request.getCharacterId());
+        String characterId = request.getCharacterId();
         LocalDate date = LocalDate.parse(request.getDate());
         String skill = request.getSkill();
 

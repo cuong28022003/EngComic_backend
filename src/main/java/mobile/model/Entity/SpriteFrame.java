@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CharacterStats {
-    private int health;
-    private int attack;
-    private int defense;
-    private double speed;
-    private double gravity;
+public class SpriteFrame {
+    private String image;
+    private Offset offset;
 }
