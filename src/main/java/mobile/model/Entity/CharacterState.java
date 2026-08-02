@@ -20,5 +20,5 @@ public class CharacterState {
     @Id
     private String id;
     private String characterId;
-    private Map<String, State> states; //String is state id
+    private Map<String, AnimationAction> states; //String is state id
 }

@@ -30,4 +30,7 @@ public class AnimationFrame {
     
     private String trans; // blend mode override for this frame
     private String alpha; // e.g. "256,128"
+
+    private Velocity velocity; // Lực đẩy liên tục trong frame (dùng cho Dash/Leap)
+    private Offset positionOffset; // Dịch chuyển tức thời khi bắt đầu frame (dùng cho Teleport)
 }
