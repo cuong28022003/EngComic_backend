@@ -10,12 +10,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnimationAction {
-    private int animationNumber;
+    private List<Integer> animationNumbers;
     private String name;
 
     private List<AnimationFrame> frames;
 
-    private boolean loop;
+    private Boolean loop;
 
     private Offset offset;
     
