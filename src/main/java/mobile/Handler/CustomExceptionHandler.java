@@ -67,18 +67,4 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse error = new ErrorResponse("Authentication error", details,HttpStatus.UNAUTHORIZED.value());
         return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
     }
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(
-            org.springframework.http.converter.HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
-
-        List<String> details = new ArrayList<>();
-        ErrorResponse errorResponse = new ErrorResponse();
-        details.add(ex.getCause().getMessage().split("at")[0]);
-        errorResponse.setDetails(details);
-        ErrorResponse error = new ErrorResponse(ex.getMessage().split(":")[0], details,HttpStatus.BAD_REQUEST.value());
-
-        return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
-    }
-
 }

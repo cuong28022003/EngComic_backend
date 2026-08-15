@@ -1,7 +1,7 @@
 # Implementation Plan: [Feature Name]
 
-> **Góc nhìn**: Tech Lead / System Architect  
-> **Mục đích**: Trả lời câu hỏi **"LÀM NHƯ THẾ NÀO & THIẾT KẾ RA SAO?" (HOW & ARCHITECTURE)**
+> **Perspective**: Tech Lead / System Architect  
+> **Purpose**: Answer the question **"HOW & ARCHITECTURE"**
 
 ---
 
@@ -21,11 +21,11 @@
 - **Fields**:
   | Field | Java Type | BSON Type | Constraints | Description |
   | :--- | :--- | :--- | :--- | :--- |
-  | `id` | `ObjectId` | `ObjectId` | `@Id` | Khóa chính BSON |
-  | `userId` | `ObjectId` | `ObjectId` | `@NotNull`, Indexed | Tham chiếu User |
-  | `status` | `String` | `String` | `@NotBlank` | Trạng thái (PENDING, COMPLETED) |
-  | `createdAt` | `Date` | `Date` | `@CreatedDate` | Thời điểm tạo |
-  | `updatedAt` | `Date` | `Date` | `@LastModifiedDate` | Thời điểm cập nhật |
+  | `id` | `ObjectId` | `ObjectId` | `@Id` | Primary BSON key |
+  | `userId` | `ObjectId` | `ObjectId` | `@NotNull`, Indexed | User reference ID |
+  | `status` | `String` | `String` | `@NotBlank` | Status (PENDING, COMPLETED) |
+  | `createdAt` | `Date` | `Date` | `@CreatedDate` | Creation timestamp |
+  | `updatedAt` | `Date` | `Date` | `@LastModifiedDate` | Last updated timestamp |
 
 ---
 
@@ -92,7 +92,7 @@ sequenceDiagram
 ---
 
 ## 5. Error Handling & HTTP Status Mapping
-- `400 BAD_REQUEST`: Validation thất bại hoặc điều kiện nghiệp vụ không hợp lệ.
-- `401 UNAUTHORIZED`: Chưa đăng nhập hoặc token hết hạn.
-- `403 FORBIDDEN`: Không có quyền thực hiện.
-- `404 NOT_FOUND`: Không tìm thấy tài nguyên trong cơ sở dữ liệu.
+- `400 BAD_REQUEST`: Validation failure or invalid business preconditions.
+- `401 UNAUTHORIZED`: Unauthenticated or expired token.
+- `403 FORBIDDEN`: Insufficient permissions.
+- `404 NOT_FOUND`: Requested resource not found in database.

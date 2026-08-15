@@ -1,9 +1,5 @@
 package mobile.Service.Impl;
 
-
-
-import com.sun.mail.smtp.SMTPTransport;
-import com.sun.mail.util.BASE64EncoderStream;
 import mobile.Service.EmailService;
 import mobile.model.Entity.User;
 import mobile.security.JWT.JwtUtils;
@@ -18,10 +14,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
-import javax.mail.*;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.*;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -41,18 +37,23 @@ public class EmailServiceImpl implements EmailService {
     @Value("https://tranduy26913.github.io/DoAnHDT_WebDocTruyenChu/#/")
     private String host;
 
-    @Value("$(spring.mail.username)")
-    private String fromEmailId;
+    @Value("${google.oauth.client-id:}")
+    private String googleClientId;
+
+    @Value("${google.oauth.client-secret:}")
+    private String googleClientSecret;
+
+    @Value("${google.oauth.refresh-token:}")
+    private String googleRefreshToken;
 
     private String getAccessToken()
     {
         try {
             Map<String, Object> params = new LinkedHashMap<>();
             params.put("grant_type", "refresh_token");
-            params.put("client_id", "56069458305-d5cmj6uat5gvgaimni3q169a2hq3mf03.apps.googleusercontent.com");
-            params.put("client_secret", "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");
-            params.put("refresh_token",
-                    "1//0eDdAfC2EsvQuCgYIARAAGA4SNwF-L9IrndxReTgMami2hz5rdqYZEzCigtMFfvZmBXXYtlCbbhWSTz1dBYu8Ua-8AkVNJcFWC04");
+            params.put("client_id", googleClientId);
+            params.put("client_secret", googleClientSecret);
+            params.put("refresh_token", googleRefreshToken);
 
             StringBuilder postData = new StringBuilder();
             for (Map.Entry<String, Object> param : params.entrySet()) {

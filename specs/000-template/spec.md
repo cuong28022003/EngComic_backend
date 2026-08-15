@@ -1,45 +1,45 @@
 # Feature Specification: [Feature Name]
 
-> **Góc nhìn**: Business / Product Owner  
-> **Mục đích**: Trả lời câu hỏi **"CẦN LÀM CÁI GÌ & TẠI SAO?" (WHAT & WHY)**
+> **Perspective**: Business / Product Owner  
+> **Purpose**: Answer the question **"WHAT & WHY"**
 
 ---
 
-## 1. Tổng quan & Mục tiêu
+## 1. Overview & Objective
 - **Feature ID**: [001]
-- **Feature Name**: [Tên tính năng]
-- **Độ ưu tiên**: [P1 / P2 / P3]
-- **Mục tiêu**: [Mô tả ngắn gọn giá trị nghiệp vụ của tính năng mang lại cho người dùng]
+- **Feature Name**: [Feature Name]
+- **Priority**: [P1 / P2 / P3]
+- **Objective**: [Brief description of the business value provided to users]
 
 ---
 
-## 2. Phân quyền & Điều kiện tiên quyết (Preconditions)
-- **Đối tượng sử dụng**: `USER` / `ADMIN` / `TRANSLATOR`
-- **Điều kiện tiên quyết**: [VD: Đã đăng nhập, số dư coin >= giá trị gói, tài khoản ở trạng thái ACTIVE]
+## 2. Permissions & Preconditions
+- **Target Audience**: `USER` / `ADMIN` / `TRANSLATOR`
+- **Preconditions**: [e.g. Authenticated user, coin balance >= package price, account status is ACTIVE]
 
 ---
 
-## 3. Danh sách User Stories & Tiêu chí Nghiệm thu (Acceptance Criteria)
+## 3. User Stories & Acceptance Criteria
 
-### User Story 1: [Tiêu đề User Story chính] (Độ ưu tiên: P1)
-> Là một **[Người dùng]**, tôi muốn **[thực hiện hành động]** để có thể **[đạt được kết quả mong muốn]**.
+### User Story 1: [Main User Story Title] (Priority: P1)
+> As a **[User]**, I want to **[perform action]** so that I can **[achieve desired outcome]**.
 
 **Acceptance Criteria (BDD Format)**:
-- **Scenario 1 (Thành công)**:
-  - **Given**: Người dùng đã đăng nhập và có đủ điều kiện.
-  - **When**: Gửi yêu cầu thực hiện hành động với dữ liệu hợp lệ.
-  - **Then**: Hệ thống xử lý thành công, cập nhật trạng thái cơ sở dữ liệu và trả về kết quả 200 OK.
-- **Scenario 2 (Lỗi thiếu dữ liệu / dữ liệu không hợp lệ)**:
-  - **Given**: Người dùng gửi payload thiếu trường bắt buộc hoặc sai định dạng.
-  - **When**: Gửi request tới hệ thống.
-  - **Then**: Hệ thống từ chối và trả về lỗi `400 BAD_REQUEST` kèm thông báo chi tiết.
-- **Scenario 3 (Lỗi vi phạm quy tắc nghiệp vụ)**:
-  - **Given**: Người dùng không đủ số dư hoặc điều kiện nghiệp vụ không thỏa mãn.
-  - **When**: Gửi request thực hiện.
-  - **Then**: Hệ thống từ chối với lỗi `400 BAD_REQUEST` (hoặc `409 CONFLICT`), không thay đổi dữ liệu trong database.
+- **Scenario 1 (Success Path)**:
+  - **Given**: The user is authenticated and meets all preconditions.
+  - **When**: A request is sent with valid payload parameters.
+  - **Then**: The system processes successfully, updates database state, and returns HTTP 200 OK.
+- **Scenario 2 (Missing / Invalid Data Error)**:
+  - **Given**: The user sends a request payload missing required fields or with invalid formatting.
+  - **When**: Request is submitted to the system.
+  - **Then**: The system rejects the request with `400 BAD_REQUEST` and detailed error information.
+- **Scenario 3 (Business Rule Violation Error)**:
+  - **Given**: The user has insufficient balance or fails business rule preconditions.
+  - **When**: Request is submitted for execution.
+  - **Then**: The system rejects with `400 BAD_REQUEST` (or `409 CONFLICT`), leaving database state unmodified.
 
 ---
 
-## 4. Quy tắc Nghiệp vụ Bất biến (Business Invariants)
-- [ ] **Rule 1**: [Ví dụ: Số dư tài khoản không được âm sau giao dịch]
-- [ ] **Rule 2**: [Ví dụ: Mỗi tài khoản chỉ được nhận thưởng 1 lần trong ngày]
+## 4. Business Invariants
+- [ ] **Rule 1**: [e.g. Account balance must not be negative after transaction]
+- [ ] **Rule 2**: [e.g. Each account may claim daily reward only once per calendar day]

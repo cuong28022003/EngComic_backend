@@ -16,7 +16,6 @@ import mobile.model.payload.response.SuccessResponse;
 import mobile.security.DTO.AppUserDetail;
 import mobile.security.JWT.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +31,8 @@ import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -289,8 +288,7 @@ public class AuthentiactionController {
 
         try{
 
-            RandomString gen = new RandomString(8, ThreadLocalRandom.current());
-            String newpass = gen.nextString();
+            String newpass = java.util.UUID.randomUUID().toString().substring(0, 8);
 
             user = userService.updateUserPassword(user,newpass);
             emailService.sendForgetPasswordMessage(user,newpass);

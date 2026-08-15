@@ -2,12 +2,12 @@
 
 > **Repository**: `EngComic_backend` (Mobile Comic & Novel Reading Backend)  
 > **Documentation Index**:
-> - [docs/ai-coding-guide.md](file:///d:/Others/my-projects/EngComic_backend/docs/ai-coding-guide.md) — Cẩm nang hướng dẫn Developer cách ra lệnh, kiểm soát và dừng AI.
-> - [docs/architecture.md](file:///d:/Others/my-projects/EngComic_backend/docs/architecture.md) — Clean Architecture package breakdown, boundary pattern, 3 immutable principles.
-> - [docs/data-model.md](file:///d:/Others/my-projects/EngComic_backend/docs/data-model.md) — MongoDB collections, fields, relationships, and business invariants.
-> - [docs/api-contracts.md](file:///d:/Others/my-projects/EngComic_backend/docs/api-contracts.md) — Endpoints, request/response DTOs, HTTP status codes, error handling.
-> - [docs/spec-driven-guide.md](file:///d:/Others/my-projects/EngComic_backend/docs/spec-driven-guide.md) — Spec-Driven workflow with the 3-file backbone (`spec.md`, `plan.md`, `tasks.md`).
-> - [docs/tech-stack-upgrade-plan.md](file:///d:/Others/my-projects/EngComic_backend/docs/tech-stack-upgrade-plan.md) — Migration roadmap to Java 21 + Spring Boot 3.3 + Springdoc OpenAPI.
+> - [docs/ai-coding-guide.md](file:///c:/Data/code/tieu_luan_chuyen_nganh/source_code/back-end/docs/ai-coding-guide.md) — Developer handbook for prompting, controlling, and stopping AI.
+> - [docs/architecture.md](file:///c:/Data/code/tieu_luan_chuyen_nganh/source_code/back-end/docs/architecture.md) — Clean Architecture package breakdown, boundary pattern, 3 immutable principles.
+> - [docs/data-model.md](file:///c:/Data/code/tieu_luan_chuyen_nganh/source_code/back-end/docs/data-model.md) — MongoDB collections, fields, relationships, and business invariants.
+> - [docs/api-contracts.md](file:///c:/Data/code/tieu_luan_chuyen_nganh/source_code/back-end/docs/api-contracts.md) — Endpoints, request/response DTOs, HTTP status codes, error handling.
+> - [docs/spec-driven-guide.md](file:///c:/Data/code/tieu_luan_chuyen_nganh/source_code/back-end/docs/spec-driven-guide.md) — Spec-Driven workflow with the 3-file backbone (`spec.md`, `plan.md`, `tasks.md`).
+> - [docs/tech-stack-upgrade-plan.md](file:///c:/Data/code/tieu_luan_chuyen_nganh/source_code/back-end/docs/tech-stack-upgrade-plan.md) — Migration roadmap to Java 21 + Spring Boot 3.3 + Springdoc OpenAPI.
 
 ---
 
@@ -31,10 +31,10 @@ EngComic_backend/
 │   ├── 000-template/                  # Template (spec.md, plan.md, tasks.md)
 │   └── {feature-id}-{feature-name}/   # Individual feature specs
 └── src/main/java/mobile/              # Clean Architecture Source Code Layers
-    ├── apis/                          # [TẦNG 1: ADAPTER / CONTROLLER]
-    ├── businesses/                    # [TẦNG 2: BUSINESS LOGIC / USE-CASES]
-    ├── databases/                     # [TẦNG 3: DATA ACCESS / INFRASTRUCTURE]
-    └── config/                        # [TẦNG CHUNG: COMMON & CONFIG]
+    ├── apis/                          # [LAYER 1: ADAPTER / CONTROLLER]
+    ├── businesses/                    # [LAYER 2: BUSINESS LOGIC / USE-CASES]
+    ├── databases/                     # [LAYER 3: DATA ACCESS / INFRASTRUCTURE]
+    └── config/                        # [COMMON LAYER: COMMON & CONFIG]
 ```
 
 ---
@@ -42,7 +42,7 @@ EngComic_backend/
 ## 2. Technical Constraints & Environment
 
 ### 2.1 Tech Stack & Versions
-- **Language**: Java 11 (Upgrading to Java 21 LTS — see [docs/tech-stack-upgrade-plan.md](file:///d:/Others/my-projects/EngComic_backend/docs/tech-stack-upgrade-plan.md))
+- **Language**: Java 11 (Upgrading to Java 21 LTS — see [docs/tech-stack-upgrade-plan.md](file:///c:/Data/code/tieu_luan_chuyen_nganh/source_code/back-end/docs/tech-stack-upgrade-plan.md))
 - **Framework**: Spring Boot 2.6.2 (Upgrading to Spring Boot 3.3.x)
 - **Persistence**: Spring Data MongoDB (`spring-boot-starter-data-mongodb`), MongoDB BSON `ObjectId`
 - **Security & Authentication**: Spring Security + JWT (`com.auth0:java-jwt:3.18.3`, `io.jsonwebtoken:jjwt:0.9.1`)
@@ -86,11 +86,11 @@ EngComic_backend/
 ### 3.1 Three Immutable Principles
 1. **Strict One-Way Dependency Flow**:
    $$\text{apis (Controller)} \longrightarrow \text{businesses (Boundary / Interactor)} \longrightarrow \text{databases (Repository / Entity)}$$
-   Tầng `databases` hoặc `entities` tuyệt đối không gọi ngược lên `businesses` hoặc `apis`.
+   The `databases` or `entities` layers must NEVER invoke calls backwards into `businesses` or `apis`.
 2. **Boundary Interface Pattern**:
-   Mỗi hành động nghiệp vụ (Create, Update, OpenPack, ClaimReward) là một **Boundary Interface** riêng biệt trong `businesses.boundaries.{feature}`. Request/Response DTOs được định nghĩa kèm bên trong hoặc cùng package.
+   Every business action (Create, Update, OpenPack, ClaimReward) is a separate **Boundary Interface** in `businesses.boundaries.{feature}`. Request/Response DTOs are defined within or alongside the package.
 3. **Thin Controller (No Business Logic)**:
-   Controller chỉ đón nhận HTTP request, validate `@Valid`, trích xuất JWT/Header, gọi Boundary Interactor và đóng gói `ResponseEntity`. Tuyệt đối không chứa câu truy vấn DB hay logic tính toán phức tạp.
+   Controllers only receive HTTP requests, validate `@Valid`, extract JWT/Headers, invoke Boundary Interactors, and wrap `ResponseEntity`. They must NEVER contain DB query calls or complex calculations.
 
 ### 3.2 Clean Architecture Package Breakdown (`src/main/java/mobile/`)
 - `mobile.apis.{feature}`:
@@ -98,13 +98,13 @@ EngComic_backend/
   - `{Feature}Mapper.java`: Entity <-> DTO mappers.
   - `dtos/`: Client request & response payload classes.
 - `mobile.businesses.boundaries.{feature}`:
-  - `{Action}{Feature}Boundary.java`: Use-case interface và inner `Request`/`Response` data models.
+  - `{Action}{Feature}Boundary.java`: Use-case interface and inner `Request`/`Response` data models.
 - `mobile.businesses.interactors.{feature}`:
-  - `{Action}{Feature}Interactor.java`: Service thực thi logic nghiệp vụ chính.
+  - `{Action}{Feature}Interactor.java`: Primary business logic implementation service.
 - `mobile.businesses.services`:
-  - `{Feature}Service.java`, `{Feature}SearchCriteria.java`: Domain services & tìm kiếm nâng cao.
+  - `{Feature}Service.java`, `{Feature}SearchCriteria.java`: Domain services & advanced search criteria.
 - `mobile.databases.entities`:
-  - `{Feature}Entity.java` (hoặc `Entity`): MongoDB documents (`@Document`, `@Id ObjectId`).
+  - `{Feature}Entity.java` (or `Entity`): MongoDB documents (`@Document`, `@Id ObjectId`).
 - `mobile.databases.repositories`:
   - `{Feature}Repository.java`: Spring Data Mongo Repositories (`MongoRepository<Entity, ObjectId>`).
 - `mobile.config` / `mobile.common`:

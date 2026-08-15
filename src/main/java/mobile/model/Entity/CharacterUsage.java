@@ -8,7 +8,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;

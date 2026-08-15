@@ -10,8 +10,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,6 +24,7 @@ import java.util.Set;
 public class Card {
     @Id
     protected ObjectId id;
+    protected ObjectId userId;
     protected ObjectId deckId;
     protected String front;
     protected String back;
@@ -30,6 +32,20 @@ public class Card {
     protected String image;
     protected String audio;
     protected Set<String> tags;
+
+    protected String partOfSpeech;
+    protected String level;
+    protected List<ExampleSentence> examples;
+    protected List<String> collocations;
+    protected List<String> synonyms;
+    protected List<String> antonyms;
+    protected WordFamily wordFamily;
+    protected List<String> commonMistakes;
+    protected String personalNote;
+    protected String myExample;
+    protected boolean isFavorite = false;
+    protected String masteryStatus = "NEW";
+
     @CreatedDate
     protected Date createAt;
     @LastModifiedDate

@@ -1,46 +1,46 @@
 # Task Breakdown: [Feature Name]
 
-> **Góc nhìn**: Developer / AI Agent  
-> **Mục đích**: Trả lời câu hỏi **"BƯỚC NÀO LÀM TRƯỚC, BƯỚC NÀO LÀM SAU?" (EXECUTION & CHECKLIST)**  
-> **Chỉ dẫn cho AI**: Thực hiện tuần tự từng task. Chạy `./mvnw compile` sau mỗi task để xác minh cú pháp trước khi tick `[x]` và chuyển sang task tiếp theo.
+> **Perspective**: Developer / AI Agent  
+> **Purpose**: Answer the question **"EXECUTION & CHECKLIST"**  
+> **Instructions for AI**: Execute tasks sequentially. Run `./mvnw compile` after completing each task to verify syntax before checking `[x]` and moving to the next task.
 
 ---
 
 ### Phase 1: Database & Persistence Layer (`databases/`)
-- [ ] **T001**: Tạo MongoDB Entity Document
+- [ ] **T001**: Create MongoDB Entity Document
   - **Where**: `src/main/java/mobile/databases/entities/[Feature]Entity.java`
-  - **Details**: Định nghĩa schema, `@Id ObjectId id`, `@Document(collection = "...")`, Lombok `@Getter`, `@Setter`.
-- [ ] **T002**: Tạo Spring Data Mongo Repository
+  - **Details**: Define schema, `@Id ObjectId id`, `@Document(collection = "...")`, Lombok `@Getter`, `@Setter`.
+- [ ] **T002**: Create Spring Data Mongo Repository
   - **Where**: `src/main/java/mobile/databases/repositories/[Feature]Repository.java`
-  - **Details**: Kế thừa `MongoRepository<[Feature]Entity, ObjectId>`, khai báo query method nếu có.
+  - **Details**: Extend `MongoRepository<[Feature]Entity, ObjectId>`, declare custom query methods.
 
 ---
 
 ### Phase 2: Business Logic & Use-Case Layer (`businesses/`)
-- [ ] **T003**: Tạo Boundary Interface & Hợp đồng DTO nội bộ
+- [ ] **T003**: Create Boundary Interface & Inner Data Models
   - **Where**: `src/main/java/mobile/businesses/boundaries/[feature]/[Action][Feature]Boundary.java`
-  - **Details**: Định nghĩa `execute(Request request) -> Response` với inner classes `Request` và `Response`.
-- [ ] **T004**: Viết Use-Case Interactor Implementation
+  - **Details**: Define `execute(Request request) -> Response` with inner classes `Request` and `Response`.
+- [ ] **T004**: Implement Use-Case Interactor
   - **Where**: `src/main/java/mobile/businesses/interactors/[feature]/[Action][Feature]Interactor.java`
-  - **Details**: Thực thi toàn bộ business invariants, kiểm tra điều kiện nghiệp vụ, cập nhật trạng thái và gọi Repository.
+  - **Details**: Implement all business invariants, check domain conditions, mutate state, and call Repository.
 
 ---
 
 ### Phase 3: Adapter & REST API Layer (`apis/`)
-- [ ] **T005**: Tạo API Request & Response DTOs
+- [ ] **T005**: Create API Request & Response DTOs
   - **Where**: `src/main/java/mobile/apis/[feature]/dtos/[Action][Feature]RequestDto.java`
   - **Where**: `src/main/java/mobile/apis/[feature]/dtos/[Feature]ResponseDto.java`
-  - **Details**: Thêm validation annotations (`@NotBlank`, `@NotNull`, `@Min`, `@Max`).
-- [ ] **T006**: Tạo Mapper Component
+  - **Details**: Add validation annotations (`@NotBlank`, `@NotNull`, `@Min`, `@Max`).
+- [ ] **T006**: Create Mapper Component
   - **Where**: `src/main/java/mobile/apis/[feature]/[Feature]Mapper.java`
-  - **Details**: Spring `@Component` chuyển đổi Entity/Boundary Response sang API Response DTO.
-- [ ] **T007**: Tạo REST Controller Endpoint
+  - **Details**: Spring `@Component` mapper to transform Entity/Boundary Response to API Response DTO.
+- [ ] **T007**: Create REST Controller Endpoint
   - **Where**: `src/main/java/mobile/apis/[feature]/[Feature]Controller.java`
-  - **Details**: `@RestController`, `@RequestMapping`, validate `@Valid`, gọi Boundary và trả về `ResponseEntity`.
+  - **Details**: `@RestController`, `@RequestMapping`, validate `@Valid`, invoke Boundary and return `ResponseEntity`.
 
 ---
 
 ### Phase 4: Verification & Checkpoint
-- [ ] **T008**: Biên dịch và kiểm thử
-  - **Command**: `./mvnw compile` (hoặc `./mvnw test`)
-  - **Requirement**: Build thành công 100% không phát sinh lỗi hoặc cảnh báo gãy kiểu dữ liệu.
+- [ ] **T008**: Build Compilation & Testing Checkpoint
+  - **Command**: `./mvnw compile` (or `./mvnw test`)
+  - **Requirement**: Build success 100% without compilation or type safety errors.

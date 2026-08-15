@@ -1,7 +1,7 @@
 
 package mobile.model.payload.request.user;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public class RoleToUserRequest {
     @NotBlank

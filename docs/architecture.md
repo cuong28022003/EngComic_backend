@@ -6,25 +6,25 @@
 
 ```mermaid
 graph TD
-    subgraph Layer1[TẦNG 1: ADAPTERS / APIS]
+    subgraph Layer1[LAYER 1: ADAPTERS / APIS]
         API[mobile.apis.{feature}]
         Controller["{Feature}Controller"]
         Mapper["{Feature}Mapper"]
         DTOs["Request / Response DTOs"]
     end
 
-    subgraph Layer2[TẦNG 2: BUSINESS LOGIC / USE-CASES]
+    subgraph Layer2[LAYER 2: BUSINESS LOGIC / USE-CASES]
         Boundaries["mobile.businesses.boundaries.{feature} (Boundary Interfaces)"]
         Interactors["mobile.businesses.interactors.{feature} (Use-Case Interactors)"]
         Services["mobile.businesses.services (Domain Services & Search Criteria)"]
     end
 
-    subgraph Layer3[TẦNG 3: DATA ACCESS / DATABASES]
+    subgraph Layer3[LAYER 3: DATA ACCESS / DATABASES]
         Entities["mobile.databases.entities ({Feature}Entity)"]
         Repositories["mobile.databases.repositories ({Feature}Repository)"]
     end
 
-    subgraph LayerCommon[TẦNG CHUNG: COMMON & CONFIG]
+    subgraph LayerCommon[COMMON LAYER: COMMON & CONFIG]
         Security["SecurityConfiguration & JWT"]
         Exceptions["ErrorHandlingAdvice & Custom Exceptions"]
     end
@@ -44,13 +44,13 @@ graph TD
 
 1. **Strict One-Way Dependency Flow**:
    $$\text{apis (Controller/Adapter)} \longrightarrow \text{businesses (Boundary / Interactor)} \longrightarrow \text{databases (Repository / Entity)}$$
-   Tầng `databases` và `entities` tuyệt đối không tham chiếu hay gọi ngược lên `businesses` hoặc `apis`.
+   The `databases` and `entities` layers must NEVER reference or invoke calls backwards into `businesses` or `apis`.
 2. **Boundary Interface Pattern**:
-   - Mỗi hành động nghiệp vụ (Create, Update, OpenPack, ClaimReward, SyncProgress) là một **Boundary Interface** riêng biệt trong `businesses.boundaries.{feature}`.
-   - Request và Response của Use-Case được định nghĩa rõ ràng gắn liền với Boundary đó.
+   - Every business action (Create, Update, OpenPack, ClaimReward, SyncProgress) is a separate **Boundary Interface** in `businesses.boundaries.{feature}`.
+   - Request and Response parameters for each Use-Case are explicitly defined within or alongside that Boundary.
 3. **Thin Controller (No Business Logic)**:
-   - Controller chỉ đón nhận HTTP request, validate `@Valid`, trích xuất JWT/Header, gọi Boundary Interactor và đóng gói `ResponseEntity`.
-   - Tuyệt đối không chứa câu truy vấn DB, logic tính toán hay thuật toán nghiệp vụ trong Controller.
+   - Controllers only receive HTTP requests, validate `@Valid`, extract JWT/Headers, invoke Boundary Interactors, and wrap `ResponseEntity`.
+   - Controllers must NEVER contain database queries, business calculations, or domain algorithms.
 
 ---
 
@@ -59,36 +59,36 @@ graph TD
 ```text
 src/main/java/mobile/
 │
-├── apis/                                # [TẦNG 1: ADAPTER / CONTROLLER]
-│   └── {feature_name}/                  # Gom nhóm theo từng tính năng (VD: gacha, comic, quest, payment)
-│       ├── {Feature}Controller.java     # REST Controller: Chỉ đón nhận HTTP request, validate cơ bản
-│       ├── {Feature}Mapper.java         # Mapper Component: Chuyển đổi giữa Entity và DTO
-│       └── dtos/                        # Chứa các DTO nhận từ client hoặc trả ra bên ngoài
+├── apis/                                # [LAYER 1: ADAPTER / CONTROLLER]
+│   └── {feature_name}/                  # Grouped by feature (e.g. gacha, comic, quest, payment, card)
+│       ├── {Feature}Controller.java     # REST Controller: Handles HTTP requests & input validation
+│       ├── {Feature}Mapper.java         # Mapper Component: Transforms Entity <-> DTO
+│       └── dtos/                        # Request and Response DTO payloads
 │           ├── Create{Feature}Request.java
 │           └── {Feature}ResponseDto.java
 │
-├── businesses/                          # [TẦNG 2: BUSINESS LOGIC / USE-CASES]
-│   ├── boundaries/                      # Use-case Interfaces (Hợp đồng đầu vào/ra của nghiệp vụ)
+├── businesses/                          # [LAYER 2: BUSINESS LOGIC / USE-CASES]
+│   ├── boundaries/                      # Use-case Interfaces (Business contracts)
 │   │   └── {feature_name}/
 │   │       └── Create{Feature}Boundary.java  # Interface + Request/Response DTOs
-│   ├── interactors/                     # Use-case Implementations (Nơi thực thi logic nghiệp vụ chính)
+│   ├── interactors/                     # Use-case Implementations (Core business logic)
 │   │   └── {feature_name}/
 │   │       └── Create{Feature}Interactor.java
-│   └── services/                        # Domain Services + Xử lý tìm kiếm & Criteria
+│   └── services/                        # Domain Services + Advanced Search Criteria
 │       ├── {Feature}Service.java
-│       └── {Feature}SearchCriteria.java # Gom nhóm các điều kiện lọc (Filter/Search)
+│       └── {Feature}SearchCriteria.java # Encapsulates filtering parameters
 │
-├── databases/                           # [TẦNG 3: DATA ACCESS / INFRASTRUCTURE]
+├── databases/                           # [LAYER 3: DATA ACCESS / INFRASTRUCTURE]
 │   ├── entities/                        # Database Entities (MongoDB models: @Document, @Id ObjectId)
 │   │   └── {Feature}Entity.java
 │   ├── repositories/                    # Spring Data Repositories (MongoRepository<T, ObjectId>)
 │   │   └── {Feature}Repository.java
-│   └── migrations/                      # Seeders và scripts cập nhật dữ liệu
+│   └── migrations/                      # Seeders and database migration scripts
 │
-└── config/ (hoặc common/)               # [TẦNG CHUNG: SHARED UTILS & CONFIGS]
-    ├── SecurityConfiguration.java       # Cấu hình bảo mật, JWT filter
-    ├── ErrorHandlingAdvice.java         # Exception Handler tập trung (@RestControllerAdvice)
-    └── exceptions/                      # Định nghĩa mã lỗi và Custom Exceptions
+└── config/ (or common/)                 # [COMMON LAYER: SHARED UTILS & CONFIGS]
+    ├── SecurityConfiguration.java       # Security configuration, JWT filter
+    ├── ErrorHandlingAdvice.java         # Centralized Exception Handler (@RestControllerAdvice)
+    └── exceptions/                      # Error codes and Custom Exceptions
 ```
 
 ---
@@ -141,7 +141,7 @@ public class ClaimRewardInteractor implements ClaimRewardBoundary {
     @Override
     @Transactional
     public Response execute(Request request) {
-        // Thực thi toàn bộ business rules tại đây
+        // Execute all business rules here
         return Response.builder()
                 .success(true)
                 .expGained(100)

@@ -26,7 +26,7 @@ import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 
 import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("api/comics")

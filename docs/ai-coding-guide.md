@@ -1,99 +1,99 @@
-# CẨM NANG HƯỚNG DẪN LÀM VIỆC VỚI AI (AI CODING HANDBOOK)
+# AI CODING HANDBOOK & WORKFLOW GUIDE
 
-> **Dành cho**: Developer làm việc cùng AI trên dự án `EngComic_backend`  
-> **Mục tiêu**: Hướng dẫn từng bước cách ra lệnh, kiểm soát và dừng/uốn nắn AI khi lập trình để đạt hiệu quả cao nhất, không bị lỗi lan man hoặc phá vỡ cấu trúc code.
+> **Target Audience**: Developers pair-programming with AI on the `EngComic_backend` project  
+> **Objective**: Step-by-step guidance on how to prompt, control, intervene, and guide AI during development to achieve maximum efficiency without context drift or architectural decay.
 
 ---
 
-## 🧭 1. Sơ đồ Quy trình Tổng quan
+## 🧭 1. Overall Workflow Diagram
 
 ```mermaid
 graph TD
-    Start[Bắt đầu công việc] --> CheckType{Loại công việc?}
+    Start[Start Task] --> CheckType{Task Type?}
     
-    %% Nhánh công việc nhỏ
-    CheckType -- Fix bug nhỏ / Thêm 1 field --> QuickPrompt[Prompt trực tiếp 1 câu<br>Ví dụ: Fix NPE ở ComicMapping.java]
-    QuickPrompt --> QuickVerify[Chạy ./mvnw compile]
+    %% Small task branch
+    CheckType -- Small Bug Fix / Add 1 Field --> QuickPrompt[Single-sentence direct prompt<br>e.g. Fix NPE in ComicMapping.java]
+    QuickPrompt --> QuickVerify[Run ./mvnw compile]
     
-    %% Nhánh tính năng mới
-    CheckType -- Tính năng mới / Module lớn --> Step0[Bước 0: Copy specs/000-template sang specs/00X-feature/]
-    Step0 --> Step1[Bước 1: Chạy Prompt sinh spec.md]
-    Step1 --> Step2[Bước 2: Chạy Prompt sinh plan.md]
-    Step2 --> Step3[Bước 3: Chạy Prompt sinh tasks.md]
-    Step3 --> Step4[Bước 4: Ra lệnh AI code từng task T001, T002...]
-    Step4 --> StepVerify{AI có đi chệch hướng không?}
-    StepVerify -- Có --> Intervene[Can thiệp & Chặn AI lại]
-    StepVerify -- Không --> Done[Tick checkbox [x] & Chuyển task tiếp theo]
+    %% New feature branch
+    CheckType -- New Feature / Large Module --> Step0[Step 0: Copy specs/000-template to specs/00X-feature/]
+    Step0 --> Step1[Step 1: Run Prompt to generate spec.md]
+    Step1 --> Step2[Step 2: Run Prompt to generate plan.md]
+    Step2 --> Step3[Step 3: Run Prompt to generate tasks.md]
+    Step3 --> Step4[Step 4: Prompt AI to code tasks T001, T002... step by step]
+    Step4 --> StepVerify{Is AI drifting off track?}
+    StepVerify -- Yes --> Intervene[Intervene & stop AI]
+    StepVerify -- No --> Done[Check checkbox [x] & proceed to next task]
 ```
 
 ---
 
-## 🛠️ 2. Hướng dẫn Từng Bước (Step-by-Step)
+## 2. Step-by-Step Instructions
 
-### 📌 Trường hợp A: Phát triển Tính năng Mới (New Feature)
+### 📌 Case A: Developing a New Feature
 
-#### Bước 0: Tạo thư mục Spec
-Copy thư mục `specs/000-template/` thành `specs/001-[tên-tính-năng]/` (Ví dụ: `specs/001-daily-quest/`).
+#### Step 0: Create Spec Directory
+Copy `specs/000-template/` to `specs/001-[feature-name]/` (e.g. `specs/001-daily-quest/`).
 
-#### Bước 1: Yêu cầu AI viết `spec.md` (Đặc tả nghiệp vụ)
+#### Step 1: Request `spec.md` (Business Specification)
 > **Prompt:**
 > ```text
-> Tôi muốn làm tính năng mới: "[Tên tính năng]".
-> Mô tả: [Dán ý tưởng / yêu cầu sơ bộ vào đây].
-> Hãy đọc AGENTS.md và tạo file specs/001-[tên-tính-năng]/spec.md với các User Stories (P1, P2), Tiêu chí nghiệm thu BDD (Given-When-Then) và Business Invariants.
+> I want to implement a new feature: "[Feature Name]".
+> Description: [Paste preliminary idea / requirements here].
+> Read AGENTS.md and generate specs/001-[feature-name]/spec.md containing User Stories (P1, P2), BDD Acceptance Criteria (Given-When-Then), and Business Invariants.
 > ```
 
-#### Bước 2: Yêu cầu AI thiết kế `plan.md` (Kiến trúc kỹ thuật)
+#### Step 2: Request `plan.md` (Technical Architecture)
 > **Prompt:**
 > ```text
-> Dựa vào file specs/001-[tên-tính-năng]/spec.md, hãy thiết kế file specs/001-[tên-tính-năng]/plan.md tuân thủ Clean Architecture (apis, businesses, databases) và MongoDB schema.
+> Based on specs/001-[feature-name]/spec.md, design specs/001-[feature-name]/plan.md following Clean Architecture (apis, businesses, databases) and MongoDB schema design.
 > ```
 
-#### Bước 3: Yêu cầu AI lập danh sách `tasks.md` (Checklist thực thi)
+#### Step 3: Request `tasks.md` (Execution Checklist)
 > **Prompt:**
 > ```text
-> Dựa vào spec.md và plan.md vừa tạo, hãy viết file specs/001-[tên-tính-năng]/tasks.md chia nhỏ các task theo 4 Phase (databases -> businesses -> apis -> verification). Mỗi task phải có Where, How, Refs.
+> Based on the newly created spec.md and plan.md, write specs/001-[feature-name]/tasks.md breaking down tasks into 4 Phases (databases -> businesses -> apis -> verification). Each task must specify Where, How, and Refs.
 > ```
 
-#### Bước 4: Thực thi từng task một (Execution)
-> **Prompt chuẩn (Copy-paste):**
+#### Step 4: Execute Tasks Sequentially
+> **Standard Execution Prompt (Copy-paste):**
 > ```text
-> Hãy đọc specs/001-[tên-tính-năng]/ và thực hiện duy nhất Task T001 trong tasks.md.
-> Sau khi xong:
-> 1. Tự động tick [x] vào tasks.md.
-> 2. Chạy './mvnw compile' để xác minh cú pháp.
-> 3. DỪNG LẠI và báo cáo, không tự ý làm tiếp task tiếp theo.
+> Read specs/001-[feature-name]/ and execute ONLY Task T001 in tasks.md.
+> Upon completion:
+> 1. Automatically check [x] in tasks.md.
+> 2. Run './mvnw compile' to verify syntax.
+> 3. STOP and report results. Do not proceed to the next task without prompt confirmation.
 > ```
 
 ---
 
-### 📌 Trường hợp B: Fix Bug nhỏ hoặc Tinh chỉnh Code
+### 📌 Case B: Small Bug Fixes & Code Tweaks
 
-Không cần tạo spec, chỉ cần prompt rõ ràng 3 yếu tố: **File bị lỗi + Hiện tượng lỗi + Yêu cầu sửa**.
+No spec creation required. Provide a clear prompt covering 3 key elements: **Affected File + Error Symptom + Fix Target**.
 
-> **Prompt mẫu:**
+> **Sample Prompt:**
 > ```text
-> File 'src/main/java/mobile/mapping/ComicMapping.java' bị lỗi NullPointerException khi 'comic.getUploaderId()' là null.
-> Hãy kiểm tra null an toàn trước khi gọi userService.findById(). Sau đó chạy './mvnw compile' để kiểm tra.
+> File 'src/main/java/mobile/mapping/ComicMapping.java' throws a NullPointerException when 'comic.getUploaderId()' is null.
+> Add null-safe checks before calling userService.findById(). Then run './mvnw compile' to verify.
 > ```
 
 ---
 
-## 🛑 3. Khi nào CẦN DỪNG và CAN THIỆP AI?
+## 🛑 3. When to STOP and INTERVENE with AI
 
-| Hiện tượng bất thường | Nguyên nhân | Cách xử lý / Câu lệnh can thiệp |
+| Anomalous Symptom | Cause | Action / Intervention Prompt |
 | :--- | :--- | :--- |
-| **AI tự ý sửa các file cũ ngoài phạm vi** | AI bị context drift, cố sửa toàn bộ dự án | 🛑 **DỪNG LẠI NGAY**: *"Hãy hoàn tác các thay đổi ngoài phạm vi. Bạn CHỈ ĐƯỢC PHÉP chỉnh sửa file trong phạm vi của Task T00X."* |
-| **AI viết logic nghiệp vụ vào Controller** | Vi phạm nguyên tắc Thin Controller | 🛑 **NHẮC NHỞ**: *"Vi phạm AGENTS.md: Controller không được chứa logic nghiệp vụ. Hãy chuyển toàn bộ logic tính toán sang Interactor trong `businesses/`."* |
-| **AI sinh mã Lombok dài dòng thay vì dùng Record (Java 21)** | AI quen code cũ | 🛑 **CHỈ ĐỊNH**: *"Hãy dùng cú pháp `record` của Java 21 cho Boundary Request/Response này thay vì tạo class thông thường."* |
-| **AI báo lỗi compile lặp đi lặp lại 3 lần** | AI bị kẹt vòng lặp | 🛑 **DỪNG LẠI**: *"Dừng lại. Đọc kỹ file lỗi tại dòng X, kiểm tra xem đã import đúng thư viện chưa, không tự ý đoán mò."* |
+| **AI modifies unrelated existing files** | Context drift, trying to refactor entire project | 🛑 **STOP IMMEDIATELY**: *"Revert all changes outside scope. You are ONLY allowed to edit files within Task T00X."* |
+| **AI writes business logic inside Controller** | Violates Thin Controller principle | 🛑 **REMIND**: *"AGENTS.md Violation: Controllers must not contain business logic. Move all calculation logic to the Interactor in `businesses/`."* |
+| **AI generates verbose Lombok classes instead of Java 21 Records** | Outdated coding pattern | 🛑 **SPECIFY**: *"Use Java 21 `record` syntax for this Boundary Request/Response instead of standard classes."* |
+| **AI gets stuck in a compile error loop 3 times** | AI trapped in a fix loop | 🛑 **STOP**: *"Stop. Carefully read line X of the compile output, verify import statements, and do not guess blindly."* |
 
 ---
 
-## 💡 4. "Thần chú" 5 Nguyên tắc Vàng khi Prompt AI
+## 💡 4. The 5 Golden Prompting Rules
 
-1. **Nguyên tắc "1 Prompt = 1 Task Nhỏ"**: Không bao giờ bảo AI *"Hãy viết toàn bộ module X cho tôi"*.
-2. **Nguyên tắc "Luôn có Checkpoint Compile"**: Luôn yêu cầu AI chạy `./mvnw compile` sau mỗi file/task.
-3. **Nguyên tắc "Chỉ định File cụ thể"**: Đưa đường dẫn file chính xác (`Where: src/main/java/mobile/...`) để AI không tạo file lung tung.
-4. **Nguyên tắc "Không nuốt lỗi"**: Cấm AI viết `try { ... } catch (Exception e) {}` rỗng.
-5. **Nguyên tắc "Giữ nguyên Code cũ"**: Nhắc AI không refactor những file đang chạy ổn định của dự án.
+1. **Rule of "1 Prompt = 1 Small Task"**: Never tell AI *"Write the entire module X for me"*.
+2. **Rule of "Always Compile Checkpoint"**: Always require AI to run `./mvnw compile` after every task.
+3. **Rule of "Explicit File Pathing"**: Provide exact file paths (`Where: src/main/java/mobile/...`) so AI creates files in expected locations.
+4. **Rule of "No Swallowing Errors"**: Prohibit empty `try { ... } catch (Exception e) {}` blocks.
+5. **Rule of "Preserve Legacy Code Integrity"**: Remind AI never to refactor working, stable codebase areas.

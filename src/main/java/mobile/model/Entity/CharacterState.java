@@ -4,13 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.Map;
 
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,5 +18,5 @@ public class CharacterState {
     @Id
     private String id;
     private String characterId;
-    private Map<String, AnimationAction> states; //String is state id
+    private Map<String, AnimationAction> states; // String is state id
 }

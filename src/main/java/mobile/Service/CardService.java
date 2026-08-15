@@ -10,6 +10,8 @@ import java.util.List;
 public interface CardService {
      Card findById(ObjectId id);
      Page<Card> findByDeckId(ObjectId deckId, Pageable pageable);
+     Page<Card> findDueCardsByDeckId(ObjectId deckId, Pageable pageable);
+     Page<Card> findByDeckIdIn(List<ObjectId> deckIds, String search, Pageable pageable);
      Card save(Card card);
      void deleteById(ObjectId id);
      Card review(ObjectId cardId, boolean isCorrect, String reviewState);

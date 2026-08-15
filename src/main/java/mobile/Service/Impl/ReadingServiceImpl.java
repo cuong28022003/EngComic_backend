@@ -1,6 +1,6 @@
 package mobile.Service.Impl;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import mobile.mapping.ReadingMapping;
 import mobile.model.payload.response.reading.ReadingResponse;
