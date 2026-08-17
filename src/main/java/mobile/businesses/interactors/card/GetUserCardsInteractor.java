@@ -1,15 +1,12 @@
 package mobile.businesses.interactors.card;
 
 import lombok.RequiredArgsConstructor;
+import mobile.apis.card.dtos.CardResponseDto;
 import mobile.businesses.boundaries.card.GetUserCardsBoundary;
-import mobile.mapping.CardMapping;
-import mobile.model.Entity.Card;
-import mobile.model.Entity.Deck;
-import mobile.model.payload.response.card.CardResponse;
-import mobile.repository.CardRepository;
-import mobile.Service.DeckService;
-import mobile.Service.CardService;
-import org.bson.types.ObjectId;
+import mobile.databases.entities.card.CardEntity;
+import mobile.databases.entities.deck.DeckEntity;
+import mobile.databases.repositories.card.CardRepository;
+import mobile.databases.repositories.deck.DeckRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,25 +18,33 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GetUserCardsInteractor implements GetUserCardsBoundary {
     private final CardRepository cardRepository;
-    private final CardService cardService;
-    private final DeckService deckService;
+    private final DeckRepository deckRepository;
+    private final CardMapper cardMapper;
 
     @Override
-    public Page<CardResponse> execute(Request request) {
-        ObjectId userObjId = new ObjectId(request.userId());
-        String search = request.search();
+    public Response execute(Request request) {
+        String userId = request.getUserId();
+        String search = request.getSearch();
         boolean hasSearch = (search != null && !search.trim().isEmpty());
 
-        Page<Card> cardPage = hasSearch
-                ? cardRepository.findByUserIdAndBackContainingIgnoreCaseOrFrontContainingIgnoreCase(userObjId, search.trim(), search.trim(), request.pageable())
-                : cardRepository.findByUserId(userObjId, request.pageable());
+        Page<CardEntity> cardPage = hasSearch
+                ? cardRepository.findByUserIdAndBackContainingIgnoreCaseOrFrontContainingIgnoreCase(userId, search.trim(), search.trim(), request.getPageable())
+                : cardRepository.findByUserId(userId, request.getPageable());
 
         if (cardPage.getContent().isEmpty()) {
-            Page<Deck> userDecks = deckService.findByUserId(userObjId, PageRequest.of(0, 500));
-            List<ObjectId> deckIds = userDecks.getContent().stream().map(Deck::getId).collect(Collectors.toList());
-            cardPage = cardService.findByDeckIdIn(deckIds, search, request.pageable());
+            Page<DeckEntity> userDecks = deckRepository.findByUserId(userId, PageRequest.of(0, 500));
+            List<String> deckIds = userDecks.getContent().stream().map(DeckEntity::getId).collect(Collectors.toList());
+            if (!deckIds.isEmpty()) {
+                if (hasSearch) {
+                    cardPage = cardRepository.findByDeckIdInOrDeckIdNullAndSearch(deckIds, search.trim(), request.getPageable());
+                } else {
+                    cardPage = cardRepository.findByDeckIdInOrDeckIdNull(deckIds, request.getPageable());
+                }
+            }
         }
 
-        return cardPage.map(CardMapping::entityToResponse);
+        return Response.builder()
+                .cards(cardPage.map(cardMapper::toResponse))
+                .build();
     }
 }

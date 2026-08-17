@@ -5,20 +5,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mobile.apis.card.dtos.CreateCardRequest;
-import mobile.apis.card.dtos.CardResponseDto;
+import mobile.apis.card.dtos.BatchImportResponseDto;
 
-public interface CreateCardBoundary {
+public interface BatchImportCard {
     Response execute(Request request);
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     class Request {
-        private CreateCardRequest payload;
-        private String currentUserId;
+        private String userId;
+        private String jsonContent;
+        private String deckId;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     class Response {
-        private CardResponseDto card;
+        private BatchImportResponseDto data;
     }
 }

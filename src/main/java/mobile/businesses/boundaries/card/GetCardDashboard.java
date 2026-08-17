@@ -5,20 +5,23 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mobile.apis.card.dtos.CreateCardRequest;
-import mobile.apis.card.dtos.CardResponseDto;
+import mobile.apis.card.dtos.DashboardResponseDto;
+import org.springframework.data.domain.Pageable;
 
-public interface CreateCardBoundary {
+public interface GetCardDashboard {
     Response execute(Request request);
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     class Request {
-        private CreateCardRequest payload;
-        private String currentUserId;
+        private String userId;
+        private String search;
+        private String status;
+        private String topic;
+        private Pageable pageable;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     class Response {
-        private CardResponseDto card;
+        private DashboardResponseDto data;
     }
 }

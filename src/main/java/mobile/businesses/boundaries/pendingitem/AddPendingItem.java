@@ -1,24 +1,25 @@
-package mobile.businesses.boundaries.card;
+package mobile.businesses.boundaries.pendingitem;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mobile.apis.card.dtos.CreateCardRequest;
-import mobile.apis.card.dtos.CardResponseDto;
+import mobile.apis.pendingitem.dtos.PendingItemResponseDto;
 
-public interface CreateCardBoundary {
+public interface AddPendingItem {
     Response execute(Request request);
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     class Request {
-        private CreateCardRequest payload;
-        private String currentUserId;
+        private String userId;
+        private String content;
+        private String sourceType;
+        private String sourceCardId;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     class Response {
-        private CardResponseDto card;
+        private PendingItemResponseDto item;
     }
 }

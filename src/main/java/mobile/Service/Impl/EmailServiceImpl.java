@@ -46,6 +46,9 @@ public class EmailServiceImpl implements EmailService {
     @Value("${google.oauth.refresh-token:}")
     private String googleRefreshToken;
 
+    @Value("${spring.mail.username:noreply@engcomic.com}")
+    private String fromEmailId;
+
     private String getAccessToken()
     {
         try {

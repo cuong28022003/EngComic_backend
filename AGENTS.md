@@ -44,7 +44,7 @@ EngComic_backend/
 ### 2.1 Tech Stack & Versions
 - **Language**: Java 11 (Upgrading to Java 21 LTS — see [docs/tech-stack-upgrade-plan.md](file:///c:/Data/code/tieu_luan_chuyen_nganh/source_code/back-end/docs/tech-stack-upgrade-plan.md))
 - **Framework**: Spring Boot 2.6.2 (Upgrading to Spring Boot 3.3.x)
-- **Persistence**: Spring Data MongoDB (`spring-boot-starter-data-mongodb`), MongoDB BSON `ObjectId`
+- **Persistence**: Spring Data MongoDB (`spring-boot-starter-data-mongodb`), String IDs (`@MongoId(FieldType.OBJECT_ID) String id` and `String userId`, `String deckId` instead of `ObjectId`)
 - **Security & Authentication**: Spring Security + JWT (`com.auth0:java-jwt:3.18.3`, `io.jsonwebtoken:jjwt:0.9.1`)
 - **Third-party Services**: Cloudinary (`com.cloudinary:cloudinary-http5:2.0.0`), Spring Mail (`spring-boot-starter-mail:2.6.4`), Thymeleaf
 - **Documentation**: Springfox Swagger UI 3.0.0 (Migrating to `springdoc-openapi`)

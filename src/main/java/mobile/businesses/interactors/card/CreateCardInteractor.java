@@ -1,27 +1,29 @@
 package mobile.businesses.interactors.card;
 
 import lombok.RequiredArgsConstructor;
+import mobile.apis.card.dtos.CreateCardRequest;
 import mobile.businesses.boundaries.card.CreateCardBoundary;
-import mobile.mapping.CardMapping;
-import mobile.model.Entity.Card;
-import mobile.model.payload.response.card.CardResponse;
-import mobile.Service.CardService;
-import org.bson.types.ObjectId;
+import mobile.databases.entities.card.CardEntity;
+import mobile.databases.repositories.card.CardRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class CreateCardInteractor implements CreateCardBoundary {
-    private final CardService cardService;
+    private final CardRepository cardRepository;
+    private final CardMapper cardMapper;
 
     @Override
-    public CardResponse execute(Request request) {
-        Card cardEntity = CardMapping.createRequestToEntity(request.payload());
-        if (cardEntity.getUserId() == null && request.currentUserId() != null) {
-            cardEntity.setUserId(new ObjectId(request.currentUserId()));
+    public Response execute(Request request) {
+        CreateCardRequest payload = request.getPayload();
+        CardEntity cardEntity = cardMapper.toEntity(payload);
+        if (cardEntity.getUserId() == null && request.getCurrentUserId() != null) {
+            cardEntity.setUserId(request.getCurrentUserId());
         }
 
-        Card savedCard = cardService.save(cardEntity);
-        return CardMapping.entityToResponse(savedCard);
+        CardEntity savedCard = cardRepository.save(cardEntity);
+        return Response.builder()
+                .card(cardMapper.toResponse(savedCard))
+                .build();
     }
 }

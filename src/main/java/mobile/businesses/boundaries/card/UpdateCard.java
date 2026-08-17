@@ -5,16 +5,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mobile.apis.card.dtos.CreateCardRequest;
 import mobile.apis.card.dtos.CardResponseDto;
+import mobile.apis.card.dtos.CreateCardRequest;
 
-public interface CreateCardBoundary {
+public interface UpdateCard {
     Response execute(Request request);
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     class Request {
+        private String cardId;
         private CreateCardRequest payload;
-        private String currentUserId;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
