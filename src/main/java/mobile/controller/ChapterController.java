@@ -9,7 +9,7 @@ import mobile.model.Entity.Comic;
 import mobile.model.Entity.User;
 import mobile.model.payload.response.comic.ComicResponse;
 import mobile.model.payload.response.chapter.ChapterResponse;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.JwtUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

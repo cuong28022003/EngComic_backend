@@ -7,7 +7,7 @@ import mobile.model.payload.request.novel.CreateComicRequest;
 import mobile.model.payload.response.*;
 import mobile.model.payload.response.comic.ComicResponse;
 import mobile.repository.comic.ComicRepository;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.JwtUtils;
 import mobile.Handler.RecordNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;

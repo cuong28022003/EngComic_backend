@@ -1,8 +1,8 @@
 package mobile.security.config;
 
-import mobile.security.JWT.AuthEntryPointJwt;
-import mobile.security.Service.AppUserDetailService;
-import mobile.security.filter.AuthTokenFilter;
+import mobile.security.core.AuthEntryPointJwt;
+import mobile.security.core.AppUserDetailService;
+import mobile.security.core.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,8 +43,8 @@ public class AppSecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                .anyRequest().permitAll()
+                .requestMatchers(PublicSecurityEndpoints.PUBLIC_URLS).permitAll()
+                .anyRequest().permitAll() // Declaratively secured via @PreAuthorize on Controllers
             );
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

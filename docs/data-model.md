@@ -4,12 +4,13 @@
 
 - **Database**: MongoDB
 - **Entity Annotation**: `@Document(collection = "<collection_name>")`
-- **Primary Key**: `@Id protected ObjectId id;` (BSON ObjectId)
-- **Relationships**:
-  - Relational links use `@DBRef` (e.g. `Set<Role> roles` in `User`).
-  - Foreign identifier references use `ObjectId` fields (e.g. `comicId` in `Chapter`, `userId` in `Reading`).
-  - Embedded documents / value objects are used for composite structures (e.g. hitbox, stats, frame data).
-- **Audit & Timestamps**: Managed using `Date createdate`, `Date createdAt`, `Date updatedAt` and `@CreatedDate`.
+- **Primary Key**:
+  - **New Clean Architecture Features**: `@MongoId(FieldType.OBJECT_ID) protected String id;` (String representations for IDs across API and Repository layers).
+  - **Legacy Modules**: `@Id protected ObjectId id;` (Dần được migrate sang String ID).
+- **Foreign Identifiers**:
+  - New modules use `String` fields (e.g. `userId`, `deckId`, `sourceCardId`).
+  - Embedded documents / value objects are used for composite structures (e.g. `WordRelation`, `ExampleSentence`).
+- **Audit & Timestamps**: Managed using `Date createAt`, `Date updateAt` and `@CreatedDate` / `@LastModifiedDate`.
 - **Sensitive Data**: Marked with `@JsonIgnore` (e.g. `password` in `User`).
 
 ---
@@ -25,45 +26,49 @@
 - **`UserStats`** (`collection = "user_stats"`):
   - Tracks user EXP, level, currency/coins, ranking points.
 
-### 2.2 Comic, Novel & Chapter Domain
-- **`Comic`** (`collection = "comic"`):
-  - Fields: `id`, `name`, `artist`, `description`, `imageUrl`, `backgroundUrl`, `url`, `views`, `genre`, `status`, `englishLevel`, `ageRating`, `uploaderId (ObjectId)`, `createdAt`, `updatedAt`.
-- **`Chapter`** (`collection = "chapter"`):
-  - Fields: `id`, `comicId (ObjectId)`, `chapterNumber`, `title`, `content` / `images`, `views`, `createdAt`, `updatedAt`.
-- **`Comment`** (`collection = "comment"`):
-  - User comments on comics/chapters with timestamps, likes, and parent-child reply structure.
-- **`Rating`** (`collection = "rating"`):
-  - Stores user rating (1-5 stars) and review text per comic.
-- **`Reading`** (`collection = "reading"`):
-  - Tracks reading history: `userId`, `comicId`, `chapterId`, `lastReadPage`, `updatedAt`.
-- **`Saved`** (`collection = "saved"`):
-  - User bookmarks / favorites: `userId`, `comicId`, `createdAt`.
+### 2.2 Feature 001: Vocabulary Vault & Flashcards (`mobile.databases.entities.*`)
+- **`CardEntity`** (`collection = "card"`):
+  - Primary Key: `@MongoId(FieldType.OBJECT_ID) String id`
+  - References: `String userId`, `String deckId`
+  - Vocabulary Fields: `front`, `back`, `ipa`, `partOfSpeech`, `definitionEn`, `topic`, `audioUrl`, `imageUrl`
+  - Embedded Data: `List<ExampleSentence> examples`, `List<WordRelation> relations`
+  - SRS Fields: `repetition (int)`, `interval (int)`, `easeFactor (double)`, `nextReview (Date)`, `lastReviewed (Date)`, `wrongCount (int)`, `stage (int)`, `status (String: "new" | "learning" | "mature" | "leech")`
+- **`DeckEntity`** (`collection = "deck"`):
+  - Primary Key: `@MongoId(FieldType.OBJECT_ID) String id`
+  - References: `String userId`
+  - Fields: `name`, `description`, `createAt`, `updateAt`
+- **`PendingItemEntity`** (`collection = "pending_item"`):
+  - Primary Key: `@MongoId(FieldType.OBJECT_ID) String id`
+  - References: `String userId`, `String sourceCardId`
+  - Fields: `content`, `sourceType ("comic" | "manual")`, `status ("pending" | "processed")`, `createdAt`
 
-### 2.3 Cards, Packs, Gacha & Game Mechanics
-- **`Card`** (`collection = "card"`):
-  - Card entities with rarity, character association, stats, abilities.
-- **`Deck`** (`collection = "deck"`):
-  - User-built decks referencing multiple `Card` IDs.
-- **`Pack`** (`collection = "pack"`):
-  - Gacha pack types, price, drop rates.
-- **`Character`, `CharacterStats`, `CharacterSkill`, `CharacterAnimation`**:
-  - Mini-game character attributes, sprite frames, and collision hitboxes.
-- **`Rank`, `Season`, `Topup`**:
-  - Seasonal leaderboards and payment/coin top-up transactions.
+### 2.3 Comic, Novel & Chapter Domain (Legacy / Next Migration)
+- **`Comic`** (`collection = "comic"`):
+  - Fields: `id`, `name`, `artist`, `description`, `imageUrl`, `backgroundUrl`, `url`, `views`, `genre`, `status`, `englishLevel`, `ageRating`, `uploaderId`, `createdAt`, `updatedAt`.
+- **`Chapter`** (`collection = "chapter"`):
+  - Fields: `id`, `comicId`, `chapterNumber`, `title`, `content` / `images`, `views`, `createdAt`, `updatedAt`.
+- **`Comment`**, **`Rating`**, **`Reading`**, **`Saved`**:
+  - Đọc truyện, đánh giá, bookmark và lịch sử đọc.
 
 ---
 
-## 3. Business Invariants & Rules
+## 3. Business Invariants & Domain Rules
 
-1. **Authentication & Identity**:
-   - `username` and `email` must be unique across all active users.
-   - Passwords must always be hashed with BCrypt prior to persistence.
-2. **Comic Lifecycle & Stats**:
-   - Deleting or updating a comic must cascade or clean up associated chapters, ratings, and saved entries.
-   - `views` on comics increment atomically when chapters are read.
-   - Comic average rating is calculated from individual `Rating` entries via `RatingService`.
-3. **Reading Progress Invariant**:
-   - Only one `Reading` record exists per `(userId, comicId)` pair; subsequent reads update `chapterId` and `updatedAt`.
-4. **Card & Gacha Invariants**:
-   - Opening packs checks user wallet balance before granting cards.
-   - Deck slot limitations must strictly follow card rarity and capacity constraints.
+### 3.1 Vocabulary & SRS Domain Rules (`mobile.domains.card.CardRules`)
+1. **SM-2 Spaced Repetition Algorithm**:
+   - `quality >= 3`: Tăng `repetition`, tính `interval = interval * easeFactor`, điều chỉnh `easeFactor`.
+   - `quality < 3`: Reset `repetition = 0`, `interval = 1`, tăng `wrongCount` và `lapses`.
+2. **Leech Detection**:
+   - Nếu `wrongCount >= 8`: Thẻ được tự động đánh dấu trạng thái `"leech"` (từ vựng khó nhớ cần xem lại).
+3. **Mastery Status**:
+   - `interval >= 21`: Chuyển sang trạng thái `"mature"`.
+   - `repetition > 0`: Trạng thái `"learning"`.
+   - Mặc định: Trạng thái `"new"`.
+
+### 3.2 Deck Statistics & Capacity Rules (`mobile.domains.deck.DeckRules`)
+1. **Statistics Calculation**: Thống kê số lượng thẻ `totalCards`, `totalNew`, `totalEasy`, `totalHard`, `totalDue` (thẻ đến hạn ôn tập trước thời điểm hiện tại).
+2. **Deck Capacity Check**: Giới hạn tối đa số lượng thẻ trong 1 Deck theo hạn mức gói tài khoản.
+
+### 3.3 Security & Authentication
+1. `username` và `email` phải là duy nhất. Mật khẩu mã hóa BCrypt.
+2. Mọi truy cập vào tài nguyên cá nhân (`Card`, `Deck`, `PendingItem`) phải được xác thực qua JWT Bearer Token, trích xuất danh tính qua `SecurityUtils.getCurrentUserId()`.

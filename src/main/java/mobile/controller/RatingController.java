@@ -8,7 +8,7 @@ import mobile.model.Entity.Rating;
 import mobile.model.Entity.User;
 import mobile.model.payload.request.rating.RatingRequest;
 import mobile.model.payload.response.RatingResponse;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.JwtUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -14,7 +14,7 @@ import mobile.model.Entity.User;
 import mobile.model.payload.request.saved.SavedRequest;
 import mobile.model.payload.response.SavedResponse;
 import mobile.model.payload.response.SuccessResponse;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.JwtUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;

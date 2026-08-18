@@ -2,7 +2,7 @@ package mobile.Service.Impl;
 
 import mobile.Service.EmailService;
 import mobile.model.Entity.User;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.JwtUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

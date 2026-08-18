@@ -12,7 +12,8 @@ import mobile.apis.card.dtos.PracticeResultRequest;
 import mobile.businesses.boundaries.card.*;
 import mobile.databases.entities.card.CardEntity;
 import mobile.databases.repositories.card.CardRepository;
-import mobile.security.SecurityUtils;
+import mobile.security.constants.AppAuthorities;
+import mobile.security.resolver.CurrentUserId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,9 +41,10 @@ public class CardController {
     private final mobile.businesses.interactors.card.CardMapper cardMapper;
 
     @PostMapping("/batch-import")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<BatchImportResponseDto> batchImport(@Valid @RequestBody BatchImportRequest batchRequest) {
-        String userId = SecurityUtils.getCurrentUserId();
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<BatchImportResponseDto> batchImport(
+            @CurrentUserId String userId,
+            @Valid @RequestBody BatchImportRequest batchRequest) {
 
         BatchImportCard.Request req = BatchImportCard.Request.builder()
                 .userId(userId)
@@ -55,14 +57,14 @@ public class CardController {
     }
 
     @GetMapping("/dashboard")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize(AppAuthorities.HAS_CARD_READ)
     public ResponseEntity<DashboardResponseDto> getDashboard(
+            @CurrentUserId String userId,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String topic,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        String userId = SecurityUtils.getCurrentUserId();
         Pageable pageable = PageRequest.of(page, size);
 
         GetCardDashboard.Request req = GetCardDashboard.Request.builder()
@@ -78,9 +80,10 @@ public class CardController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CardDetailResponseDto> getCardById(@PathVariable String id) {
-        String userId = SecurityUtils.getCurrentUserId();
+    @PreAuthorize(AppAuthorities.HAS_CARD_READ)
+    public ResponseEntity<CardDetailResponseDto> getCardById(
+            @CurrentUserId String userId,
+            @PathVariable String id) {
 
         GetCardDetail.Request req = GetCardDetail.Request.builder()
                 .cardId(id)
@@ -96,9 +99,10 @@ public class CardController {
     }
 
     @GetMapping("/practice/due")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CardResponseDto>> getDueCards(@RequestParam(defaultValue = "15") int limit) {
-        String userId = SecurityUtils.getCurrentUserId();
+    @PreAuthorize(AppAuthorities.HAS_CARD_READ)
+    public ResponseEntity<List<CardResponseDto>> getDueCards(
+            @CurrentUserId String userId,
+            @RequestParam(defaultValue = "15") int limit) {
 
         GetDuePracticeCards.Request req = GetDuePracticeCards.Request.builder()
                 .userId(userId)
@@ -110,8 +114,10 @@ public class CardController {
     }
 
     @PostMapping("/{id}/practice-result")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CardResponseDto> submitPracticeResult(@PathVariable String id, @Valid @RequestBody PracticeResultRequest resultRequest) {
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<CardResponseDto> submitPracticeResult(
+            @PathVariable String id,
+            @Valid @RequestBody PracticeResultRequest resultRequest) {
         SubmitPracticeResult.Request req = SubmitPracticeResult.Request.builder()
                 .cardId(id)
                 .quality(resultRequest.getQuality())
@@ -125,8 +131,11 @@ public class CardController {
     }
 
     @GetMapping("/deck/{deckId}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Page<CardResponseDto>> getCardsByDeckId(@PathVariable String deckId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    @PreAuthorize(AppAuthorities.HAS_CARD_READ)
+    public ResponseEntity<Page<CardResponseDto>> getCardsByDeckId(
+            @PathVariable String deckId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<CardEntity> card = cardRepository.findByDeckId(deckId, pageable);
         Page<CardResponseDto> cardResponsePage = card.map(cardMapper::toResponse);
@@ -134,8 +143,11 @@ public class CardController {
     }
 
     @GetMapping("/deck/{deckId}/due")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Page<CardResponseDto>> getDueCardsByDeckId(@PathVariable String deckId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    @PreAuthorize(AppAuthorities.HAS_CARD_READ)
+    public ResponseEntity<Page<CardResponseDto>> getDueCardsByDeckId(
+            @PathVariable String deckId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<CardEntity> card = cardRepository.findByDeckIdAndNextReviewLessThanEqual(deckId, new java.util.Date(), pageable);
         Page<CardResponseDto> cardResponsePage = card.map(cardMapper::toResponse);
@@ -143,8 +155,12 @@ public class CardController {
     }
 
     @GetMapping("/user/{userId}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Page<CardResponseDto>> getCardsByUserId(@PathVariable String userId, @RequestParam(required = false) String search, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+    @PreAuthorize(AppAuthorities.HAS_CARD_READ)
+    public ResponseEntity<Page<CardResponseDto>> getCardsByUserId(
+            @PathVariable String userId,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
         GetUserCardsBoundary.Request boundaryRequest = new GetUserCardsBoundary.Request(userId, search, pageable);
         GetUserCardsBoundary.Response response = getUserCardsBoundary.execute(boundaryRequest);
@@ -152,9 +168,10 @@ public class CardController {
     }
 
     @PostMapping()
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CardResponseDto> createCard(@RequestBody CreateCardRequest createCardRequest) {
-        String currentUserId = SecurityUtils.getCurrentUserId();
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<CardResponseDto> createCard(
+            @CurrentUserId String currentUserId,
+            @RequestBody CreateCardRequest createCardRequest) {
 
         CreateCardBoundary.Request boundaryRequest = new CreateCardBoundary.Request(createCardRequest, currentUserId);
         CreateCardBoundary.Response response = createCardBoundary.execute(boundaryRequest);
@@ -162,8 +179,10 @@ public class CardController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CardResponseDto> updateCard(@PathVariable String id, @RequestBody CreateCardRequest createCardRequest) {
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<CardResponseDto> updateCard(
+            @PathVariable String id,
+            @RequestBody CreateCardRequest createCardRequest) {
         UpdateCard.Request req = UpdateCard.Request.builder()
                 .cardId(id)
                 .payload(createCardRequest)
@@ -178,16 +197,17 @@ public class CardController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
     public ResponseEntity<?> deleteCard(@PathVariable String id) {
         cardRepository.deleteById(id);
         return ResponseEntity.ok().body("Card deleted successfully");
     }
 
     @PostMapping("/batch")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CardResponseDto>> createCardsBatch(@RequestBody List<CreateCardRequest> createCardRequests) {
-        String currentUserId = SecurityUtils.getCurrentUserId();
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<List<CardResponseDto>> createCardsBatch(
+            @CurrentUserId String currentUserId,
+            @RequestBody List<CreateCardRequest> createCardRequests) {
 
         List<CardResponseDto> responses = createCardRequests.stream().map(req -> {
             CardEntity cardEntity = cardMapper.toEntity(req);
@@ -202,7 +222,7 @@ public class CardController {
     }
 
     @PutMapping("/{id}/toggle-favorite")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
     public ResponseEntity<CardResponseDto> toggleFavorite(@PathVariable String id) {
         CardEntity card = cardRepository.findById(id).orElse(null);
         if (card != null) {
@@ -214,7 +234,7 @@ public class CardController {
     }
 
     @PutMapping("/{id}/move-deck")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
     public ResponseEntity<CardResponseDto> moveDeck(@PathVariable String id, @RequestParam String newDeckId) {
         CardEntity card = cardRepository.findById(id).orElse(null);
         if (card != null) {

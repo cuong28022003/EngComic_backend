@@ -12,7 +12,7 @@
 //import mobile.Handler.MethodArgumentNotValidException;
 //import mobile.model.payload.response.SuccessResponse;
 //import mobile.model.payload.response.SuccessResponseList;
-//import mobile.security.JWT.JwtUtils;
+//import mobile.security.core.JwtUtils;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.data.domain.PageRequest;

@@ -5,7 +5,7 @@ import mobile.Service.UserService;
 import mobile.model.Entity.User;
 import mobile.model.payload.response.character.CharacterResponse;
 import mobile.model.payload.response.pack.GachaPackResult;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

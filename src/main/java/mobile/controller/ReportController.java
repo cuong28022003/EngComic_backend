@@ -5,7 +5,7 @@ import mobile.mapping.ReportMapping;
 import mobile.model.Entity.Report;
 import mobile.model.payload.request.report.ReportRequest;
 import mobile.model.payload.response.ReportResponse;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.JwtUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -27,14 +27,18 @@ EngComic_backend/
 │   ├── api-contracts.md
 │   ├── spec-driven-guide.md
 │   └── tech-stack-upgrade-plan.md     # Java 21 & Spring Boot 3.3 roadmap
+├── scripts/
+│   └── smoke-test/                    # Automated Black-Box Smoke Test Suite
 ├── specs/                             # Feature-specific specs (Spec-Driven)
 │   ├── 000-template/                  # Template (spec.md, plan.md, tasks.md)
 │   └── {feature-id}-{feature-name}/   # Individual feature specs
 └── src/main/java/mobile/              # Clean Architecture Source Code Layers
-    ├── apis/                          # [LAYER 1: ADAPTER / CONTROLLER]
-    ├── businesses/                    # [LAYER 2: BUSINESS LOGIC / USE-CASES]
-    ├── databases/                     # [LAYER 3: DATA ACCESS / INFRASTRUCTURE]
-    └── config/                        # [COMMON LAYER: COMMON & CONFIG]
+    ├── apis/                          # [LAYER 1: ADAPTER / CONTROLLER - Thin, @PreAuthorize]
+    ├── businesses/                    # [LAYER 2: BUSINESS LOGIC / USE-CASES (Boundaries & Interactors)]
+    ├── domains/                       # [LAYER DOMAIN: PURE DOMAIN RULES (SM-2, Pure Functions, Records)]
+    ├── databases/                     # [LAYER 3: DATA ACCESS / INFRASTRUCTURE - String IDs]
+    ├── security/                      # [SECURITY CONTEXT - SecurityUtils, JWT Filter]
+    └── config/                        # [COMMON LAYER: CONFIG & EXCEPTION ADVICE]
 ```
 
 ---
@@ -81,34 +85,38 @@ EngComic_backend/
 
 ---
 
-## 3. Clean Architecture: 3 Immutable Principles
+## 3. Clean Architecture: 4 Immutable Principles
 
-### 3.1 Three Immutable Principles
+### 3.1 Four Immutable Principles
 1. **Strict One-Way Dependency Flow**:
-   $$\text{apis (Controller)} \longrightarrow \text{businesses (Boundary / Interactor)} \longrightarrow \text{databases (Repository / Entity)}$$
-   The `databases` or `entities` layers must NEVER invoke calls backwards into `businesses` or `apis`.
+   $$\text{apis (Controller)} \longrightarrow \text{businesses (Boundary / Interactor)} \longrightarrow \text{domains (Pure Rules)} \longrightarrow \text{databases (Repository / Entity)}$$
+   The `databases`, `domains` or `entities` layers must NEVER invoke calls backwards into `businesses` or `apis`.
 2. **Boundary Interface Pattern**:
-   Every business action (Create, Update, OpenPack, ClaimReward) is a separate **Boundary Interface** in `businesses.boundaries.{feature}`. Request/Response DTOs are defined within or alongside the package.
-3. **Thin Controller (No Business Logic)**:
-   Controllers only receive HTTP requests, validate `@Valid`, extract JWT/Headers, invoke Boundary Interactors, and wrap `ResponseEntity`. They must NEVER contain DB query calls or complex calculations.
+   Every business action (Create, Update, OpenPack, ClaimReward, SubmitPracticeResult) is a separate **Boundary Interface** in `businesses.boundaries.{feature}`. Request/Response DTOs are defined within or alongside the package.
+3. **Pure Domain Layer (Zero Framework Annotations)**:
+   All business invariants, formulas, algorithms (e.g., SM-2 SRS, leech detection, capacity checks) reside in `mobile.domains.{feature}.{Feature}Rules` as pure Java functions and records. No Spring annotations (`@Service`, `@Component`), no repository access.
+4. **Thin Controller & Declarative Security**:
+   Controllers only receive HTTP requests, validate `@Valid`, use `SecurityUtils.getCurrentUserId()`, secure via `@PreAuthorize("isAuthenticated()")`, invoke Boundary Interactors, and wrap `ResponseEntity`.
 
 ### 3.2 Clean Architecture Package Breakdown (`src/main/java/mobile/`)
 - `mobile.apis.{feature}`:
-  - `{Feature}Controller.java`: REST endpoints.
-  - `{Feature}Mapper.java`: Entity <-> DTO mappers.
+  - `{Feature}Controller.java`: REST endpoints (thin, uses `SecurityUtils` and `@PreAuthorize`).
   - `dtos/`: Client request & response payload classes.
 - `mobile.businesses.boundaries.{feature}`:
-  - `{Action}{Feature}Boundary.java`: Use-case interface and inner `Request`/`Response` data models.
+  - `{Action}{Feature}.java`: Use-case interface and inner `Request`/`Response` data models.
 - `mobile.businesses.interactors.{feature}`:
   - `{Action}{Feature}Interactor.java`: Primary business logic implementation service.
-- `mobile.businesses.services`:
-  - `{Feature}Service.java`, `{Feature}SearchCriteria.java`: Domain services & advanced search criteria.
-- `mobile.databases.entities`:
-  - `{Feature}Entity.java` (or `Entity`): MongoDB documents (`@Document`, `@Id ObjectId`).
-- `mobile.databases.repositories`:
-  - `{Feature}Repository.java`: Spring Data Mongo Repositories (`MongoRepository<Entity, ObjectId>`).
-- `mobile.config` / `mobile.common`:
-  - `SecurityConfiguration.java`, `ErrorHandlingAdvice.java`, custom exceptions.
+  - `{Feature}Mapper.java`: Entity <-> DTO mappers.
+- `mobile.domains.{feature}`:
+  - `{Feature}Rules.java`: Pure functions & records for domain calculations and state transitions.
+- `mobile.databases.entities.{feature}`:
+  - `{Feature}Entity.java`: MongoDB documents (`@Document`, `@MongoId(FieldType.OBJECT_ID) String id`).
+- `mobile.databases.repositories.{feature}`:
+  - `{Feature}Repository.java`: Spring Data Mongo Repositories (`MongoRepository<Entity, String>`).
+- `mobile.security`:
+  - `SecurityUtils.java`, `AuthTokenFilter.java`, `AppSecurityConfig.java`.
+- `mobile.Handler`:
+  - `CustomExceptionHandler.java` (centralized handling for 403 Forbidden, 400 Validation, 404 Not Found).
 
 ---
 
@@ -119,8 +127,9 @@ When implementing new features or major enhancements:
 2. **Execute One Task at a Time from `tasks.md`**:
    ```
    [Phase 1: Database]   Entities in mobile.databases.entities -> Repositories in mobile.databases.repositories
-   [Phase 2: Business]   Boundaries in mobile.businesses.boundaries -> Interactors in mobile.businesses.interactors
-   [Phase 3: Adapters]   DTOs & Controllers in mobile.apis.{feature}
-   [Phase 4: Checkpoint] Verification Checkpoint (Run ./mvnw compile)
+   [Phase 2: Domain]     Pure logic rules in mobile.domains.{feature} (with Unit Tests)
+   [Phase 3: Business]   Boundaries in mobile.businesses.boundaries -> Interactors in mobile.businesses.interactors
+   [Phase 4: Adapters]   DTOs & Controllers in mobile.apis.{feature} (with SecurityUtils & @PreAuthorize)
+   [Phase 5: Checkpoint] Verification Checkpoint (Run ./mvnw test && ./scripts/smoke-test/run-smoke.sh)
    ```
-3. **Checkpoints**: Run `./mvnw compile` after every task. Never proceed if compilation fails.
+3. **Checkpoints**: Run `./mvnw test` after every task. Never proceed if compilation or tests fail.

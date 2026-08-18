@@ -8,7 +8,8 @@ import mobile.businesses.boundaries.pendingitem.AddPendingItem;
 import mobile.businesses.boundaries.pendingitem.DeletePendingItem;
 import mobile.businesses.boundaries.pendingitem.GeneratePrompt;
 import mobile.businesses.boundaries.pendingitem.GetPendingItems;
-import mobile.security.SecurityUtils;
+import mobile.security.constants.AppAuthorities;
+import mobile.security.resolver.CurrentUserId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,9 +31,10 @@ public class PendingItemController {
     private final GeneratePrompt generatePrompt;
 
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PendingItemResponseDto> addPendingItem(@Valid @RequestBody CreatePendingItemRequest req) {
-        String userId = SecurityUtils.getCurrentUserId();
+    @PreAuthorize(AppAuthorities.HAS_PENDING_ITEM_MANAGE)
+    public ResponseEntity<PendingItemResponseDto> addPendingItem(
+            @CurrentUserId String userId,
+            @Valid @RequestBody CreatePendingItemRequest req) {
 
         AddPendingItem.Request boundaryReq = AddPendingItem.Request.builder()
                 .userId(userId)
@@ -46,12 +48,12 @@ public class PendingItemController {
     }
 
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize(AppAuthorities.HAS_PENDING_ITEM_MANAGE)
     public ResponseEntity<Page<PendingItemResponseDto>> getPendingItems(
+            @CurrentUserId String userId,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        String userId = SecurityUtils.getCurrentUserId();
         Pageable pageable = PageRequest.of(page, size);
 
         GetPendingItems.Request boundaryReq = GetPendingItems.Request.builder()
@@ -65,9 +67,10 @@ public class PendingItemController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> deletePendingItem(@PathVariable String id) {
-        String userId = SecurityUtils.getCurrentUserId();
+    @PreAuthorize(AppAuthorities.HAS_PENDING_ITEM_MANAGE)
+    public ResponseEntity<?> deletePendingItem(
+            @CurrentUserId String userId,
+            @PathVariable String id) {
 
         DeletePendingItem.Request boundaryReq = DeletePendingItem.Request.builder()
                 .id(id)
@@ -79,9 +82,9 @@ public class PendingItemController {
     }
 
     @GetMapping("/generate-prompt")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, String>> generatePrompt() {
-        String userId = SecurityUtils.getCurrentUserId();
+    @PreAuthorize(AppAuthorities.HAS_PENDING_ITEM_MANAGE)
+    public ResponseEntity<Map<String, String>> generatePrompt(
+            @CurrentUserId String userId) {
 
         GeneratePrompt.Request boundaryReq = GeneratePrompt.Request.builder()
                 .userId(userId)
@@ -92,9 +95,10 @@ public class PendingItemController {
     }
 
     @PostMapping("/add-manual")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PendingItemResponseDto> addManual(@RequestBody Map<String, String> body) {
-        String userId = SecurityUtils.getCurrentUserId();
+    @PreAuthorize(AppAuthorities.HAS_PENDING_ITEM_MANAGE)
+    public ResponseEntity<PendingItemResponseDto> addManual(
+            @CurrentUserId String userId,
+            @RequestBody Map<String, String> body) {
         String content = body.get("content");
         if (content == null || content.trim().isEmpty()) {
             return ResponseEntity.badRequest().build();

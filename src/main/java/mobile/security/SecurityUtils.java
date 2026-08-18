@@ -1,9 +1,7 @@
 package mobile.security;
 
-import mobile.security.DTO.AppUserDetail;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import mobile.security.core.AppUserDetail;
+import mobile.security.resolver.PrincipalResolver;
 
 public class SecurityUtils {
 
@@ -15,33 +13,20 @@ public class SecurityUtils {
      * Lấy userId (String) của người dùng hiện tại đang đăng nhập từ SecurityContext.
      */
     public static String getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
-
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof AppUserDetail userDetail) {
-            return userDetail.getId() != null ? userDetail.getId().toHexString() : null;
-        }
-        return null;
+        return PrincipalResolver.resolveUserId();
     }
 
     /**
      * Lấy username của người dùng hiện tại đang đăng nhập.
      */
     public static String getCurrentUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
+        return PrincipalResolver.resolveUsername();
+    }
 
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails userDetails) {
-            return userDetails.getUsername();
-        } else if (principal instanceof String principalString) {
-            return principalString;
-        }
-        return authentication.getName();
+    /**
+     * Lấy AppUserDetail của người dùng hiện tại đang đăng nhập.
+     */
+    public static AppUserDetail getCurrentUser() {
+        return PrincipalResolver.resolveUser();
     }
 }

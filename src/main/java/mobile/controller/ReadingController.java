@@ -12,7 +12,7 @@ import mobile.model.Entity.Reading;
 import mobile.model.Entity.User;
 import mobile.model.payload.request.reading.ReadingRequest;
 import mobile.model.payload.response.reading.ReadingResponse;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.JwtUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

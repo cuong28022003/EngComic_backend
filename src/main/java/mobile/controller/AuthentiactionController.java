@@ -13,8 +13,8 @@ import mobile.model.payload.response.ErrorResponseMap;
 import mobile.Handler.HttpMessageNotReadableException;
 import mobile.Handler.MethodArgumentNotValidException;
 import mobile.model.payload.response.SuccessResponse;
-import mobile.security.DTO.AppUserDetail;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.AppUserDetail;
+import mobile.security.core.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,16 +55,9 @@ public class AuthentiactionController {
 
     @PostMapping("/register")
     @ResponseBody
-    public ResponseEntity<SuccessResponse>Register(@RequestBody @Valid RegisterRequest user, BindingResult errors) throws Exception {
-
-        if (errors.hasErrors()) {
-            throw new MethodArgumentNotValidException(errors);
-        }
+    public ResponseEntity<SuccessResponse> Register(@RequestBody @Valid RegisterRequest user) throws Exception {
         if (user == null) {
-            LOGGER.info("Inside addIssuer, adding: " + user.toString());
             throw new HttpMessageNotReadableException("Missing field");
-        } else {
-            LOGGER.info("Inside addIssuer...");
         }
 
         if(userService.existsByEmail(user.getEmail())){
@@ -76,12 +69,9 @@ public class AuthentiactionController {
         }
 
         try{
-
             User newUser = UserMapping.registerToEntity(user);
             String roleName = "USER";
             userService.saveUser(newUser,roleName);
-
-//            emailService.sendActiveMessage(newUser); // skip send active email
 
             SuccessResponse response = new SuccessResponse();
             response.setStatus(HttpStatus.OK.value());
@@ -92,18 +82,13 @@ public class AuthentiactionController {
             return new ResponseEntity<SuccessResponse>(response,HttpStatus.OK);
 
         }catch(Exception ex){
-            throw new Exception("Can't create your account");
+            throw new Exception("Can't create your account: " + ex.getMessage());
         }
     }
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<SuccessResponse>  Sigin(@RequestBody @Valid LoginRequest user, BindingResult errors) throws Exception {
-
-        if (errors.hasErrors()) {
-            throw new MethodArgumentNotValidException(errors);
-        }
-
+    public ResponseEntity<SuccessResponse> Sigin(@RequestBody @Valid LoginRequest user) throws Exception {
         if(!userService.existsByUsername(user.getUsername())){
             return SendErrorValid("username",user.getUsername()+" not found","No account found");
         }

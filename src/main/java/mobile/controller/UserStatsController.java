@@ -9,7 +9,7 @@ import mobile.model.payload.request.user.UpgradePremiumRequest;
 import mobile.model.payload.request.user.UserStatsRequest;
 import mobile.model.payload.response.user.UserFullInfoResponse;
 import mobile.model.payload.response.user.UserStatsResponse;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.JwtUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

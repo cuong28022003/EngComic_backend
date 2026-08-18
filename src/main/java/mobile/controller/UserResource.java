@@ -10,7 +10,7 @@ import mobile.Handler.MethodArgumentNotValidException;
 import mobile.model.payload.response.ErrorResponseMap;
 import mobile.model.payload.response.SuccessResponse;
 import mobile.model.payload.response.user.UserResponse;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.core.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import mobile.model.payload.request.authenticate.LoginRequest;
 import org.apache.logging.log4j.LogManager;
