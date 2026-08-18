@@ -1,8 +1,6 @@
 package mobile.apis.deck;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import mobile.Service.UserService;
 import mobile.apis.deck.dtos.CreateDeckRequest;
 import mobile.apis.deck.dtos.DeckResponseDto;
 import mobile.apis.deck.dtos.DeckStatisticsResponse;
@@ -11,12 +9,12 @@ import mobile.databases.entities.deck.DeckEntity;
 import mobile.databases.repositories.card.CardRepository;
 import mobile.databases.repositories.deck.DeckRepository;
 import mobile.domains.deck.DeckRules;
-import mobile.model.Entity.User;
-import mobile.security.JWT.JwtUtils;
+import mobile.security.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -30,20 +28,6 @@ public class DeckController {
 
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
-    private final UserService userService;
-    private final JwtUtils jwtUtils;
-
-    private User getAuthenticatedUser(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new RuntimeException("Invalid token");
-        }
-        String accessToken = authHeader.substring("Bearer ".length());
-        if (jwtUtils.validateExpiredToken(accessToken)) {
-            throw new RuntimeException("Token expired");
-        }
-        return userService.findByUsername(jwtUtils.getUserNameFromJwtToken(accessToken));
-    }
 
     private DeckResponseDto toResponseDto(DeckEntity deck) {
         if (deck == null) return null;
@@ -86,8 +70,8 @@ public class DeckController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DeckResponseDto> getDeckById(@PathVariable String id, HttpServletRequest request) {
-        getAuthenticatedUser(request);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<DeckResponseDto> getDeckById(@PathVariable String id) {
         DeckEntity deck = deckRepository.findById(id).orElse(null);
         if (deck != null) {
             return ResponseEntity.ok(toResponseDto(deck));
@@ -97,11 +81,11 @@ public class DeckController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<DeckResponseDto>> getDecksByUserId(@PathVariable String userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
-        User user = getAuthenticatedUser(request);
-        String currentUserId = (user != null && user.getId() != null) ? user.getId().toHexString() : null;
-        if (!userId.equals(currentUserId)) {
-            throw new RuntimeException("Unauthorized access");
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Page<DeckResponseDto>> getDecksByUserId(@PathVariable String userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        String currentUserId = SecurityUtils.getCurrentUserId();
+        if (currentUserId != null && !userId.equals(currentUserId)) {
+            throw new org.springframework.security.access.AccessDeniedException("Unauthorized access");
         }
 
         Pageable pageable = PageRequest.of(page, size);
@@ -115,9 +99,9 @@ public class DeckController {
     }
 
     @PostMapping()
-    public ResponseEntity<DeckResponseDto> createDeck(@RequestBody CreateDeckRequest createDeckRequest, HttpServletRequest request) {
-        User user = getAuthenticatedUser(request);
-        String userId = (user != null && user.getId() != null) ? user.getId().toHexString() : null;
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<DeckResponseDto> createDeck(@RequestBody CreateDeckRequest createDeckRequest) {
+        String userId = SecurityUtils.getCurrentUserId();
         DeckEntity createdDeck = new DeckEntity();
         createdDeck.setName(createDeckRequest.getName());
         createdDeck.setDescription(createDeckRequest.getDescription());
@@ -127,8 +111,8 @@ public class DeckController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DeckResponseDto> updateDeck(@PathVariable String id, @RequestBody CreateDeckRequest createDeckRequest, HttpServletRequest request) {
-        getAuthenticatedUser(request);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<DeckResponseDto> updateDeck(@PathVariable String id, @RequestBody CreateDeckRequest createDeckRequest) {
         DeckEntity existingDeck = deckRepository.findById(id).orElse(null);
         if (existingDeck != null) {
             existingDeck.setName(createDeckRequest.getName());
@@ -141,8 +125,8 @@ public class DeckController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDeck(@PathVariable String id, HttpServletRequest request) {
-        getAuthenticatedUser(request);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deleteDeck(@PathVariable String id) {
         cardRepository.deleteAllByDeckId(id);
         deckRepository.deleteById(id);
         return ResponseEntity.noContent().build();
