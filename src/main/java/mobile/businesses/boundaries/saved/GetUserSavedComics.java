@@ -1,0 +1,31 @@
+package mobile.businesses.boundaries.saved;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import mobile.apis.saved.dtos.SavedResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface GetUserSavedComics {
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    class Request {
+        private String userId;
+        private Pageable pageable;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    class Response {
+        private Page<SavedResponseDto> savedComics;
+    }
+
+    Response execute(Request request);
+}

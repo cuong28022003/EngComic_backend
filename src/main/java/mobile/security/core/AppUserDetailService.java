@@ -1,7 +1,7 @@
 package mobile.security.core;
 
-import mobile.model.Entity.User;
-import mobile.repository.UserRepository;
+import mobile.databases.entities.user.UserEntity;
+import mobile.databases.repositories.user.UserRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class AppUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userEntity = userRepository.findByUsername(username);
+        Optional<UserEntity> userEntity = userRepository.findByUsername(username);
         if (userEntity.isEmpty()) {
             throw new UsernameNotFoundException("User not found: " + username);
         }

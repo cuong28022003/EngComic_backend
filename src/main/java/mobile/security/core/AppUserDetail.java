@@ -2,8 +2,8 @@ package mobile.security.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import mobile.common.AppUserRole;
-import mobile.model.Entity.Role;
-import mobile.model.Entity.User;
+import mobile.databases.entities.user.RoleEntity;
+import mobile.databases.entities.user.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,14 +37,13 @@ public class AppUserDetail implements UserDetails {
         this.enable = active;
     }
 
-    public static AppUserDetail build(User user) {
+    public static AppUserDetail build(UserEntity user) {
         Set<GrantedAuthority> authorities = new HashSet<>();
         Set<String> roleNames = new HashSet<>();
 
         if (user.getRoles() != null) {
-            for (Role role : user.getRoles()) {
+            for (RoleEntity role : user.getRoles()) {
                 roleNames.add(role.getName());
-                // Add ROLE_ prefix for Spring Security role checking
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
 
                 for (AppUserRole item : AppUserRole.values()) {
@@ -55,10 +54,8 @@ public class AppUserDetail implements UserDetails {
             }
         }
 
-        String userIdStr = user.getId() != null ? user.getId().toHexString() : null;
-
         return new AppUserDetail(
-                userIdStr,
+                user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
