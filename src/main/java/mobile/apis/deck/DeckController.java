@@ -10,6 +10,7 @@ import mobile.databases.entities.card.CardEntity;
 import mobile.databases.entities.deck.DeckEntity;
 import mobile.databases.repositories.card.CardRepository;
 import mobile.databases.repositories.deck.DeckRepository;
+import mobile.domains.deck.DeckRules;
 import mobile.model.Entity.User;
 import mobile.security.JWT.JwtUtils;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/deck")
@@ -60,12 +62,27 @@ public class DeckController {
 
     private DeckStatisticsResponse getDeckStatistics(String deckId) {
         List<CardEntity> cards = cardRepository.findByDeckId(deckId);
-        long totalCards = cards.size();
-        long totalNew = cards.stream().filter(r -> r.getReviewCount() == 0).count();
-        long totalEasy = cards.stream().filter(r -> r.getEaseFactor() > 2.5).count();
-        long totalHard = cards.stream().filter(r -> r.getEaseFactor() <= 2.0).count();
-        long totalDue = cards.stream().filter(r -> r.getNextReview() != null && r.getNextReview().before(new Date())).count();
-        return new DeckStatisticsResponse(totalCards, totalNew, totalEasy, totalHard, totalDue);
+        List<DeckRules.CardProgress> cardProgressList = cards.stream()
+                .map(c -> new DeckRules.CardProgress(
+                        c.getId(),
+                        c.getRepetition(),
+                        c.getInterval(),
+                        c.getEaseFactor(),
+                        c.getWrongCount(),
+                        c.getReviewCount(),
+                        c.getNextReview(),
+                        c.isFavorite()
+                ))
+                .collect(Collectors.toList());
+
+        DeckRules.DeckStatistics summary = DeckRules.calculateStatistics(cardProgressList, new Date());
+        return new DeckStatisticsResponse(
+                summary.totalCards(),
+                summary.totalNew(),
+                summary.totalEasy(),
+                summary.totalHard(),
+                summary.totalDue()
+        );
     }
 
     @GetMapping("/{id}")

@@ -5,7 +5,7 @@ import mobile.apis.card.dtos.CardResponseDto;
 import mobile.businesses.boundaries.card.SubmitPracticeResult;
 import mobile.databases.entities.card.CardEntity;
 import mobile.databases.repositories.card.CardRepository;
-import mobile.domains.card.SrsAlgorithmRules;
+import mobile.domains.card.CardRules;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -28,27 +28,28 @@ public class SubmitPracticeResultInteractor implements SubmitPracticeResult {
         }
 
         if (quality >= 3) {
-            card.setStage(SrsAlgorithmRules.calculateNextStage(card.getStage(), card.getRepetition(), quality));
+            card.setStage(CardRules.calculateNextStage(card.getStage(), card.getRepetition(), quality));
         } else {
             card.setLapses(card.getLapses() + 1);
             card.setWrongCount(card.getWrongCount() + 1);
         }
 
-        SrsAlgorithmRules.SrsCalculationResult result = SrsAlgorithmRules.calculateSM2(
+        CardRules.SrsStateInput currentState = new CardRules.SrsStateInput(
                 card.getRepetition(),
-                card.getInterval(),
                 card.getEaseFactor(),
-                quality
+                card.getInterval()
         );
 
-        card.setRepetition(result.repetition());
-        card.setInterval(result.interval());
-        card.setEaseFactor(result.easeFactor());
-        card.setNextReview(result.nextReviewDate());
+        CardRules.SrsCalculationResult result = CardRules.calculateSM2(currentState, quality);
+
+        card.setRepetition(result.nextRepetition());
+        card.setInterval(result.nextIntervalDays());
+        card.setEaseFactor(result.nextEaseFactor());
+        card.setNextReview(result.nextReviewAt());
         card.setLastReviewed(new Date());
         card.setReviewCount(card.getReviewCount() + 1);
 
-        card.setStatus(SrsAlgorithmRules.determineStatus(card.getWrongCount(), card.getInterval(), card.getRepetition()));
+        card.setStatus(CardRules.determineStatus(card.getWrongCount(), card.getInterval(), card.getRepetition()));
 
         CardEntity saved = cardRepository.save(card);
         CardResponseDto dto = cardMapper.toResponse(saved);
