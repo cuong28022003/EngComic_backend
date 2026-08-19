@@ -2,26 +2,55 @@ package mobile.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
 public class CorsConfig {
+
     @Bean
-    public WebMvcConfigurer corsConfigurer(){
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:*",
+                "http://127.0.0.1:*",
+                "https://*.github.io",
+                "https://*.vercel.app"
+        ));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-               registry.addMapping("/**")
-                       .allowedMethods("GET","POST","DELETE","PUT", "PATCH", "OPTIONS")
-                       .allowedHeaders("*")
-                       .allowedOrigins("http://localhost:3000/","https://tranduy26913.github.io/","https://eng-comic-frontend.vercel.app/")
-                       .allowCredentials(true)
-                       .maxAge(3600);
+                registry.addMapping("/**")
+                        .allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS")
+                        .allowedHeaders("*")
+                        .exposedHeaders("Authorization", "Content-Disposition")
+                        .allowedOriginPatterns(
+                                "http://localhost:*",
+                                "http://127.0.0.1:*",
+                                "https://*.github.io",
+                                "https://*.vercel.app"
+                        )
+                        .allowCredentials(true)
+                        .maxAge(3600);
             }
         };
     }
-
 }
