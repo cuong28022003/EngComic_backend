@@ -8,12 +8,12 @@ import mobile.businesses.boundaries.gacha.GetCharacters;
 import mobile.businesses.boundaries.gacha.GetPacks;
 import mobile.businesses.boundaries.gacha.GetUserCharacters;
 import mobile.businesses.boundaries.gacha.RollGacha;
-import mobile.databases.entities.character.CharacterEntity;
-import mobile.databases.entities.pack.PackEntity;
-import mobile.databases.entities.usercharacter.UserCharacterEntity;
-import mobile.databases.repositories.character.CharacterRepository;
-import mobile.databases.repositories.pack.PackRepository;
-import mobile.databases.repositories.usercharacter.UserCharacterRepository;
+import mobile.databases.entities.gacha.CharacterEntity;
+import mobile.databases.entities.gacha.PackEntity;
+import mobile.databases.entities.gacha.UserCharacterEntity;
+import mobile.databases.repositories.gacha.CharacterRepository;
+import mobile.databases.repositories.gacha.PackRepository;
+import mobile.databases.repositories.gacha.UserCharacterRepository;
 import mobile.domains.gacha.GachaRules;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -133,3 +133,4 @@ public class GachaInteractor implements GetCharacters, GetPacks, GetUserCharacte
                 .build();
     }
 }
+

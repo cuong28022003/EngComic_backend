@@ -29,3 +29,4 @@ public interface GetUserCharacters {
 
     Response execute(Request request);
 }
+

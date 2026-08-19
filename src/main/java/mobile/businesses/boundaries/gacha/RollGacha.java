@@ -28,3 +28,4 @@ public interface RollGacha {
 
     Response execute(Request request);
 }
+

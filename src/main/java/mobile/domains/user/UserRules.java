@@ -3,7 +3,7 @@ package mobile.domains.user;
 import java.util.regex.Pattern;
 
 /**
- * Pure domain rules for User validations and business invariants.
+ * Pure domain rules for User validations and Economy calculations.
  */
 public class UserRules {
 
@@ -28,5 +28,13 @@ public class UserRules {
             return false;
         }
         return password.length() >= 6;
+    }
+
+    public static int calculateStreak(int currentStreak, boolean isContinuous) {
+        return isContinuous ? currentStreak + 1 : 1;
+    }
+
+    public static boolean isValidTopupAmount(int diamond) {
+        return diamond > 0;
     }
 }

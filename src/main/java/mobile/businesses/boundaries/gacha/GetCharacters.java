@@ -29,3 +29,4 @@ public interface GetCharacters {
 
     Response execute(Request request);
 }
+

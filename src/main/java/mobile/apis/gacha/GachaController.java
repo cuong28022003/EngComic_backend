@@ -80,3 +80,4 @@ public class GachaController {
         return ResponseEntity.ok(response);
     }
 }
+

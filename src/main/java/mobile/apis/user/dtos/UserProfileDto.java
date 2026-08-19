@@ -25,3 +25,4 @@ public class UserProfileDto {
     private String status;
     private Set<String> roles;
 }
+

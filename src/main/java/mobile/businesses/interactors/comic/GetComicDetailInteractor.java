@@ -6,7 +6,7 @@ import mobile.apis.user.dtos.UserProfileDto;
 import mobile.businesses.boundaries.comic.GetComicDetail;
 import mobile.businesses.boundaries.user.GetUserProfile;
 import mobile.databases.entities.comic.ComicEntity;
-import mobile.databases.repositories.chapter.ChapterRepository;
+import mobile.databases.repositories.comic.ChapterRepository;
 import mobile.databases.repositories.comic.ComicRepository;
 import org.springframework.stereotype.Service;
 
