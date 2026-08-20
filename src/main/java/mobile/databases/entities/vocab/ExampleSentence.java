@@ -15,9 +15,10 @@ import lombok.Setter;
 public class ExampleSentence {
     private String id;
     @JsonAlias({"en", "sentence"})
-    private String en;
-    @JsonAlias({"vi", "translation"})
-    private String vi;
-    @JsonAlias({"context", "formality"})
-    private String context;
+    private String text;
+    @JsonAlias({"vi", "meaning"})
+    private String translation;
+    @JsonAlias({"context"})
+    private String formality;
 }
+

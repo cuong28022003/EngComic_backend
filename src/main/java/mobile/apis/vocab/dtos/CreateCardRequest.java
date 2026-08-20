@@ -21,8 +21,17 @@ import java.util.Set;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateCardRequest {
-    protected String front;
-    protected String back;
+    @JsonAlias({"front"})
+    protected String word;
+    @JsonAlias({"back", "meaning_vi", "meaningVi"})
+    protected String meaning;
+
+    public String getFront() {
+        return word;
+    }
+    public String getBack() {
+        return meaning;
+    }
 
     @JsonProperty("IPA")
     @JsonAlias({"IPA", "ipa"})

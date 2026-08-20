@@ -1,5 +1,6 @@
 package mobile.apis.vocab.dtos;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,8 +21,17 @@ public class CardResponseDto {
     protected String id;
     protected String userId;
     protected String deckId;
-    protected String front;
-    protected String back;
+    @JsonAlias({"front"})
+    protected String word;
+    @JsonAlias({"back", "meaning_vi", "meaningVi"})
+    protected String meaning;
+
+    public String getFront() {
+        return word;
+    }
+    public String getBack() {
+        return meaning;
+    }
 
     @JsonProperty("ipa")
     protected String ipa;

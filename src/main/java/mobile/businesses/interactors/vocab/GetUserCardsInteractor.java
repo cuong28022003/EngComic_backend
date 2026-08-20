@@ -28,7 +28,7 @@ public class GetUserCardsInteractor implements GetUserCardsBoundary {
         boolean hasSearch = (search != null && !search.trim().isEmpty());
 
         Page<CardEntity> cardPage = hasSearch
-                ? cardRepository.findByUserIdAndBackContainingIgnoreCaseOrFrontContainingIgnoreCase(userId, search.trim(), search.trim(), request.getPageable())
+                ? cardRepository.findByUserIdAndMeaningContainingIgnoreCaseOrWordContainingIgnoreCase(userId, search.trim(), search.trim(), request.getPageable())
                 : cardRepository.findByUserId(userId, request.getPageable());
 
         if (cardPage.getContent().isEmpty()) {

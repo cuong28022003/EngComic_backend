@@ -16,8 +16,8 @@ public class CardMapper {
         response.setId(entity.getId());
         response.setUserId(entity.getUserId());
         response.setDeckId(entity.getDeckId());
-        response.setFront(entity.getFront());
-        response.setBack(entity.getBack());
+        response.setWord(entity.getWord());
+        response.setMeaning(entity.getMeaning());
         response.setIpa(entity.getIpa());
         response.setImage(entity.getImage());
         response.setAudio(entity.getAudio());
@@ -64,8 +64,8 @@ public class CardMapper {
         CardEntity card = new CardEntity();
         card.setUserId(request.getUserId());
         card.setDeckId(request.getDeckId());
-        card.setFront(request.getFront());
-        card.setBack(request.getBack());
+        card.setWord(request.getWord() != null ? request.getWord() : request.getFront());
+        card.setMeaning(request.getMeaning() != null ? request.getMeaning() : request.getBack());
         card.setIpa(request.getIPA());
         card.setImage(request.getImage());
         card.setAudio(request.getAudio());

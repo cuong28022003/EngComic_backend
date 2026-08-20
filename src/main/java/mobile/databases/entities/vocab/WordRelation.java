@@ -13,10 +13,18 @@ import lombok.Setter;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WordRelation {
-    @JsonAlias({"type", "relationType"})
-    private String type;
     @JsonAlias({"word", "relatedText"})
-    private String word;
-    @JsonAlias({"meaning", "pos"})
-    private String meaning;
+    private String text;
+    @JsonAlias({"relationType"})
+    private String type;
+    @JsonAlias({"meaning", "partOfSpeech"})
+    private String pos;
+    private String relatedCardId;
+
+    public WordRelation(String text, String type, String pos) {
+        this.text = text;
+        this.type = type;
+        this.pos = pos;
+    }
 }
+

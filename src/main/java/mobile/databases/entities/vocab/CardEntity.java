@@ -29,8 +29,8 @@ public class CardEntity {
     protected String deckId;
 
     // --- Static Content ---
-    protected String front;
-    protected String back;
+    protected String word;
+    protected String meaning;
     protected String ipa;
     protected String partOfSpeech;
     protected String definitionEn;

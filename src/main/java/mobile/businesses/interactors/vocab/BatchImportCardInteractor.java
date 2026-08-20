@@ -39,7 +39,18 @@ public class BatchImportCardInteractor implements BatchImportCard {
 
         List<Map<String, Object>> cardList;
         try {
-            cardList = objectMapper.readValue(jsonContent, new TypeReference<List<Map<String, Object>>>() {});
+            String cleaned = jsonContent.trim();
+            if (cleaned.startsWith("```json")) {
+                cleaned = cleaned.substring(7);
+            } else if (cleaned.startsWith("```")) {
+                cleaned = cleaned.substring(3);
+            }
+            if (cleaned.endsWith("```")) {
+                cleaned = cleaned.substring(0, cleaned.length() - 3);
+            }
+            cleaned = cleaned.trim();
+
+            cardList = objectMapper.readValue(cleaned, new TypeReference<List<Map<String, Object>>>() {});
         } catch (Exception e) {
             log.error("Failed to parse JSON input for batch import", e);
             return Response.builder().data(responseDto).build();
@@ -49,10 +60,7 @@ public class BatchImportCardInteractor implements BatchImportCard {
         Set<String> importedWords = new HashSet<>();
 
         for (Map<String, Object> map : cardList) {
-            String word = (String) map.get("word");
-            if (word == null || word.trim().isEmpty()) {
-                word = (String) map.get("front");
-            }
+            String word = getString(map, "word", "front", "text");
             if (word == null || word.trim().isEmpty()) {
                 continue;
             }
@@ -61,13 +69,13 @@ public class BatchImportCardInteractor implements BatchImportCard {
             CardEntity card = new CardEntity();
             card.setUserId(userId);
             card.setDeckId(deckId);
-            card.setFront(cleanWord);
-            card.setBack((String) map.getOrDefault("vietnameseMeaning", map.get("back")));
-            card.setIpa((String) map.get("ipa"));
-            card.setPartOfSpeech((String) map.get("partOfSpeech"));
-            card.setDefinitionEn((String) map.get("definitionEn"));
-            card.setUsageNote((String) map.get("usageNote"));
-            card.setTopic((String) map.get("topic"));
+            card.setWord(cleanWord);
+            card.setMeaning(getString(map, "meaning", "meaning_vi", "meaningVi", "vietnameseMeaning", "back", "vietnamese_meaning"));
+            card.setIpa(getString(map, "ipa", "IPA"));
+            card.setPartOfSpeech(getString(map, "partOfSpeech", "part_of_speech", "pos"));
+            card.setDefinitionEn(getString(map, "definitionEn", "definition_en", "definition"));
+            card.setUsageNote(getString(map, "usageNote", "usage_note", "note"));
+            card.setTopic(getString(map, "topic", "category"));
 
             if (map.containsKey("examples") && map.get("examples") instanceof List) {
                 List<?> exList = (List<?>) map.get("examples");
@@ -75,13 +83,24 @@ public class BatchImportCardInteractor implements BatchImportCard {
                 for (Object exObj : exList) {
                     if (exObj instanceof Map) {
                         Map<?, ?> exMap = (Map<?, ?>) exObj;
-                        ExampleSentence sentence = new ExampleSentence(
-                                UUID.randomUUID().toString(),
-                                (String) exMap.get("en"),
-                                (String) exMap.get("vi"),
-                                (String) exMap.get("context")
-                        );
-                        examples.add(sentence);
+                        String text = getString(exMap, "text", "sentence", "en");
+                        String translation = getString(exMap, "translation", "vi", "meaning");
+                        String formality = getString(exMap, "formality", "context");
+
+                        if (text != null && !text.trim().isEmpty()) {
+                            ExampleSentence sentence = new ExampleSentence(
+                                    UUID.randomUUID().toString(),
+                                    text.trim(),
+                                    translation != null ? translation.trim() : null,
+                                    formality != null ? formality.trim() : null
+                            );
+                            examples.add(sentence);
+                        }
+                    } else if (exObj instanceof String) {
+                        String exStr = (String) exObj;
+                        if (!exStr.trim().isEmpty()) {
+                            examples.add(new ExampleSentence(UUID.randomUUID().toString(), exStr.trim(), null, null));
+                        }
                     }
                 }
                 card.setExamples(examples);
@@ -93,12 +112,18 @@ public class BatchImportCardInteractor implements BatchImportCard {
                 for (Object relObj : relList) {
                     if (relObj instanceof Map) {
                         Map<?, ?> relMap = (Map<?, ?>) relObj;
-                        WordRelation relation = new WordRelation(
-                                (String) relMap.get("type"),
-                                (String) relMap.get("word"),
-                                (String) relMap.get("meaning")
-                        );
-                        relations.add(relation);
+                        String relText = getString(relMap, "text", "word", "relatedText", "related_text");
+                        String relType = getString(relMap, "type", "relationType", "relation_type");
+                        String relPos = getString(relMap, "pos", "partOfSpeech", "part_of_speech", "meaning");
+
+                        if (relText != null && !relText.trim().isEmpty()) {
+                            WordRelation relation = new WordRelation(
+                                    relText.trim(),
+                                    relType != null ? relType.trim() : "family",
+                                    relPos != null ? relPos.trim() : null
+                            );
+                            relations.add(relation);
+                        }
                     }
                 }
                 card.setRelations(relations);
@@ -121,7 +146,32 @@ public class BatchImportCardInteractor implements BatchImportCard {
 
         if (!newCards.isEmpty()) {
             List<CardEntity> savedCards = cardRepository.saveAll(newCards);
+
+            // Auto-link relations with existing and new cards
+            List<CardEntity> allUserCards = cardRepository.findByUserId(userId);
+            Map<String, String> wordToIdMap = new HashMap<>();
+            for (CardEntity c : allUserCards) {
+                if (c.getWord() != null) {
+                    wordToIdMap.put(c.getWord().trim().toLowerCase(), c.getId());
+                }
+            }
+
             for (CardEntity sc : savedCards) {
+                boolean modified = false;
+                if (sc.getRelations() != null) {
+                    for (WordRelation r : sc.getRelations()) {
+                        if (r.getRelatedCardId() == null && r.getText() != null) {
+                            String targetId = wordToIdMap.get(r.getText().trim().toLowerCase());
+                            if (targetId != null && !targetId.equals(sc.getId())) {
+                                r.setRelatedCardId(targetId);
+                                modified = true;
+                            }
+                        }
+                    }
+                }
+                if (modified) {
+                    cardRepository.save(sc);
+                }
                 responseDto.getImported().add(cardMapper.toResponse(sc));
             }
 
@@ -139,5 +189,19 @@ public class BatchImportCardInteractor implements BatchImportCard {
         }
 
         return Response.builder().data(responseDto).build();
+    }
+
+    private String getString(Map<?, ?> map, String... keys) {
+        if (map == null) return null;
+        for (String key : keys) {
+            Object val = map.get(key);
+            if (val != null) {
+                String str = String.valueOf(val).trim();
+                if (!str.isEmpty() && !"null".equalsIgnoreCase(str)) {
+                    return str;
+                }
+            }
+        }
+        return null;
     }
 }

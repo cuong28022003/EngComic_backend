@@ -39,7 +39,7 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
         boolean hasTopic = (topic != null && !topic.trim().isEmpty());
 
         if (hasSearch) {
-            cardPage = cardRepository.findByUserIdAndBackContainingIgnoreCaseOrFrontContainingIgnoreCase(userId, search.trim(), search.trim(), pageable);
+            cardPage = cardRepository.findByUserIdAndMeaningContainingIgnoreCaseOrWordContainingIgnoreCase(userId, search.trim(), search.trim(), pageable);
         } else if (hasStatus) {
             cardPage = cardRepository.findByUserIdAndStatus(userId, status.trim(), pageable);
         } else if (hasTopic) {

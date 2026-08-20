@@ -37,14 +37,14 @@ public interface CardRepository extends MongoRepository<CardEntity, String> {
     void deleteByUserIdAndDeckId(String userId, String deckId);
     void deleteAllByDeckId(String deckId);
 
-    Page<CardEntity> findByUserIdAndBackContainingIgnoreCaseOrFrontContainingIgnoreCase(String userId, String back, String front, Pageable pageable);
+    Page<CardEntity> findByUserIdAndMeaningContainingIgnoreCaseOrWordContainingIgnoreCase(String userId, String meaning, String word, Pageable pageable);
     Page<CardEntity> findByUserIdAndStatus(String userId, String status, Pageable pageable);
     Page<CardEntity> findByUserIdAndTopic(String userId, String topic, Pageable pageable);
 
-    @Query("{ 'userId': ?0, '$or': [ { 'relations.relatedCardId': ?1 }, { 'relations.relatedText': { $regex: ?1, $options: 'i' } } ] }")
+    @Query("{ 'userId': ?0, '$or': [ { 'relations.relatedCardId': ?1 }, { 'relations.text': { $regex: ?1, $options: 'i' } }, { 'relations.word': { $regex: ?1, $options: 'i' } } ] }")
     List<CardEntity> findReverseRelations(String userId, String targetWordOrId);
 
-    @Query("{ 'deckId': { $in: ?0 }, '$or': [ { 'front': { $regex: ?1, $options: 'i' } }, { 'back': { $regex: ?1, $options: 'i' } } ] }")
+    @Query("{ 'deckId': { $in: ?0 }, '$or': [ { 'word': { $regex: ?1, $options: 'i' } }, { 'meaning': { $regex: ?1, $options: 'i' } }, { 'front': { $regex: ?1, $options: 'i' } }, { 'back': { $regex: ?1, $options: 'i' } } ] }")
     Page<CardEntity> findByDeckIdInOrDeckIdNullAndSearch(List<String> deckIds, String search, Pageable pageable);
 
     @Query("{ 'deckId': { $in: ?0 } }")
