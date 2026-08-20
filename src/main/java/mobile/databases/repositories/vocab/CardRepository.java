@@ -20,6 +20,7 @@ public interface CardRepository extends MongoRepository<CardEntity, String> {
     Page<CardEntity> findByDeckId(String deckId, Pageable pageable);
     Page<CardEntity> findByDeckIdAndNextReviewLessThanEqual(String deckId, Date nextReview, Pageable pageable);
     Optional<CardEntity> findByIdAndUserId(String id, String userId);
+    Optional<CardEntity> findByUserIdAndWordIgnoreCase(String userId, String word);
 
     @Query("{ 'userId': ?0, 'status': { $in: ['learning', 'mature'] }, 'nextReview': { $lte: ?1 } }")
     List<CardEntity> findDueCards(String userId, Date now, Pageable pageable);
@@ -39,7 +40,7 @@ public interface CardRepository extends MongoRepository<CardEntity, String> {
 
     Page<CardEntity> findByUserIdAndMeaningContainingIgnoreCaseOrWordContainingIgnoreCase(String userId, String meaning, String word, Pageable pageable);
     Page<CardEntity> findByUserIdAndStatus(String userId, String status, Pageable pageable);
-    Page<CardEntity> findByUserIdAndTopic(String userId, String topic, Pageable pageable);
+    Page<CardEntity> findByUserIdAndTopicContainingIgnoreCase(String userId, String topic, Pageable pageable);
 
     @Query("{ 'userId': ?0, '$or': [ { 'relations.relatedCardId': ?1 }, { 'relations.text': { $regex: ?1, $options: 'i' } }, { 'relations.word': { $regex: ?1, $options: 'i' } } ] }")
     List<CardEntity> findReverseRelations(String userId, String targetWordOrId);

@@ -6,10 +6,16 @@ import mobile.businesses.boundaries.vocab.GetCardDashboard;
 import mobile.databases.entities.vocab.CardEntity;
 import mobile.databases.repositories.vocab.CardRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +23,7 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
 
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public Response execute(Request request) {
@@ -33,20 +40,35 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
         long leechCount = cardRepository.countByUserIdAndStatus(userId, "leech");
         long newCount = cardRepository.countByUserIdAndStatus(userId, "new");
 
-        Page<CardEntity> cardPage;
-        boolean hasSearch = (search != null && !search.trim().isEmpty());
-        boolean hasStatus = (status != null && !status.trim().isEmpty());
-        boolean hasTopic = (topic != null && !topic.trim().isEmpty());
-
-        if (hasSearch) {
-            cardPage = cardRepository.findByUserIdAndMeaningContainingIgnoreCaseOrWordContainingIgnoreCase(userId, search.trim(), search.trim(), pageable);
-        } else if (hasStatus) {
-            cardPage = cardRepository.findByUserIdAndStatus(userId, status.trim(), pageable);
-        } else if (hasTopic) {
-            cardPage = cardRepository.findByUserIdAndTopic(userId, topic.trim(), pageable);
-        } else {
-            cardPage = cardRepository.findByUserId(userId, pageable);
+        Query query = new Query();
+        if (userId != null) {
+            query.addCriteria(Criteria.where("userId").is(userId));
         }
+
+        if (status != null && !status.trim().isEmpty()) {
+            query.addCriteria(Criteria.where("status").is(status.trim()));
+        }
+
+        // Fuzzy / Partial match on topic
+        if (topic != null && !topic.trim().isEmpty()) {
+            query.addCriteria(Criteria.where("topic").regex(Pattern.quote(topic.trim()), "i"));
+        }
+
+        // Partial match on word, meaning, front, back
+        if (search != null && !search.trim().isEmpty()) {
+            String term = Pattern.quote(search.trim());
+            query.addCriteria(new Criteria().orOperator(
+                    Criteria.where("word").regex(term, "i"),
+                    Criteria.where("meaning").regex(term, "i"),
+                    Criteria.where("front").regex(term, "i"),
+                    Criteria.where("back").regex(term, "i")
+            ));
+        }
+
+        long totalFiltered = mongoTemplate.count(query, CardEntity.class);
+        query.with(pageable);
+        List<CardEntity> cards = mongoTemplate.find(query, CardEntity.class);
+        Page<CardEntity> cardPage = new PageImpl<>(cards, pageable, totalFiltered);
 
         DashboardResponseDto responseDto = DashboardResponseDto.builder()
                 .totalCards(totalCards)
@@ -61,4 +83,3 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
         return Response.builder().data(responseDto).build();
     }
 }
-
