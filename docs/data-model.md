@@ -50,6 +50,22 @@
 - **`Comment`**, **`Rating`**, **`Reading`**, **`Saved`**:
   - Đọc truyện, đánh giá, bookmark và lịch sử đọc.
 
+### 2.4 Feature 003: TOEIC Reader & Pacing Engine (`mobile.databases.entities.reader.*`)
+- **`ToeicTestEntity`** (`collection = "toeic_tests"`):
+  - Primary Key: `@MongoId(FieldType.OBJECT_ID) String id`
+  - References: `String userId`
+  - Fields: `testName`, `pdfUrl`, `status ("not_started" | "in_progress" | "completed")`, `rawScore`, `scaledScore`, `List<ToeicQuestion> questions` (mỗi câu gồm `number`, `part`, `correctAnswer`), `createdAt`, `updatedAt`.
+- **`ToeicUserSessionEntity`** (`collection = "toeic_user_sessions"`):
+  - Primary Key: `@MongoId(FieldType.OBJECT_ID) String id`
+  - References: `String userId`, `String testId`
+  - Score & Scope Fields: `rawScore`, `scaledScore`, `totalQuestions`, `duration (seconds)`, `timeMode ("full_test" | "per_part" | "untimed")`, `List<Integer> selectedParts`
+  - Timing Target & Elapsed Fields: `part5TargetSeconds`, `part6TargetSeconds`, `part7TargetSeconds`, `part5ElapsedSeconds`, `part6ElapsedSeconds`, `part7ElapsedSeconds`
+  - Embedded Answers: `List<UserAnswerRecord> answers` (mỗi record gồm `questionNumber`, `part`, `userAnswer`, `correctAnswer`, `isCorrect`, `flagged`, `timeSpentSeconds`), `submittedAt`.
+- **`ToeicMistakeEntity`** (`collection = "toeic_mistakes"`):
+  - Primary Key: `@MongoId(FieldType.OBJECT_ID) String id`
+  - References: `String userId`, `String testId`
+  - Fields: `testName`, `questionNumber`, `part`, `userAnswer`, `correctAnswer`, `explanation`, `status ("pending" | "explained" | "resolved")`, `createdAt`, `updatedAt`.
+
 ---
 
 ## 3. Business Invariants & Domain Rules

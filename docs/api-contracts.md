@@ -135,3 +135,13 @@ Handled globally via `mobile.Handler.CustomExceptionHandler`:
 - `POST /api/gacha/open/{packId}`: Open a pack and draw cards.
 - `GET /api/decks`: Get user decks.
 - `POST /api/decks`: Save/update deck configuration.
+
+### TOEIC Reader & Pacing Engine (`/api/toeic/tests`, `/api/toeic/mistakes`, `/api/translator`)
+- `GET /api/toeic/tests`: List user's TOEIC tests.
+- `GET /api/toeic/tests/{id}`: Get test detail (hides `correctAnswer`).
+- `POST /api/toeic/tests`: Create test (Multipart PDF + JSON answer key).
+- `POST /api/toeic/tests/{id}/submit`: Submit session with timing metrics and `selectedParts`.
+- `GET /api/toeic/tests/dashboard`: Overall stats and accuracy breakdown.
+- `GET /api/toeic/mistakes`: List mistake queue sorted by `questionNumber ASC`.
+- `PATCH /api/toeic/mistakes/{id}`: Update explanation or mark resolved.
+- `POST /api/translator/translate`: Direct Google Translate proxy for instant text lookup (< 100ms).

@@ -17,9 +17,15 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
     @Override
     public String uploadFile(MultipartFile file, String folder) throws IOException {
-        String resourceType = file.getContentType() != null && file.getContentType().startsWith("video")
-                ? "video"
-                : "image";
+        String resourceType = "image";
+        if (file.getContentType() != null) {
+            if (file.getContentType().startsWith("video")) {
+                resourceType = "video";
+            } else if (file.getContentType().equals("application/pdf") ||
+                    (file.getOriginalFilename() != null && file.getOriginalFilename().toLowerCase().endsWith(".pdf"))) {
+                resourceType = "raw";
+            }
+        }
 
         Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
                 "resource_type", resourceType,
