@@ -71,10 +71,10 @@ public class CardResponseDto {
     protected int lapses;
     protected int wrongCount;
     protected int reviewCount;
-    protected String lastReviewed;
-    protected String nextReview;
+    protected java.util.Date lastReviewed;
+    protected java.util.Date nextReview;
 
-    protected String createAt;
-    protected String updateAt;
+    protected java.util.Date createAt;
+    protected java.util.Date updateAt;
 }
 

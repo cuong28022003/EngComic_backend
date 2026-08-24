@@ -52,18 +52,10 @@ public class CardMapper {
         response.setWrongCount(entity.getWrongCount());
         response.setReviewCount(entity.getReviewCount());
 
-        if (entity.getLastReviewed() != null) {
-            response.setLastReviewed(entity.getLastReviewed().toString());
-        }
-        if (entity.getNextReview() != null) {
-            response.setNextReview(entity.getNextReview().toString());
-        }
-        if (entity.getCreateAt() != null) {
-            response.setCreateAt(entity.getCreateAt().toString());
-        }
-        if (entity.getUpdateAt() != null) {
-            response.setUpdateAt(entity.getUpdateAt().toString());
-        }
+        response.setLastReviewed(entity.getLastReviewed());
+        response.setNextReview(entity.getNextReview());
+        response.setCreateAt(entity.getCreateAt());
+        response.setUpdateAt(entity.getUpdateAt());
 
         return response;
     }
