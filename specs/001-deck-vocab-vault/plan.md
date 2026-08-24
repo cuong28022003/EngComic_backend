@@ -403,3 +403,26 @@ public void applySM2(Card card, int quality) {
 | `403 FORBIDDEN` | Accessing another user's cards |
 | `404 NOT_FOUND` | Card or pending item not found |
 | `409 CONFLICT` | Duplicate word in batch import (returned in `skipped` array, not an error) |
+
+---
+
+## 9. Deck Management & Vocab Vault Deep Integration
+
+### 9.1 Batch Assign Deck API
+- **Endpoint**: `POST /api/card/batch-assign-deck`
+- **Request Body**:
+  ```json
+  {
+    "cardIds": ["64f8a1...", "64f8a2..."],
+    "deckId": "64f8b9..." // or null / "unassigned" to remove from deck
+  }
+  ```
+- **Boundary & Interactor**: `BatchAssignDeckBoundary` & `BatchAssignDeckInteractor`
+- **MongoDB Operation**: `mongoTemplate.updateMulti(query, update, CardEntity.class)`
+
+### 9.2 Filter Dashboard by Deck
+- **Endpoint**: `GET /api/card/dashboard?page=0&size=20&deckId=...`
+- **Behavior**:
+  - `deckId=null` or omitted: Returns all user cards.
+  - `deckId=unassigned`: Returns cards where `deckId is null` or `deckId == ""`.
+  - `deckId=<id>`: Returns cards assigned to that specific deck.

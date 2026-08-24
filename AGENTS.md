@@ -6,6 +6,7 @@ Tài liệu này là trung tâm điều hướng và đặc tả quy chuẩn ph�
 
 ## 🧭 Mục Lục Tài Liệu Đặc Tả Kỹ Thuật:
 - 🏗️ **[Kiến Trúc Clean Architecture](./docs/architecture.md)**: Phân tầng Controller, Boundary, Interactor, Entity, Repository, Transaction Management.
+- 🎯 **[Đặc Tả Kỹ Thuật Backend Feature 003 (TOEIC Exam Workspace)](./specs/003-toeic-reader/spec.md)**: Đặc tả Clean Architecture cho module TOEIC test streaming, submit attempt, mistake queue và import AI JSON.
 - 🗄️ **[Mô Hình Dữ Liệu & MongoDB Schema](./docs/data-model.md)**: Thiết kế Document MongoDB, `@MongoId`, `@DBRef`, index tối ưu hóa truy vấn.
 - 🔌 **[Hợp Đồng API & Payload Contracts](./docs/api-contracts.md)**: Chuẩn hóa Response DTOs, Envelope (`SuccessResponse`, `ErrorResponse`), mã lỗi nghiệp vụ.
 - 🤖 **[Hướng Dẫn AI Coding](./docs/ai-coding-guide.md)**: Các quy tắc đặt tên, dependency injection qua Lombok `@RequiredArgsConstructor`, logging Slf4j.

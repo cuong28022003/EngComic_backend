@@ -1,284 +1,100 @@
-# Feature Specification: TOEIC Reader — Backend (v2)
+# Feature Specification: TOEIC Reader — Backend Clean Architecture (v3)
 
-> **Perspective**: Business / Product Owner & Developer  
-> **Purpose**: Answer the question **"WHAT & WHY"** (Domain, Data Contract, Business Rules)
-> **Version**: v2 — Simplified schema (no passages/question_text, PDF is display-only)
+> **Perspective**: Business / Product Owner & Backend Developer  
+> **Purpose**: Answer the question **"WHAT & WHY"** (Clean Architecture, MongoDB Schema, API Contract)  
+> **Version**: v3 — MongoDB Collections, Clean Architecture 4 Tầng, Jackson `@JsonProperty("isCorrect")`, AI Review Import & Streaming Whitelist
 
 ---
 
 ## 1. Overview & Objective
 
 - **Feature ID**: 003
-- **Feature Name**: TOEIC Reader — PDF Viewer & Answer Sheet
+- **Feature Name**: TOEIC Reader — Backend Clean Architecture & Data Engine
 - **Priority**: P1
-- **Objective**: Backend API cho hệ thống làm bài TOEIC đơn giản — lưu trữ đề thi (PDF ref + answer keys), chấm điểm khi nộp bài, và quản lý hàng đợi lỗi (Mistake Queue). Không cần xử lý nội dung PDF, không cần lưu câu hỏi/đáp án bốn lựa chọn — chỉ cần lưu đáp án đúng (A/B/C/D) theo số câu.
-
-> **Bỏ so với v1**:
-> - ❌ Collection `passages` (không cần content câu hỏi trong DB)
-> - ❌ `question_text`, `options_raw`, `explanation` trong schema
-> - ❌ Auto-parse PDF
-> - ❌ MongoDB cho session (chuyển sang SQL cho đơn giản)
-
----
-
-## 2. Permissions & Preconditions
-
-- **Target Audience**: `USER` (authenticated)
-- **Auth**: JWT Bearer Token required cho mọi endpoint.
+- **Objective**: Cung cấp bộ API hiệu năng cao phục vụ thi thử TOEIC Reading:
+  1. Quản lý đề thi PDF, stream PDF nội bộ chống CORS & vô hiệu hóa `X-Frame-Options` cho `<iframe>`.
+  2. Nộp bài, chấm điểm tự động chuẩn bảng điểm ETS TOEIC Reading (Raw Score 0-100 ➔ Scaled Score 5-495).
+  3. Quản lý lịch sử các lần thi theo từng session (`test_attempts`).
+  4. Tự động đẩy câu sai vào `mistake_queue`.
+  5. Sinh System Prompt cho LLM và Import JSON lời giải AI vào từng câu hỏi.
 
 ---
 
-## 3. Domain Model
+## 2. Permissions & Security Configuration
 
-### 3.1 Schema DB (PostgreSQL — tất cả trong 1 datasource)
+- **Auth**: `@PreAuthorize("isAuthenticated()")` cho các endpoint nộp bài, xem lịch sử, import giải thích.
+- **File Streaming & Whitelist**:
+  - `GET /api/toeic/tests/file/**` & `GET /api/toeic/tests/proxy-pdf` được cấu hình trong `PublicSecurityEndpoints.java`.
+  - `AppSecurityConfig.java` cấu hình `.headers(headers -> headers.frameOptions(frame -> frame.disable()))`.
 
-```sql
--- Bài thi
-CREATE TABLE tests (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id         VARCHAR(255) NOT NULL,
-  test_name       VARCHAR(500) NOT NULL,
-  pdf_file_ref    VARCHAR(1000),         -- path/URL đến file PDF
-  raw_score       INTEGER,               -- điểm thô (số câu đúng)
-  scaled_score    INTEGER,               -- điểm quy đổi TOEIC (nếu có)
-  status          VARCHAR(20) NOT NULL DEFAULT 'not_started',
-                                         -- not_started | in_progress | completed
-  created_at      TIMESTAMP DEFAULT now(),
-  updated_at      TIMESTAMP DEFAULT now()
-);
+---
 
--- Đáp án đúng (import từ JSON)
-CREATE TABLE answer_keys (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  test_id         UUID NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
-  question_number INTEGER NOT NULL,      -- 101, 102, ..., 200
-  part            INTEGER NOT NULL,      -- 5, 6, or 7
-  correct_answer  VARCHAR(1) NOT NULL,   -- 'A', 'B', 'C', 'D'
-  UNIQUE(test_id, question_number)
-);
+## 3. Clean Architecture Package Layout
 
--- Đáp án của user
-CREATE TABLE user_answers (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  test_id         UUID NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
-  user_id         VARCHAR(255) NOT NULL,
-  question_number INTEGER NOT NULL,
-  user_answer     VARCHAR(1),            -- null nếu bỏ qua câu
-  is_correct      BOOLEAN,              -- null trước khi chấm, set sau submit
-  flagged         BOOLEAN DEFAULT false,
-  answered_at     TIMESTAMP,
-  UNIQUE(test_id, user_id, question_number)
-);
-
--- Lỗi sai tích lũy
-CREATE TABLE mistakes (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id         VARCHAR(255) NOT NULL,
-  test_id         UUID NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
-  test_name       VARCHAR(500) NOT NULL,
-  question_number INTEGER NOT NULL,
-  part            INTEGER NOT NULL,
-  user_answer     VARCHAR(1),
-  correct_answer  VARCHAR(1) NOT NULL,
-  explanation     TEXT,                  -- paste từ AI
-  status          VARCHAR(20) NOT NULL DEFAULT 'pending',
-                                         -- pending | explained | resolved
-  created_at      TIMESTAMP DEFAULT now(),
-  updated_at      TIMESTAMP DEFAULT now()
-);
-
--- Indexes
-CREATE INDEX idx_tests_user ON tests(user_id);
-CREATE INDEX idx_answer_keys_test ON answer_keys(test_id);
-CREATE INDEX idx_user_answers_test_user ON user_answers(test_id, user_id);
-CREATE INDEX idx_mistakes_user_status ON mistakes(user_id, status);
+```
+src/main/java/mobile/
+├── apis/reader/
+│   ├── controllers/
+│   │   ├── ToeicTestController.java
+│   │   ├── ToeicAttemptController.java
+│   │   └── MistakeQueueController.java
+│   ├── dtos/
+│   │   ├── ToeicTestDto.java
+│   │   ├── ToeicAttemptDto.java          # @JsonProperty("isCorrect")
+│   │   ├── GradedQuestionDto.java        # @JsonProperty("isCorrect")
+│   │   └── MistakeQueueItemDto.java
+│   └── usecases/
+│       ├── boundaries/
+│       │   ├── SubmitToeicTestInputBoundary.java
+│       │   ├── GetAttemptReviewInputBoundary.java
+│       │   └── ImportAiReviewInputBoundary.java
+│       └── interactors/
+│           ├── SubmitToeicTestInteractor.java
+│           ├── GetAttemptReviewInteractor.java
+│           └── ImportAiReviewInteractor.java
+└── core/database/
+    ├── documents/
+    │   ├── ToeicTestDocument.java        # Collection: toeic_tests
+    │   ├── TestAttemptDocument.java      # Collection: test_attempts
+    │   └── MistakeQueueDocument.java     # Collection: mistake_queue
+    └── repositories/
+        ├── ToeicTestMongoRepository.java
+        ├── TestAttemptMongoRepository.java
+        └── MistakeQueueMongoRepository.java
 ```
 
 ---
 
-## 4. API Contract
+## 4. MongoDB Collections Design
 
-### 4.1 Test APIs (`/api/v1/tests`)
-
-| Method | Path | Auth | Description |
-|:---|:---|:---|:---|
-| GET | `/api/v1/tests` | Required | Danh sách tests của user |
-| GET | `/api/v1/tests/:id` | Required | Chi tiết test (questions list — NO correct_answer) |
-| POST | `/api/v1/tests` | Required | Tạo test mới (multipart: pdf + JSON metadata) |
-| POST | `/api/v1/tests/:id/submit` | Required | Nộp bài — chấm điểm + lưu kết quả |
-| GET | `/api/v1/tests/:id/result` | Required | Kết quả đã chấm (sau submit) |
-
-#### POST `/api/v1/tests` — Tạo test mới
-Request: `multipart/form-data`
-```
-pdf: <file>
-metadata: {
-  "test_name": "ETS 2024 Test 5",
-  "questions": [
-    { "number": 101, "part": 5, "correct_answer": "C" },
-    { "number": 102, "part": 5, "correct_answer": "A" }
-  ]
-}
-```
-
-Response `201`:
+### 4.1 `toeic_tests`
 ```json
 {
-  "id": "uuid",
-  "testName": "ETS 2024 Test 5",
-  "pdfFileRef": "/uploads/tests/uuid.pdf",
-  "questionCount": 100,
-  "status": "not_started",
-  "createdAt": "2024-08-20T07:00:00Z"
-}
-```
-
-#### GET `/api/v1/tests/:id` — Chi tiết (để làm bài)
-Response (KHÔNG có `correct_answer`):
-```json
-{
-  "id": "uuid",
-  "testName": "ETS 2024 Test 5",
-  "pdfFileRef": "/uploads/tests/uuid.pdf",
-  "questions": [
-    { "number": 101, "part": 5 },
-    { "number": 102, "part": 5 }
-  ]
-}
-```
-
-#### POST `/api/v1/tests/:id/submit`
-Request:
-```json
-{
-  "answers": [
-    { "questionNumber": 101, "answer": "C" },
-    { "questionNumber": 102, "answer": "B" }
-  ],
-  "duration": 3240
-}
-```
-
-Response:
-```json
-{
-  "testId": "uuid",
-  "testName": "ETS 2024 Test 5",
-  "rawScore": 82,
-  "scaledScore": null,
+  "_id": "68a1f2...",
+  "title": "ETS 2024 Test 01 - Reading",
+  "pdfUrl": "/uploads/toeic/ets2024_test1.pdf",
   "totalQuestions": 100,
-  "duration": 3240,
-  "partBreakdown": [
-    { "part": 5, "correct": 35, "total": 40 },
-    { "part": 6, "correct": 15, "total": 16 },
-    { "part": 7, "correct": 32, "total": 44 }
+  "totalParts": [5, 6, 7],
+  "answerKeys": [
+    { "questionNumber": 101, "part": 5, "correctAnswer": "C" },
+    { "questionNumber": 102, "part": 5, "correctAnswer": "A" }
   ],
-  "results": [
-    { "questionNumber": 101, "part": 5, "userAnswer": "C", "correctAnswer": "C", "isCorrect": true },
-    { "questionNumber": 102, "part": 5, "userAnswer": "B", "correctAnswer": "A", "isCorrect": false }
-  ]
+  "createdAt": "2026-08-20T10:00:00Z"
 }
 ```
 
-### 4.2 Mistake APIs (`/api/v1/mistakes`)
-
-| Method | Path | Body/Params | Response |
-|:---|:---|:---|:---|
-| GET | `/api/v1/mistakes` | `?status=pending` | `Page<MistakeDto>` |
-| POST | `/api/v1/mistakes/batch` | `MistakeDto[]` | `MistakeDto[]` |
-| PATCH | `/api/v1/mistakes/:id` | `{status, explanation}` | `MistakeDto` |
-| DELETE | `/api/v1/mistakes/:id` | - | `204` |
-
----
-
-## 5. Business Rules
-
-- **R1**: `correct_answer` KHÔNG được expose trong `GET /tests/:id` — chỉ trả về sau POST submit.
-- **R2**: User chỉ thấy tests/mistakes của chính mình (filter by `userId` từ JWT).
-- **R3**: Câu không trả lời (`answer = null`) tính là **SAI** khi chấm điểm.
-- **R4**: Sau submit — `user_answers` được persist, `tests.status = completed`, `tests.raw_score` được cập nhật.
-- **R5**: Mistake status transitions chỉ tiến: `pending → explained → resolved`.
-- **R6**: PDF file được lưu trên server filesystem hoặc cloud storage — `pdf_file_ref` là URL để frontend load vào iframe.
-- **R7**: `answer_keys` được import khi tạo test — không thể sửa sau khi test đã có `user_answers`.
-
----
-
-## 6. File Storage
-
-PDF files được lưu tại: `uploads/tests/{testId}.pdf`  
-Serve static: `/uploads/**` qua Spring `ResourceHttpRequestHandler` hoặc Nginx.  
-Với production: dùng S3-compatible storage, `pdf_file_ref` là presigned URL.
-
----
-
-## 7. Security Rules
-
-- Mọi endpoint yêu cầu JWT.
-- `userId` lấy từ JWT principal — KHÔNG nhận từ request body.
-- Validate: test phải thuộc userId hiện tại trước mọi thao tác.
-
----
-
-## 8. Target Timer, Pacing Status & Part Practice Mode (v3 Extension)
-
-### 8.1 Chế độ tính giờ mục tiêu & Luyện tập theo Part
-Hỗ trợ đo lường nhịp độ làm bài (Pacing) và cho phép người dùng tùy chọn luyện tập theo từng Part hoặc toàn bộ 100 câu:
-- **`selectedParts`**: Danh sách Part người dùng muốn làm trong session (ví dụ: `[5]` cho 30 câu Part 5, `[6]` cho 16 câu Part 6, `[7]` cho 54 câu Part 7, hoặc `[5, 6, 7]` cho toàn bộ đề).
-- **`timeMode`**:
-  - `full_test`: 75 phút chuẩn TOEIC.
-  - `per_part`: Đặt giờ mục tiêu riêng từng Part (mặc định 20p / 10p / 45p, cho phép tùy chỉnh).
-  - `untimed`: Không giới hạn thời gian (chỉ đo thời gian làm bài thực tế).
-- **`timeSpentSeconds`**: Đo chính xác thời gian (giây) người dùng thao tác và chọn đáp án trên từng câu hỏi.
-
-### 8.2 Quy tắc nghiệp vụ bổ sung
-- **R8**: Khi `selectedParts` được cung cấp trong submit session payload, hệ thống CHỈ chấm điểm trên các câu thuộc các Part đó.
-  - `totalQuestions` = tổng số câu của các Part được chọn (ví dụ: 30 câu nếu chỉ chọn Part 5).
-  - `accuracyPercentage` = `(rawScore / totalQuestions) * 100`.
-  - Các Part không được chọn KHÔNG bị tính là sai và KHÔNG tạo ra câu sai trong `ToeicMistakeEntity`.
-- **R9**: Hàng đợi lỗi (`mistakes`) tự động sắp xếp theo `testName` và `questionNumber ASC`.
-- **R10**: Endpoint Google Translate `/api/translator/**` phục vụ tra từ điển tức thì tốc độ cao và mở public trong security config.
-
-### 8.3 Mở rộng Submit Session Contract (`POST /api/toeic/tests/{id}/submit`)
-Request payload:
+### 4.2 `test_attempts`
 ```json
 {
-  "duration": 1200,
-  "timeMode": "per_part",
-  "selectedParts": [5],
-  "part5TargetSeconds": 1200,
-  "part6TargetSeconds": 0,
-  "part7TargetSeconds": 0,
-  "part5ElapsedSeconds": 1150,
-  "part6ElapsedSeconds": 0,
-  "part7ElapsedSeconds": 0,
+  "_id": "68b4e7...",
+  "userId": "681cce6406f2dd257c72e60c",
+  "testId": "68a1f2...",
+  "rawScore": 85,
+  "scaledScore": 425,
+  "totalQuestions": 100,
+  "durationSeconds": 3600,
+  "completedAt": "2026-08-21T09:15:00Z",
   "answers": [
-    { "questionNumber": 101, "answer": "C", "flagged": false, "timeSpentSeconds": 25 },
-    { "questionNumber": 102, "answer": "A", "flagged": false, "timeSpentSeconds": 30 }
-  ]
-}
-```
-
-Response payload:
-```json
-{
-  "testId": "uuid",
-  "testName": "ETS 2024 Test 5",
-  "rawScore": 27,
-  "totalQuestions": 30,
-  "accuracyPercentage": 90.0,
-  "duration": 1150,
-  "partBreakdown": [
-    {
-      "part": 5,
-      "correctCount": 27,
-      "totalCount": 30,
-      "accuracyPercentage": 90.0,
-      "targetSeconds": 1200,
-      "elapsedSeconds": 1150,
-      "avgSecondsPerQuestion": 38.3
-    }
-  ],
-  "results": [
     {
       "questionNumber": 101,
       "part": 5,
@@ -286,9 +102,49 @@ Response payload:
       "correctAnswer": "C",
       "isCorrect": true,
       "flagged": false,
-      "timeSpentSeconds": 25
+      "timeSpentSeconds": 24,
+      "aiExplanation": "Giải thích chi tiết..."
     }
-  ],
-  "newMistakes": []
+  ]
 }
 ```
+
+### 4.3 `mistake_queue`
+```json
+{
+  "_id": "68c9a1...",
+  "userId": "681cce6406f2dd257c72e60c",
+  "testId": "68a1f2...",
+  "attemptId": "68b4e7...",
+  "questionNumber": 105,
+  "part": 5,
+  "userAnswer": "B",
+  "correctAnswer": "D",
+  "flagged": true,
+  "status": "explained",
+  "aiExplanation": "Giải thích chi tiết...",
+  "createdAt": "2026-08-21T09:15:00Z"
+}
+```
+
+---
+
+## 5. Danh Mục REST Endpoints
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| `GET` | `/api/toeic/tests` | Lấy danh sách đề thi kèm thống kê số lần làm. |
+| `POST` | `/api/toeic/tests` | Tạo đề thi mới (PDF upload + Answer Keys). |
+| `GET` | `/api/toeic/tests/{id}` | Lấy chi tiết đề thi. |
+| `GET` | `/api/toeic/tests/file/{filename}` | Stream file PDF đề thi. |
+| `POST` | `/api/toeic/tests/{id}/submit` | Nộp bài, tính Raw/Scaled score, tự động lưu attempt và push mistake queue. |
+| `GET` | `/api/toeic/attempts/test/{testId}` | Lấy danh sách các lần làm bài của user theo đề. |
+| `GET` | `/api/toeic/attempts/{attemptId}/review` | Lấy bài thi đã chấm điểm và giải thích AI để review. |
+| `GET` | `/api/toeic/mistakes` | Lấy danh sách câu sai trong Hàng đợi lỗi. |
+| `GET` | `/api/toeic/mistakes/prompt` | Trích xuất System Prompt cho ChatGPT/Claude. |
+| `POST` | `/api/toeic/mistakes/import-ai-review` | Import JSON giải thích từ AI vào database. |
+
+---
+
+## 6. Serialization Rules
+- Tất cả các trường boolean `isCorrect` trên DTOs bắt buộc khai báo `@JsonProperty("isCorrect")` để đảm bảo Jackson serialization tương thích 100% với Frontend TypeScript.

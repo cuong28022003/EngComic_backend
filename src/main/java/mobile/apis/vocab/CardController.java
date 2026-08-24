@@ -37,6 +37,17 @@ public class CardController {
     private final SubmitPracticeResult submitPracticeResult;
     private final UpdateCard updateCard;
 
+    // Feature 002: Word Journey Practice Boundaries
+    private final GeneratePracticePromptBoundary generatePracticePromptBoundary;
+    private final ImportPracticeJsonBoundary importPracticeJsonBoundary;
+    private final GetPracticeQueueBoundary getPracticeQueueBoundary;
+    private final SubmitLevelAnswerBoundary submitLevelAnswerBoundary;
+    private final GetLeechCardsBoundary getLeechCardsBoundary;
+    private final ClearLeechStatusBoundary clearLeechStatusBoundary;
+
+    // Feature Deck Integration
+    private final mobile.businesses.boundaries.vocab.BatchAssignDeckBoundary batchAssignDeckBoundary;
+
     private final CardRepository cardRepository;
     private final mobile.businesses.interactors.vocab.CardMapper cardMapper;
 
@@ -56,6 +67,26 @@ public class CardController {
         return ResponseEntity.ok(response.getData());
     }
 
+    @PostMapping("/batch-assign-deck")
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<java.util.Map<String, Object>> batchAssignDeck(
+            @CurrentUserId String userId,
+            @Valid @RequestBody mobile.apis.vocab.dtos.BatchAssignDeckRequest request) {
+
+        mobile.businesses.boundaries.vocab.BatchAssignDeckBoundary.Request req =
+                mobile.businesses.boundaries.vocab.BatchAssignDeckBoundary.Request.builder()
+                        .userId(userId)
+                        .cardIds(request.getCardIds())
+                        .deckId(request.getDeckId())
+                        .build();
+
+        mobile.businesses.boundaries.vocab.BatchAssignDeckBoundary.Response response = batchAssignDeckBoundary.execute(req);
+        java.util.Map<String, Object> body = new java.util.HashMap<>();
+        body.put("totalAssigned", response.getTotalAssigned());
+        body.put("message", response.getMessage());
+        return ResponseEntity.ok(body);
+    }
+
     @GetMapping("/dashboard")
     @PreAuthorize(AppAuthorities.HAS_CARD_READ)
     public ResponseEntity<DashboardResponseDto> getDashboard(
@@ -63,6 +94,7 @@ public class CardController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String topic,
+            @RequestParam(required = false) String deckId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -72,6 +104,7 @@ public class CardController {
                 .search(search)
                 .status(status)
                 .topic(topic)
+                .deckId(deckId)
                 .pageable(pageable)
                 .build();
 
@@ -128,6 +161,115 @@ public class CardController {
             return ResponseEntity.ok(response.getCard());
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // ==========================================
+    // FEATURE 002: WORD JOURNEY PRACTICE APIS
+    // ==========================================
+
+    @GetMapping({"/practice-prompt", "/deck/{deckId}/practice-prompt"})
+    @PreAuthorize(AppAuthorities.HAS_CARD_READ)
+    public ResponseEntity<mobile.apis.vocab.dtos.PracticePromptResponseDto> getPracticePrompt(
+            @CurrentUserId String userId,
+            @PathVariable(required = false) String deckId,
+            @RequestParam(required = false) String deck) {
+        String targetDeckId = (deckId != null && !deckId.isBlank()) ? deckId : deck;
+        GeneratePracticePromptBoundary.Request req = GeneratePracticePromptBoundary.Request.builder()
+                .userId(userId)
+                .deckId(targetDeckId)
+                .build();
+
+        GeneratePracticePromptBoundary.Response res = generatePracticePromptBoundary.execute(req);
+        return ResponseEntity.ok(res.getData());
+    }
+
+    @PostMapping({"/import-practice-json", "/deck/{deckId}/import-practice-json"})
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<java.util.Map<String, Object>> importPracticeJson(
+            @CurrentUserId String userId,
+            @PathVariable(required = false) String deckId,
+            @RequestParam(required = false) String deck,
+            @Valid @RequestBody mobile.apis.vocab.dtos.ImportPracticeJsonRequest request) {
+        String targetDeckId = (deckId != null && !deckId.isBlank()) ? deckId : deck;
+        ImportPracticeJsonBoundary.Request req = ImportPracticeJsonBoundary.Request.builder()
+                .userId(userId)
+                .deckId(targetDeckId)
+                .jsonContent(request.getJsonContent())
+                .build();
+
+        ImportPracticeJsonBoundary.Response res = importPracticeJsonBoundary.execute(req);
+        java.util.Map<String, Object> body = new java.util.HashMap<>();
+        body.put("totalProcessed", res.getTotalProcessed());
+        body.put("successCount", res.getSuccessCount());
+        body.put("message", res.getMessage());
+        return ResponseEntity.ok(body);
+    }
+
+    @GetMapping("/practice/queue")
+    @PreAuthorize(AppAuthorities.HAS_CARD_READ)
+    public ResponseEntity<java.util.Map<String, Object>> getPracticeQueue(
+            @CurrentUserId String userId,
+            @RequestParam(required = false) String deckId,
+            @RequestParam(defaultValue = "20") int limit) {
+        GetPracticeQueueBoundary.Request req = GetPracticeQueueBoundary.Request.builder()
+                .userId(userId)
+                .deckId(deckId)
+                .limit(limit)
+                .build();
+
+        GetPracticeQueueBoundary.Response res = getPracticeQueueBoundary.execute(req);
+        java.util.Map<String, Object> body = new java.util.HashMap<>();
+        body.put("items", res.getItems());
+        body.put("totalDue", res.getTotalDue());
+        return ResponseEntity.ok(body);
+    }
+
+    @PostMapping("/{id}/submit-level")
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<mobile.apis.vocab.dtos.SubmitLevelAnswerResponseDto> submitLevelAnswer(
+            @CurrentUserId String userId,
+            @PathVariable String id,
+            @Valid @RequestBody mobile.apis.vocab.dtos.SubmitLevelAnswerRequest payload) {
+        SubmitLevelAnswerBoundary.Request req = SubmitLevelAnswerBoundary.Request.builder()
+                .userId(userId)
+                .cardId(id)
+                .payload(payload)
+                .build();
+
+        SubmitLevelAnswerBoundary.Response res = submitLevelAnswerBoundary.execute(req);
+        return ResponseEntity.ok(res.getData());
+    }
+
+    @GetMapping("/leech")
+    @PreAuthorize(AppAuthorities.HAS_CARD_READ)
+    public ResponseEntity<List<CardResponseDto>> getLeechCards(
+            @CurrentUserId String userId) {
+        GetLeechCardsBoundary.Request req = GetLeechCardsBoundary.Request.builder()
+                .userId(userId)
+                .build();
+
+        GetLeechCardsBoundary.Response res = getLeechCardsBoundary.execute(req);
+        return ResponseEntity.ok(res.getCards());
+    }
+
+    @PostMapping("/{id}/clear-leech")
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<java.util.Map<String, Object>> clearLeechStatus(
+            @CurrentUserId String userId,
+            @PathVariable String id,
+            @RequestBody(required = false) java.util.Map<String, String> body) {
+        String memoryTip = body != null ? body.get("memoryTip") : null;
+        ClearLeechStatusBoundary.Request req = ClearLeechStatusBoundary.Request.builder()
+                .userId(userId)
+                .cardId(id)
+                .memoryTip(memoryTip)
+                .build();
+
+        ClearLeechStatusBoundary.Response res = clearLeechStatusBoundary.execute(req);
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("card", res.getCard());
+        response.put("message", res.getMessage());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/deck/{deckId}")

@@ -94,12 +94,8 @@ public class DeckController {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<DeckEntity> decks = deckRepository.findByUserId(userId, pageable);
-        if (decks.hasContent()) {
-            Page<DeckResponseDto> deckResponses = decks.map(this::toResponseDto);
-            return ResponseEntity.ok(deckResponses);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
+        Page<DeckResponseDto> deckResponses = decks.map(this::toResponseDto);
+        return ResponseEntity.ok(deckResponses);
     }
 
     @PostMapping()
@@ -110,7 +106,10 @@ public class DeckController {
         DeckEntity createdDeck = new DeckEntity();
         createdDeck.setName(createDeckRequest.getName());
         createdDeck.setDescription(createDeckRequest.getDescription());
-        createdDeck.setUserId(userId);
+        String targetUserId = (userId != null && !userId.isBlank()) ? userId : createDeckRequest.getUserId();
+        createdDeck.setUserId(targetUserId);
+        createdDeck.setCreateAt(new Date());
+        createdDeck.setUpdateAt(new Date());
         DeckEntity saved = deckRepository.save(createdDeck);
         return ResponseEntity.ok(toResponseDto(saved));
     }
@@ -124,6 +123,7 @@ public class DeckController {
         if (existingDeck != null) {
             existingDeck.setName(createDeckRequest.getName());
             existingDeck.setDescription(createDeckRequest.getDescription());
+            existingDeck.setUpdateAt(new Date());
             DeckEntity updatedDeck = deckRepository.save(existingDeck);
             return ResponseEntity.ok(toResponseDto(updatedDeck));
         } else {

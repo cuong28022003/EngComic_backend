@@ -197,3 +197,20 @@
 
 - [x] **T019**: Data migration verification (backward compatibility)
   - Legacy fields mapped safely in `CardMapping` and `Card.java` without breaking previous structures.
+
+---
+
+## Phase 6: Deck Management & Vocab Vault Deep Integration
+
+- [x] **T020**: Refactor `DeckController.java` & `CreateDeckRequest.java`
+  - Support full Deck CRUD with safe JSON property mapping (`@JsonIgnoreProperties`).
+  - Return HTTP 200 with empty Page in `GET /api/deck/user/{userId}` instead of 204.
+  - Set `createAt` and `updateAt` timestamps automatically.
+
+- [x] **T021**: Implement `BatchAssignDeckBoundary` & `BatchAssignDeckInteractor`
+  - **Where**: `src/main/java/mobile/businesses/interactors/vocab/BatchAssignDeckInteractor.java`
+  - **Endpoint**: `POST /api/card/batch-assign-deck` (`cardIds`, `deckId`)
+  - Execute atomic `updateMulti` on MongoDB to reassign `deckId` for selected cards.
+
+- [x] **T022**: Evolve `GetCardDashboardInteractor.java`
+  - Add support for `deckId` query parameter (`unassigned` or specific deck ID) in `GET /api/card/dashboard`.

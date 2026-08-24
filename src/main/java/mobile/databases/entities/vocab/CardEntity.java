@@ -50,6 +50,10 @@ public class CardEntity {
 
     // --- SRS Progress ---
     protected int stage = 0;
+    protected int masteryLevel = 1;
+    protected int confidenceScore = 0;
+    protected String memoryTip;
+    protected CardExercisePackage exercisePackage;
     protected String status = "new";
     protected int interval = 0;
     protected double easeFactor = 2.5;

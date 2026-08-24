@@ -5,25 +5,22 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mobile.apis.vocab.dtos.DashboardResponseDto;
-import org.springframework.data.domain.Pageable;
 
-public interface GetCardDashboard {
+import java.util.List;
+
+public interface BatchAssignDeckBoundary {
     Response execute(Request request);
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     class Request {
         private String userId;
-        private String search;
-        private String status;
-        private String topic;
+        private List<String> cardIds;
         private String deckId;
-        private Pageable pageable;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     class Response {
-        private DashboardResponseDto data;
+        private int totalAssigned;
+        private String message;
     }
 }
-

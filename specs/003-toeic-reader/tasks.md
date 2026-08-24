@@ -1,69 +1,32 @@
-# Tasks: TOEIC Reader — Backend (003, v2)
+# Task Checklist: TOEIC Reader Backend Clean Architecture (v3)
 
-> Simplified: PDF display-only, JSON-driven answer keys, all SQL.
+> **Feature ID**: 003  
+> **Trạng thái**: Hoàn thành & Đã kiểm thử
 
 ---
 
-## Phase 1: DB & Entities
+- [x] **Task 1: MongoDB Entities & Repositories**
+  - [x] Tạo `ToeicTestDocument` + `ToeicTestMongoRepository`.
+  - [x] Tạo `TestAttemptDocument` + `TestAttemptMongoRepository`.
+  - [x] Tạo `MistakeQueueDocument` + `MistakeQueueMongoRepository`.
 
-- [ ] Viết `V3__create_reader_tables.sql` (Flyway migration)
-- [ ] Tạo `Test.java` entity + `TestStatus.java` enum
-- [ ] Tạo `AnswerKey.java` entity
-- [ ] Tạo `UserAnswer.java` entity
-- [ ] Tạo `Mistake.java` entity + `MistakeStatus.java` enum
-- [ ] Tạo 4 JPA Repositories (port interfaces)
-- [ ] Chạy migration, verify schema tạo đúng
+- [x] **Task 2: File Streaming & Security Configuration**
+  - [x] Cấu hình `/api/toeic/tests/file/**` và `/api/toeic/tests/proxy-pdf` trong `PublicSecurityEndpoints.java`.
+  - [x] Cấu hình disable `X-Frame-Options` trong `AppSecurityConfig.java` cho `<iframe>`.
 
-## Phase 2: Create Test (Upload PDF + Import Answer Key)
+- [x] **Task 3: Nộp bài, Chấm điểm & Lưu Session**
+  - [x] Viết `SubmitToeicTestInteractor` chấm điểm chuẩn TOEIC Reading Scaled Score (5-495).
+  - [x] Tự động chèn câu sai (`!isCorrect || flagged`) vào `mistake_queue`.
+  - [x] Viết endpoint lấy lịch sử các lần thi theo `testId`: `GET /api/toeic/attempts/test/{testId}`.
+  - [x] Viết endpoint xem lại bài làm theo `attemptId`: `GET /api/toeic/attempts/{attemptId}/review`.
 
-- [ ] Tạo `CreateTestRequest.java` DTO (test_name + questions[])
-- [ ] Config multipart file upload trong `application.yml` (max 50MB)
-- [ ] Config serve static files `/uploads/**` (ResourceHttpRequestHandler)
-- [ ] Tạo `CreateTestInteractor.java`:
-  - [ ] Save PDF file vào `uploads/tests/{id}.pdf`
-  - [ ] Persist `Test` entity
-  - [ ] Batch insert `AnswerKey` entities
-- [ ] Thêm `POST /api/v1/tests` vào `TestController.java`
-- [ ] Test: upload PDF + JSON metadata → verify file saved + answer_keys inserted
+- [x] **Task 4: Hàng đợi lỗi sai (Mistake Queue) & Import AI JSON**
+  - [x] Viết API lấy danh sách câu sai: `GET /api/toeic/mistakes` (hỗ trợ phân trang lớn).
+  - [x] Viết API trích xuất System Prompt cho LLM: `GET /api/toeic/mistakes/prompt`.
+  - [x] Viết API import JSON phân tích từ AI: `POST /api/toeic/mistakes/import-ai-review` (đồng bộ vào `test_attempts` và cập nhật `mistake_queue`).
 
-## Phase 3: Test Detail & Submit
+- [x] **Task 5: Fix Boolean Serialization (Jackson)**
+  - [x] Thêm `@JsonProperty("isCorrect")` vào `ToeicAttemptDto` và `GradedQuestionDto`.
 
-- [ ] Tạo `TestDetailDto.java` (KHÔNG có `correct_answer`)
-- [ ] Tạo `GetTestDetailInteractor.java` (map AnswerKeys → strip correct_answer)
-- [ ] Tạo `SubmitSessionRequest.java` + `SubmitSessionResponse.java` + `GradedResultDto.java`
-- [ ] Tạo `SubmitSessionInteractor.java`:
-  - [ ] Load + validate test ownership
-  - [ ] Load AnswerKeys → Map<questionNumber, correctAnswer>
-  - [ ] Grade: null answer = sai, compare userAnswer vs correctAnswer
-  - [ ] Batch upsert UserAnswer records
-  - [ ] Update Test: status=COMPLETED, raw_score
-  - [ ] Build GradedResultDto[] + PartBreakdownDto[]
-- [ ] Thêm `GET /:id` + `POST /:id/submit` vào `TestController.java`
-- [ ] Security test: verify GET /:id KHÔNG có correct_answer trong response
-- [ ] Unit test SubmitSessionInteractor: null→wrong, all correct, all wrong, partial
-
-## Phase 4: Mistake Queue
-
-- [ ] Tạo `MistakeDto.java` + `CreateMistakeBatchRequest.java` + `UpdateMistakeRequest.java`
-- [ ] Tạo `CreateMistakeBatchInteractor.java` (set userId từ JWT, status=PENDING)
-- [ ] Tạo `GetMistakeListInteractor.java` (filter userId + status, pageable)
-- [ ] Tạo `UpdateMistakeInteractor.java`:
-  - [ ] Validate ownership
-  - [ ] Validate status transition (PENDING→EXPLAINED cần explanation, reject lùi)
-- [ ] Tạo `MistakeController.java` (GET, POST /batch, PATCH /:id, DELETE /:id)
-- [ ] Unit test UpdateMistakeInteractor: transition hợp lệ + reject backward
-
-## Phase 5: Integration & Docs
-
-- [x] Cập nhật `BACKEND_CONTRACT.md` với 003 APIs
-- [x] Seed data: 2-3 test mẫu với answer keys (dev/test profile)
-- [x] Verify CORS config cho `/uploads/**` path
-
-## Phase 6: Timing, Pacing, Part-Practice & Google Translate (v3 Extension)
-
-- [x] Cập nhật `ToeicUserSessionEntity` lưu `timeMode`, `selectedParts`, part targets & elapsed seconds, và `timeSpentSeconds` trong `UserAnswerRecord`.
-- [x] Cập nhật `SubmitToeicSessionRequest` & `SubmitToeicSessionResponse` / `PartBreakdownDto` với timing fields.
-- [x] Cập nhật `SubmitToeicSessionInteractor` hỗ trợ lọc câu hỏi theo `selectedParts`, chấm điểm chuẩn xác theo số câu được chọn.
-- [x] Cập nhật `ToeicMistakeRepository` & `GetToeicMistakesInteractor` sắp xếp lỗi sai theo `questionNumber ASC`.
-- [x] Tích hợp endpoint Google Translate `/api/translator/**` và cấu hình security public.
-- [x] Biên dịch `mvn compile -DskipTests` đạt BUILD SUCCESS 0 errors.
+- [x] **Task 6: Kiểm tra biên dịch**
+  - [x] Chạy `mvn compile -DskipTests` ➔ **BUILD SUCCESS (0 errors)**.

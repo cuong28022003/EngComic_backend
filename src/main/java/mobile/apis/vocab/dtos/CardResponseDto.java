@@ -54,6 +54,16 @@ public class CardResponseDto {
     protected boolean isFavorite;
 
     protected int stage;
+    protected int masteryLevel = 1;
+    protected int confidenceScore = 0;
+    protected String memoryTip;
+
+    @JsonProperty("hasExercisePackage")
+    protected boolean hasExercisePackage;
+
+    @JsonProperty("exercisePackage")
+    protected CardExercisePackageDto exercisePackage;
+
     protected String status;
     protected int interval;
     protected double easeFactor;

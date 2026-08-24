@@ -6,6 +6,7 @@ import mobile.databases.entities.vocab.CardEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class CardMapper {
@@ -35,6 +36,14 @@ public class CardMapper {
         response.setFavorite(entity.isFavorite());
 
         response.setStage(entity.getStage());
+        response.setMasteryLevel(entity.getMasteryLevel() > 0 ? entity.getMasteryLevel() : 1);
+        response.setConfidenceScore(entity.getConfidenceScore());
+        response.setMemoryTip(entity.getMemoryTip());
+
+        boolean hasPkg = entity.getExercisePackage() != null;
+        response.setHasExercisePackage(hasPkg);
+        response.setExercisePackage(hasPkg ? toPkgDto(entity.getExercisePackage()) : null);
+
         response.setStatus(entity.getStatus() != null ? entity.getStatus() : "new");
         response.setInterval(entity.getInterval());
         response.setEaseFactor(entity.getEaseFactor());
@@ -57,6 +66,64 @@ public class CardMapper {
         }
 
         return response;
+    }
+
+    public mobile.apis.vocab.dtos.CardExercisePackageDto toPkgDto(mobile.databases.entities.vocab.CardExercisePackage pkg) {
+        if (pkg == null) return null;
+        mobile.apis.vocab.dtos.CardExercisePackageDto.CardExercisePackageDtoBuilder b = mobile.apis.vocab.dtos.CardExercisePackageDto.builder();
+
+        if (pkg.getLevel1Recognition() != null) {
+            List<mobile.apis.vocab.dtos.CardExercisePackageDto.ExerciseOptionDto> opts = new ArrayList<>();
+            if (pkg.getLevel1Recognition().getOptions() != null) {
+                for (mobile.databases.entities.vocab.CardExercisePackage.ExerciseOption o : pkg.getLevel1Recognition().getOptions()) {
+                    opts.add(mobile.apis.vocab.dtos.CardExercisePackageDto.ExerciseOptionDto.builder()
+                            .text(o.getText())
+                            .isCorrect(o.isCorrect())
+                            .build());
+                }
+            }
+            b.level1Recognition(mobile.apis.vocab.dtos.CardExercisePackageDto.Level1RecognitionDto.builder()
+                    .question(pkg.getLevel1Recognition().getQuestion())
+                    .options(opts)
+                    .build());
+        }
+
+        if (pkg.getLevel2Context() != null) {
+            List<mobile.apis.vocab.dtos.CardExercisePackageDto.ExerciseOptionDto> opts = new ArrayList<>();
+            if (pkg.getLevel2Context().getOptions() != null) {
+                for (mobile.databases.entities.vocab.CardExercisePackage.ExerciseOption o : pkg.getLevel2Context().getOptions()) {
+                    opts.add(mobile.apis.vocab.dtos.CardExercisePackageDto.ExerciseOptionDto.builder()
+                            .text(o.getText())
+                            .isCorrect(o.isCorrect())
+                            .build());
+                }
+            }
+            b.level2Context(mobile.apis.vocab.dtos.CardExercisePackageDto.Level2ContextDto.builder()
+                    .question(pkg.getLevel2Context().getQuestion())
+                    .sentence(pkg.getLevel2Context().getSentence())
+                    .collocationNote(pkg.getLevel2Context().getCollocationNote())
+                    .options(opts)
+                    .build());
+        }
+
+        if (pkg.getLevel3Production() != null) {
+            b.level3Production(mobile.apis.vocab.dtos.CardExercisePackageDto.Level3ProductionDto.builder()
+                    .prompt(pkg.getLevel3Production().getPrompt())
+                    .shuffledWords(pkg.getLevel3Production().getShuffledWords() != null ? pkg.getLevel3Production().getShuffledWords() : new ArrayList<>())
+                    .correctSentence(pkg.getLevel3Production().getCorrectSentence())
+                    .vietnameseMeaning(pkg.getLevel3Production().getVietnameseMeaning())
+                    .build());
+        }
+
+        if (pkg.getLevel4Realworld() != null) {
+            b.level4Realworld(mobile.apis.vocab.dtos.CardExercisePackageDto.Level4RealworldDto.builder()
+                    .situation(pkg.getLevel4Realworld().getSituation())
+                    .sampleResponse(pkg.getLevel4Realworld().getSampleResponse())
+                    .keyTakeaways(pkg.getLevel4Realworld().getKeyTakeaways())
+                    .build());
+        }
+
+        return b.build();
     }
 
     public CardEntity toEntity(CreateCardRequest request) {

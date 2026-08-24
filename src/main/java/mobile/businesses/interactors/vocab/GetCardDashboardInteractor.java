@@ -31,6 +31,7 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
         String search = request.getSearch();
         String status = request.getStatus();
         String topic = request.getTopic();
+        String deckId = request.getDeckId();
         Pageable pageable = request.getPageable();
 
         long totalCards = cardRepository.countByUserId(userId);
@@ -47,6 +48,17 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
 
         if (status != null && !status.trim().isEmpty()) {
             query.addCriteria(Criteria.where("status").is(status.trim()));
+        }
+
+        if (deckId != null && !deckId.trim().isEmpty()) {
+            if ("unassigned".equalsIgnoreCase(deckId.trim())) {
+                query.addCriteria(new Criteria().orOperator(
+                        Criteria.where("deckId").is(null),
+                        Criteria.where("deckId").is("")
+                ));
+            } else {
+                query.addCriteria(Criteria.where("deckId").is(deckId.trim()));
+            }
         }
 
         // Fuzzy / Partial match on topic

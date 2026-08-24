@@ -40,6 +40,8 @@ public interface CardRepository extends MongoRepository<CardEntity, String> {
 
     Page<CardEntity> findByUserIdAndMeaningContainingIgnoreCaseOrWordContainingIgnoreCase(String userId, String meaning, String word, Pageable pageable);
     Page<CardEntity> findByUserIdAndStatus(String userId, String status, Pageable pageable);
+    List<CardEntity> findByUserIdAndStatus(String userId, String status);
+    List<CardEntity> findByUserIdAndDeckId(String userId, String deckId);
     Page<CardEntity> findByUserIdAndTopicContainingIgnoreCase(String userId, String topic, Pageable pageable);
 
     @Query("{ 'userId': ?0, '$or': [ { 'relations.relatedCardId': ?1 }, { 'relations.text': { $regex: ?1, $options: 'i' } }, { 'relations.word': { $regex: ?1, $options: 'i' } } ] }")

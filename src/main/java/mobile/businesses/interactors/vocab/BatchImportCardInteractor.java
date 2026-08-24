@@ -176,15 +176,14 @@ public class BatchImportCardInteractor implements BatchImportCard {
             }
 
             List<PendingItemEntity> pendingList = pendingItemRepository.findByUserIdAndStatus(userId, "pending");
-            List<PendingItemEntity> toUpdate = new ArrayList<>();
+            List<PendingItemEntity> toDelete = new ArrayList<>();
             for (PendingItemEntity item : pendingList) {
                 if (item.getContent() != null && importedWords.contains(item.getContent().trim().toLowerCase())) {
-                    item.setStatus("imported");
-                    toUpdate.add(item);
+                    toDelete.add(item);
                 }
             }
-            if (!toUpdate.isEmpty()) {
-                pendingItemRepository.saveAll(toUpdate);
+            if (!toDelete.isEmpty()) {
+                pendingItemRepository.deleteAll(toDelete);
             }
         }
 
