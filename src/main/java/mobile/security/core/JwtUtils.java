@@ -22,11 +22,11 @@ public class JwtUtils {
     @Value("${apps.security.secret:${bezkoder.app.jwtSecret:SecretKeyDefault12345678901234567890}}")
     private String jwtSecret;
 
-    @Value("${apps.security.jwtExpirationMs:${bezkoder.app.jwtExpirationMs:1800000}}")
-    private int jwtExpirationMs;
+    @Value("${apps.security.jwtExpirationMs:${bezkoder.app.jwtExpirationMs:604800000}}")
+    private long jwtExpirationMs;
 
-    @Value("${apps.security.refreshJwtExpirationMs:${bezkoder.app.jwtRefreshExpirationMs:36000000}}")
-    private int jwtRefreshExpirationMs;
+    @Value("${apps.security.refreshJwtExpirationMs:${bezkoder.app.jwtRefreshExpirationMs:2592000000}}")
+    private long jwtRefreshExpirationMs;
 
     public String generateJwtToken(AppUserDetail userPrincipal) {
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret.getBytes());

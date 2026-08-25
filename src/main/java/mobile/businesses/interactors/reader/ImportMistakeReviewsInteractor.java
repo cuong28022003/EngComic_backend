@@ -73,6 +73,7 @@ public class ImportMistakeReviewsInteractor implements ImportMistakeReviewsBound
                 reviewEntity.setPart(part);
                 reviewEntity.setErrorType(item.getErrorType() != null ? item.getErrorType().trim().toLowerCase() : "vocab");
                 reviewEntity.setErrorSubtype(item.getErrorSubtype());
+                reviewEntity.setRelatedGrammarTopic(item.getRelatedGrammarTopic());
                 reviewEntity.setPassageExcerpt(item.getPassageExcerpt());
                 reviewEntity.setQuestionText(item.getQuestionText());
                 reviewEntity.setOptions(item.getOptions() != null ? item.getOptions() : new HashMap<>());

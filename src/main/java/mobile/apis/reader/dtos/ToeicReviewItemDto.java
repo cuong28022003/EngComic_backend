@@ -21,6 +21,7 @@ public class ToeicReviewItemDto {
     private int part;
     private String errorType;
     private String errorSubtype;
+    private String relatedGrammarTopic;
     private String passageExcerpt;
     private String questionText;
     private Map<String, String> options;

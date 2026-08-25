@@ -37,6 +37,10 @@ public class ImportReviewItemsRequest {
         @JsonAlias({"errorSubtype", "subtype"})
         private String errorSubtype;
 
+        @JsonProperty("related_grammar_topic")
+        @JsonAlias({"relatedGrammarTopic", "grammar_topic", "grammarTopic"})
+        private String relatedGrammarTopic;
+
         @JsonProperty("passage_excerpt")
         @JsonAlias({"passageExcerpt", "excerpt", "passage"})
         private String passageExcerpt;

@@ -23,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class ToeicTestController {
 
     private final CreateToeicTestBoundary createToeicTest;
+    private final UpdateToeicTestBoundary updateToeicTest;
+    private final DeleteToeicTestBoundary deleteToeicTest;
     private final GetToeicTestListBoundary getToeicTestList;
     private final GetToeicTestDetailBoundary getToeicTestDetail;
     private final SubmitToeicSessionBoundary submitToeicSession;
@@ -98,6 +100,67 @@ public class ToeicTestController {
                         .pdfFile(null)
                         .build());
         return ResponseEntity.ok(res.getData());
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<ToeicTestSummaryDto> updateTestMultipart(
+            @CurrentUserId String userId,
+            @PathVariable String id,
+            @RequestPart(value = "requestData", required = false) String requestDataJson,
+            @RequestPart(value = "pdfFile", required = false) MultipartFile pdfFile) {
+
+        try {
+            UpdateToeicTestRequest data = (requestDataJson != null && !requestDataJson.trim().isEmpty()) ?
+                    objectMapper.readValue(requestDataJson, UpdateToeicTestRequest.class) : new UpdateToeicTestRequest();
+
+            UpdateToeicTestBoundary.Response res = updateToeicTest.execute(
+                    UpdateToeicTestBoundary.Request.builder()
+                            .userId(userId)
+                            .testId(id)
+                            .requestData(data)
+                            .pdfFile(pdfFile)
+                            .build());
+            return ResponseEntity.ok(res.getData());
+        } catch (Exception e) {
+            log.error("Failed to parse update test request: {}", e.getMessage());
+            throw new RuntimeException("Dữ liệu không hợp lệ: " + e.getMessage());
+        }
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<ToeicTestSummaryDto> updateTestJson(
+            @CurrentUserId String userId,
+            @PathVariable String id,
+            @Valid @RequestBody UpdateToeicTestRequest data) {
+
+        UpdateToeicTestBoundary.Response res = updateToeicTest.execute(
+                UpdateToeicTestBoundary.Request.builder()
+                        .userId(userId)
+                        .testId(id)
+                        .requestData(data)
+                        .pdfFile(null)
+                        .build());
+        return ResponseEntity.ok(res.getData());
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<java.util.Map<String, Object>> deleteTest(
+            @CurrentUserId String userId,
+            @PathVariable String id) {
+
+        DeleteToeicTestBoundary.Response res = deleteToeicTest.execute(
+                DeleteToeicTestBoundary.Request.builder()
+                        .userId(userId)
+                        .testId(id)
+                        .build());
+
+        java.util.Map<String, Object> body = new java.util.HashMap<>();
+        body.put("success", res.isSuccess());
+        body.put("message", res.getMessage());
+        return ResponseEntity.ok(body);
     }
 
     @PostMapping("/{id}/submit")

@@ -262,7 +262,7 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
 
         // Update test entity (keep best/latest score)
         test.setStatus("completed");
-        if (rawScore >= test.getRawScore()) {
+        if (test.getRawScore() == null || rawScore >= test.getRawScore()) {
             test.setRawScore(rawScore);
         }
         test.setUpdatedAt(new Date());

@@ -36,6 +36,7 @@ public class ToeicReviewItemEntity {
 
     private String errorType; // "vocab", "grammar", "inference", "detail_missed", "trap_answer", "time_pressure"
     private String errorSubtype;
+    private String relatedGrammarTopic;
     private String passageExcerpt;
     private String questionText;
 

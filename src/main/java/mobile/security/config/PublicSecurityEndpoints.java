@@ -6,6 +6,7 @@ public final class PublicSecurityEndpoints {
     public static final String[] PUBLIC_URLS = {
             "/api/auth/**",
             "/api/translator/**",
+            "/api/grammar/**",
             "/api/toeic/tests/file/**",
             "/api/toeic/tests/proxy-pdf",
             "/api/toeic/attempts/*/save-progress",

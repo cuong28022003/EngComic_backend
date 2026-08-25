@@ -29,5 +29,6 @@ public class ToeicTestDetailDto {
     public static class QuestionDetailItem {
         private int number;
         private int part;
+        private String correctAnswer;
     }
 }
