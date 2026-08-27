@@ -47,6 +47,7 @@ public class CardController {
 
     // Feature Deck Integration
     private final mobile.businesses.boundaries.vocab.BatchAssignDeckBoundary batchAssignDeckBoundary;
+    private final GetUserTopicsBoundary getUserTopicsBoundary;
 
     private final CardRepository cardRepository;
     private final mobile.businesses.interactors.vocab.CardMapper cardMapper;
@@ -87,6 +88,13 @@ public class CardController {
         return ResponseEntity.ok(body);
     }
 
+    @GetMapping("/topics")
+    @PreAuthorize(AppAuthorities.HAS_CARD_READ)
+    public ResponseEntity<List<String>> getUserTopics(@CurrentUserId String userId) {
+        List<String> topics = getUserTopicsBoundary.execute(userId);
+        return ResponseEntity.ok(topics);
+    }
+
     @GetMapping("/dashboard")
     @PreAuthorize(AppAuthorities.HAS_CARD_READ)
     public ResponseEntity<DashboardResponseDto> getDashboard(
@@ -95,6 +103,8 @@ public class CardController {
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String topic,
             @RequestParam(required = false) String deckId,
+            @RequestParam(required = false) String partOfSpeech,
+            @RequestParam(required = false) String usageCategory,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -105,6 +115,8 @@ public class CardController {
                 .status(status)
                 .topic(topic)
                 .deckId(deckId)
+                .partOfSpeech(partOfSpeech)
+                .usageCategory(usageCategory)
                 .pageable(pageable)
                 .build();
 
@@ -340,9 +352,9 @@ public class CardController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
-    public ResponseEntity<?> deleteCard(@PathVariable String id) {
+    public ResponseEntity<Void> deleteCard(@PathVariable String id) {
         cardRepository.deleteById(id);
-        return ResponseEntity.ok().body("Card deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/batch")

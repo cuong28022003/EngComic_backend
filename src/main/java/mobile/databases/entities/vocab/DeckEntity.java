@@ -25,6 +25,8 @@ public class DeckEntity {
     protected String userId;
     protected String name;
     protected String description;
+    protected String icon;
+    protected String background;
     @CreatedDate
     protected Date createAt;
     @LastModifiedDate

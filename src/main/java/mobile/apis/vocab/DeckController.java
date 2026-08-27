@@ -37,6 +37,8 @@ public class DeckController {
         dto.setUserId(deck.getUserId());
         dto.setName(deck.getName());
         dto.setDescription(deck.getDescription());
+        dto.setIcon(deck.getIcon());
+        dto.setBackground(deck.getBackground());
         if (deck.getCreateAt() != null) dto.setCreateAt(deck.getCreateAt().toString());
         if (deck.getUpdateAt() != null) dto.setUpdateAt(deck.getUpdateAt().toString());
 
@@ -106,6 +108,8 @@ public class DeckController {
         DeckEntity createdDeck = new DeckEntity();
         createdDeck.setName(createDeckRequest.getName());
         createdDeck.setDescription(createDeckRequest.getDescription());
+        createdDeck.setIcon(createDeckRequest.getIcon());
+        createdDeck.setBackground(createDeckRequest.getBackground());
         String targetUserId = (userId != null && !userId.isBlank()) ? userId : createDeckRequest.getUserId();
         createdDeck.setUserId(targetUserId);
         createdDeck.setCreateAt(new Date());
@@ -123,6 +127,8 @@ public class DeckController {
         if (existingDeck != null) {
             existingDeck.setName(createDeckRequest.getName());
             existingDeck.setDescription(createDeckRequest.getDescription());
+            if (createDeckRequest.getIcon() != null) existingDeck.setIcon(createDeckRequest.getIcon());
+            if (createDeckRequest.getBackground() != null) existingDeck.setBackground(createDeckRequest.getBackground());
             existingDeck.setUpdateAt(new Date());
             DeckEntity updatedDeck = deckRepository.save(existingDeck);
             return ResponseEntity.ok(toResponseDto(updatedDeck));

@@ -14,6 +14,8 @@ public class DeckResponseDto {
     private String userId;
     private String name;
     private String description;
+    private String icon;
+    private String background;
     private DeckStatisticsResponse stats;
     private String createAt;
     private String updateAt;

@@ -28,8 +28,9 @@ public class CardMapper {
         response.setUsageNote(entity.getUsageNote());
         response.setTopic(entity.getTopic());
 
-        response.setExamples(entity.getExamples() != null ? entity.getExamples() : new ArrayList<>());
         response.setRelations(entity.getRelations() != null ? entity.getRelations() : new ArrayList<>());
+        response.setUsages(entity.getUsages() != null ? entity.getUsages() : new ArrayList<>());
+        response.setComparisonGroup(entity.getComparisonGroup());
 
         response.setPersonalNote(entity.getPersonalNote());
         response.setMyExample(entity.getMyExample());
@@ -134,12 +135,13 @@ public class CardMapper {
         card.setUsageNote(request.getUsageNote());
         card.setTopic(request.getTopic());
 
-        if (request.getExamples() != null) {
-            card.setExamples(request.getExamples());
-        }
         if (request.getRelations() != null) {
             card.setRelations(request.getRelations());
         }
+        if (request.getUsages() != null) {
+            card.setUsages(request.getUsages());
+        }
+        card.setComparisonGroup(request.getComparisonGroup());
 
         card.setPersonalNote(request.getPersonalNote());
         card.setMyExample(request.getMyExample());

@@ -16,5 +16,7 @@ import lombok.Setter;
 public class CreateDeckRequest {
     private String name;
     private String description;
+    private String icon;
+    private String background;
     private String userId;
 }

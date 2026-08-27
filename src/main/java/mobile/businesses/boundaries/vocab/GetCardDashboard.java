@@ -18,6 +18,8 @@ public interface GetCardDashboard {
         private String status;
         private String topic;
         private String deckId;
+        private String partOfSpeech;
+        private String usageCategory;
         private Pageable pageable;
     }
 

@@ -38,9 +38,9 @@ public class CardEntity {
     protected String topic;
     protected String image;
     protected String audio;
-
-    protected List<ExampleSentence> examples = new ArrayList<>();
     protected List<WordRelation> relations = new ArrayList<>();
+    protected List<WordUsage> usages = new ArrayList<>();
+    protected String comparisonGroup;
 
     // --- Personal & Tags ---
     protected Set<String> tags;

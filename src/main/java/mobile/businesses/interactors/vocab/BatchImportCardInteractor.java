@@ -10,6 +10,7 @@ import mobile.databases.entities.vocab.CardEntity;
 import mobile.databases.entities.vocab.ExampleSentence;
 import mobile.databases.entities.vocab.PendingItemEntity;
 import mobile.databases.entities.vocab.WordRelation;
+import mobile.databases.entities.vocab.WordUsage;
 import mobile.databases.repositories.vocab.CardRepository;
 import mobile.databases.repositories.vocab.PendingItemRepository;
 import org.springframework.stereotype.Service;
@@ -77,9 +78,56 @@ public class BatchImportCardInteractor implements BatchImportCard {
             card.setUsageNote(getString(map, "usageNote", "usage_note", "note"));
             card.setTopic(getString(map, "topic", "category"));
 
-            if (map.containsKey("examples") && map.get("examples") instanceof List) {
+            List<WordUsage> usagesList = new ArrayList<>();
+
+            // Parse Usages & Nested Examples
+            if (map.containsKey("usages") && map.get("usages") instanceof List) {
+                List<?> uList = (List<?>) map.get("usages");
+                for (Object uObj : uList) {
+                    if (uObj instanceof Map) {
+                        Map<?, ?> uMap = (Map<?, ?>) uObj;
+                        WordUsage usage = new WordUsage();
+                        usage.setCategory(getString(uMap, "category", "usage_category", "cat"));
+                        usage.setStructure(getString(uMap, "structure", "formula", "usage", "pattern"));
+                        usage.setMeaning(getString(uMap, "meaning", "meaning_vi", "meaningVi"));
+                        usage.setNote(getString(uMap, "note", "usage_note", "tip"));
+
+                        List<ExampleSentence> exSentences = new ArrayList<>();
+                        if (uMap.containsKey("examples") && uMap.get("examples") instanceof List) {
+                            List<?> exList = (List<?>) uMap.get("examples");
+                            for (Object exObj : exList) {
+                                if (exObj instanceof Map) {
+                                    Map<?, ?> exMap = (Map<?, ?>) exObj;
+                                    String text = getString(exMap, "text", "sentence", "en");
+                                    String translation = getString(exMap, "translation", "vi", "meaning");
+                                    String formality = getString(exMap, "formality", "context");
+
+                                    if (text != null && !text.trim().isEmpty()) {
+                                        exSentences.add(new ExampleSentence(
+                                                UUID.randomUUID().toString(),
+                                                text.trim(),
+                                                translation != null ? translation.trim() : null,
+                                                formality != null ? formality.trim() : null
+                                        ));
+                                    }
+                                } else if (exObj instanceof String) {
+                                    String exStr = (String) exObj;
+                                    if (!exStr.trim().isEmpty()) {
+                                        exSentences.add(new ExampleSentence(UUID.randomUUID().toString(), exStr.trim(), null, null));
+                                    }
+                                }
+                            }
+                        }
+                        usage.setExamples(exSentences);
+                        usagesList.add(usage);
+                    }
+                }
+            }
+
+            // Fallback for legacy JSON with root "examples"
+            if (usagesList.isEmpty() && map.containsKey("examples") && map.get("examples") instanceof List) {
                 List<?> exList = (List<?>) map.get("examples");
-                List<ExampleSentence> examples = new ArrayList<>();
+                List<ExampleSentence> legacyExamples = new ArrayList<>();
                 for (Object exObj : exList) {
                     if (exObj instanceof Map) {
                         Map<?, ?> exMap = (Map<?, ?>) exObj;
@@ -88,23 +136,30 @@ public class BatchImportCardInteractor implements BatchImportCard {
                         String formality = getString(exMap, "formality", "context");
 
                         if (text != null && !text.trim().isEmpty()) {
-                            ExampleSentence sentence = new ExampleSentence(
+                            legacyExamples.add(new ExampleSentence(
                                     UUID.randomUUID().toString(),
                                     text.trim(),
                                     translation != null ? translation.trim() : null,
                                     formality != null ? formality.trim() : null
-                            );
-                            examples.add(sentence);
+                            ));
                         }
                     } else if (exObj instanceof String) {
                         String exStr = (String) exObj;
                         if (!exStr.trim().isEmpty()) {
-                            examples.add(new ExampleSentence(UUID.randomUUID().toString(), exStr.trim(), null, null));
+                            legacyExamples.add(new ExampleSentence(UUID.randomUUID().toString(), exStr.trim(), null, null));
                         }
                     }
                 }
-                card.setExamples(examples);
+                if (!legacyExamples.isEmpty()) {
+                    WordUsage fallbackUsage = new WordUsage();
+                    fallbackUsage.setStructure(cleanWord);
+                    fallbackUsage.setMeaning(card.getMeaning());
+                    fallbackUsage.setExamples(legacyExamples);
+                    usagesList.add(fallbackUsage);
+                }
             }
+
+            card.setUsages(usagesList);
 
             if (map.containsKey("relations") && map.get("relations") instanceof List) {
                 List<?> relList = (List<?>) map.get("relations");

@@ -44,8 +44,9 @@ public class CardResponseDto {
     protected String usageNote;
     protected String topic;
 
-    protected List<ExampleSentence> examples = new ArrayList<>();
     protected List<WordRelation> relations = new ArrayList<>();
+    protected List<mobile.databases.entities.vocab.WordUsage> usages = new ArrayList<>();
+    protected String comparisonGroup;
 
     protected String personalNote;
     protected String myExample;

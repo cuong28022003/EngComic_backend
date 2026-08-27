@@ -32,6 +32,8 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
         String status = request.getStatus();
         String topic = request.getTopic();
         String deckId = request.getDeckId();
+        String partOfSpeech = request.getPartOfSpeech();
+        String usageCategory = request.getUsageCategory();
         Pageable pageable = request.getPageable();
 
         long totalCards = cardRepository.countByUserId(userId);
@@ -48,6 +50,14 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
 
         if (status != null && !status.trim().isEmpty()) {
             query.addCriteria(Criteria.where("status").is(status.trim()));
+        }
+
+        if (usageCategory != null && !usageCategory.trim().isEmpty()) {
+            query.addCriteria(Criteria.where("usages.category").is(usageCategory.trim()));
+        }
+
+        if (partOfSpeech != null && !partOfSpeech.trim().isEmpty()) {
+            query.addCriteria(Criteria.where("partOfSpeech").regex(Pattern.quote(partOfSpeech.trim()), "i"));
         }
 
         if (deckId != null && !deckId.trim().isEmpty()) {
