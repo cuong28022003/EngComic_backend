@@ -3,17 +3,18 @@ package mobile.businesses.interactors.user;
 import lombok.RequiredArgsConstructor;
 import mobile.apis.user.dtos.UserStatsResponseDto;
 import mobile.businesses.boundaries.user.RecordStudyActivity;
-import mobile.databases.entities.user.UserStatsEntity;
-import mobile.databases.repositories.user.UserStatsRepository;
+import mobile.databases.entities.user.UserLearningStatsEntity;
+import mobile.databases.repositories.user.UserLearningStatsRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class RecordStudyActivityInteractor implements RecordStudyActivity {
 
-    private final UserStatsRepository userStatsRepository;
+    private final UserLearningStatsRepository userLearningStatsRepository;
 
     @Override
     public Response execute(Request request) {
@@ -22,12 +23,13 @@ public class RecordStudyActivityInteractor implements RecordStudyActivity {
             throw new IllegalArgumentException("User ID is required");
         }
 
-        UserStatsEntity stats = userStatsRepository.findByUserId(userId)
-                .orElseGet(() -> userStatsRepository.save(UserStatsEntity.builder()
+        UserLearningStatsEntity stats = userLearningStatsRepository.findByUserId(userId)
+                .orElseGet(() -> userLearningStatsRepository.save(UserLearningStatsEntity.builder()
                         .userId(userId)
                         .currentStreak(0)
                         .longestStreak(0)
                         .lastStudyDate(LocalDate.now().minusDays(2))
+                        .createdAt(LocalDateTime.now())
                         .build()));
 
         LocalDate today = LocalDate.now();
@@ -70,22 +72,20 @@ public class RecordStudyActivityInteractor implements RecordStudyActivity {
         // Add XP earned
         int earnedXp = request.getXpEarned() > 0 ? request.getXpEarned() : 10;
         stats.setXp(stats.getXp() + earnedXp);
+        stats.setUpdatedAt(LocalDateTime.now());
 
-        UserStatsEntity saved = userStatsRepository.save(stats);
+        UserLearningStatsEntity saved = userLearningStatsRepository.save(stats);
 
         UserStatsResponseDto dto = UserStatsResponseDto.builder()
                 .id(saved.getId())
                 .userId(saved.getUserId())
                 .xp(saved.getXp())
                 .diamond(saved.getDiamond())
-                .rankName(saved.getRank() != null ? saved.getRank().getName() : "BRONZE")
+                .rankName(saved.getRank() != null ? saved.getRank().getName() : "ĐỒNG (Bronze)")
                 .currentStreak(saved.getCurrentStreak())
                 .longestStreak(saved.getLongestStreak())
                 .lastStudyDate(saved.getLastStudyDate())
                 .studiedToday(true)
-                .isReceivedSeasonReward(saved.isReceivedSeasonReward())
-                .isPremium(saved.isPremium())
-                .premiumExpiredAt(saved.getPremiumExpiredAt())
                 .build();
 
         return Response.builder()

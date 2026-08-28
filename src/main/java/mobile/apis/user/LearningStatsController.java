@@ -2,7 +2,7 @@ package mobile.apis.user;
 
 import lombok.RequiredArgsConstructor;
 import mobile.apis.user.dtos.UserStatsResponseDto;
-import mobile.businesses.boundaries.user.GetUserStats;
+import mobile.businesses.boundaries.user.GetLearningStats;
 import mobile.businesses.boundaries.user.RecordStudyActivity;
 import mobile.security.constants.AppAuthorities;
 import mobile.security.resolver.CurrentUserId;
@@ -13,41 +13,42 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/user-stats")
+@RequestMapping({"/api/learning-stats", "/api/learningstats", "/api/userstats"})
 @RequiredArgsConstructor
-public class UserStatsController {
+public class LearningStatsController {
 
-    private final GetUserStats getUserStats;
+    private final GetLearningStats getLearningStats;
     private final RecordStudyActivity recordStudyActivity;
+    private final mobile.businesses.boundaries.user.EquipPrestigeItem equipPrestigeItem;
 
     @GetMapping("/me")
     @PreAuthorize(AppAuthorities.IS_AUTHENTICATED)
-    public ResponseEntity<UserStatsResponseDto> getMyStats(@CurrentUserId String currentUserId) {
-        GetUserStats.Request request = GetUserStats.Request.builder()
+    public ResponseEntity<UserStatsResponseDto> getMyLearningStats(@CurrentUserId String currentUserId) {
+        GetLearningStats.Request request = GetLearningStats.Request.builder()
                 .userId(currentUserId)
                 .build();
 
-        GetUserStats.Response response = getUserStats.execute(request);
+        GetLearningStats.Response response = getLearningStats.execute(request);
         return ResponseEntity.ok(response.getStats());
     }
 
     @GetMapping("/{userId}")
     @PreAuthorize(AppAuthorities.IS_AUTHENTICATED)
-    public ResponseEntity<UserStatsResponseDto> getUserStats(
+    public ResponseEntity<UserStatsResponseDto> getUserLearningStats(
             @CurrentUserId String currentUserId,
             @PathVariable String userId) {
         String targetUserId = (userId != null && !userId.isBlank()) ? userId : currentUserId;
-        GetUserStats.Request request = GetUserStats.Request.builder()
+        GetLearningStats.Request request = GetLearningStats.Request.builder()
                 .userId(targetUserId)
                 .build();
 
-        GetUserStats.Response response = getUserStats.execute(request);
+        GetLearningStats.Response response = getLearningStats.execute(request);
         return ResponseEntity.ok(response.getStats());
     }
 
-    @PostMapping({"/check-in", "/record-activity"})
+    @PostMapping("/record-activity")
     @PreAuthorize(AppAuthorities.IS_AUTHENTICATED)
-    public ResponseEntity<RecordStudyActivity.Response> recordActivity(
+    public ResponseEntity<RecordStudyActivity.Response> recordLearningActivity(
             @CurrentUserId String currentUserId,
             @RequestBody(required = false) Map<String, Object> payload) {
         int xpEarned = 10;
@@ -70,6 +71,25 @@ public class UserStatsController {
                 .build();
 
         RecordStudyActivity.Response res = recordStudyActivity.execute(req);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/equip")
+    @PreAuthorize(AppAuthorities.IS_AUTHENTICATED)
+    public ResponseEntity<mobile.businesses.boundaries.user.EquipPrestigeItem.Response> equipPrestige(
+            @CurrentUserId String currentUserId,
+            @RequestBody Map<String, String> payload) {
+        String itemType = payload.getOrDefault("itemType", "title");
+        String itemId = payload.getOrDefault("itemId", "");
+
+        mobile.businesses.boundaries.user.EquipPrestigeItem.Request req =
+                mobile.businesses.boundaries.user.EquipPrestigeItem.Request.builder()
+                        .userId(currentUserId)
+                        .itemType(itemType)
+                        .itemId(itemId)
+                        .build();
+
+        mobile.businesses.boundaries.user.EquipPrestigeItem.Response res = equipPrestigeItem.execute(req);
         return ResponseEntity.ok(res);
     }
 }

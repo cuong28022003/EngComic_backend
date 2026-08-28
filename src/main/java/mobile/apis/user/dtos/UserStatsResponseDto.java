@@ -25,5 +25,16 @@ public class UserStatsResponseDto {
     private boolean isPremium;
     private boolean studiedToday;
     private LocalDateTime premiumExpiredAt;
+
+    private String equippedTitle;
+    private String equippedAvatarFrame;
+    @Builder.Default
+    private java.util.List<String> unlockedTitles = new java.util.ArrayList<>();
+    @Builder.Default
+    private java.util.List<String> unlockedAvatarFrames = new java.util.ArrayList<>();
+    @Builder.Default
+    private int seasonPassLevel = 1;
+    @Builder.Default
+    private int seasonPassXp = 0;
 }
 
