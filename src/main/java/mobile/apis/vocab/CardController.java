@@ -105,6 +105,7 @@ public class CardController {
             @RequestParam(required = false) String deckId,
             @RequestParam(required = false) String partOfSpeech,
             @RequestParam(required = false) String usageCategory,
+            @RequestParam(required = false) Boolean isFavorite,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -117,6 +118,7 @@ public class CardController {
                 .deckId(deckId)
                 .partOfSpeech(partOfSpeech)
                 .usageCategory(usageCategory)
+                .isFavorite(isFavorite)
                 .pageable(pageable)
                 .build();
 

@@ -17,6 +17,7 @@ import java.util.Optional;
 public class SubmitLevelAnswerInteractor implements SubmitLevelAnswerBoundary {
 
     private final CardRepository cardRepository;
+    private final mobile.businesses.boundaries.user.RecordStudyActivity recordStudyActivity;
 
     @Override
     public Response execute(Request request) {
@@ -114,6 +115,17 @@ public class SubmitLevelAnswerInteractor implements SubmitLevelAnswerBoundary {
 
         card.setUpdateAt(now);
         cardRepository.save(card);
+
+        // Record user study activity & streak
+        if (userId != null && !userId.isBlank()) {
+            try {
+                recordStudyActivity.execute(mobile.businesses.boundaries.user.RecordStudyActivity.Request.builder()
+                        .userId(userId)
+                        .xpEarned(isCorrect ? 15 : 5)
+                        .activityType("practice")
+                        .build());
+            } catch (Exception ignored) {}
+        }
 
         boolean isLeech = "leech".equalsIgnoreCase(card.getStatus());
         String msg;

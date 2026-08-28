@@ -34,6 +34,7 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
         String deckId = request.getDeckId();
         String partOfSpeech = request.getPartOfSpeech();
         String usageCategory = request.getUsageCategory();
+        Boolean isFavorite = request.getIsFavorite();
         Pageable pageable = request.getPageable();
 
         long totalCards = cardRepository.countByUserId(userId);
@@ -46,6 +47,10 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
         Query query = new Query();
         if (userId != null) {
             query.addCriteria(Criteria.where("userId").is(userId));
+        }
+
+        if (isFavorite != null && isFavorite) {
+            query.addCriteria(Criteria.where("isFavorite").is(true));
         }
 
         if (status != null && !status.trim().isEmpty()) {

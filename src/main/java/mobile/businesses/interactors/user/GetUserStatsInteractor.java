@@ -7,6 +7,8 @@ import mobile.databases.entities.user.UserStatsEntity;
 import mobile.databases.repositories.user.UserStatsRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class GetUserStatsInteractor implements GetUserStats {
@@ -24,6 +26,15 @@ public class GetUserStatsInteractor implements GetUserStats {
                         .userId(request.getUserId())
                         .build()));
 
+        LocalDate today = LocalDate.now();
+        boolean studiedToday = stats.getLastStudyDate() != null && stats.getLastStudyDate().equals(today);
+
+        // If user missed yesterday and today, streak resets to 0
+        if (stats.getLastStudyDate() != null && stats.getLastStudyDate().isBefore(today.minusDays(1)) && stats.getCurrentStreak() > 0) {
+            stats.setCurrentStreak(0);
+            stats = userStatsRepository.save(stats);
+        }
+
         UserStatsResponseDto dto = UserStatsResponseDto.builder()
                 .id(stats.getId())
                 .userId(stats.getUserId())
@@ -33,6 +44,7 @@ public class GetUserStatsInteractor implements GetUserStats {
                 .currentStreak(stats.getCurrentStreak())
                 .longestStreak(stats.getLongestStreak())
                 .lastStudyDate(stats.getLastStudyDate())
+                .studiedToday(studiedToday)
                 .isReceivedSeasonReward(stats.isReceivedSeasonReward())
                 .isPremium(stats.isPremium())
                 .premiumExpiredAt(stats.getPremiumExpiredAt())

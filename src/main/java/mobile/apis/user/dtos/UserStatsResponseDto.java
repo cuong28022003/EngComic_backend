@@ -23,6 +23,7 @@ public class UserStatsResponseDto {
     private LocalDate lastStudyDate;
     private boolean isReceivedSeasonReward;
     private boolean isPremium;
+    private boolean studiedToday;
     private LocalDateTime premiumExpiredAt;
 }
 

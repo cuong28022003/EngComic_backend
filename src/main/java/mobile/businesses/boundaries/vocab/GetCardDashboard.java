@@ -20,6 +20,7 @@ public interface GetCardDashboard {
         private String deckId;
         private String partOfSpeech;
         private String usageCategory;
+        private Boolean isFavorite;
         private Pageable pageable;
     }
 
@@ -28,4 +29,3 @@ public interface GetCardDashboard {
         private DashboardResponseDto data;
     }
 }
-
