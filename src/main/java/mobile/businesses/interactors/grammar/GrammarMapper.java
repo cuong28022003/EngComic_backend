@@ -13,15 +13,7 @@ public class GrammarMapper {
     public GrammarPointDto toDto(GrammarPointEntity entity) {
         if (entity == null) return null;
 
-        // Auto fallback for summary & shortRule
         String summary = entity.getSummary();
-        if (summary == null || summary.trim().isEmpty()) {
-            summary = entity.getShortRule();
-        }
-        String shortRule = entity.getShortRule();
-        if (shortRule == null || shortRule.trim().isEmpty()) {
-            shortRule = summary;
-        }
 
         return GrammarPointDto.builder()
                 .id(entity.getId())
@@ -29,20 +21,17 @@ public class GrammarMapper {
                 .category(entity.getCategory())
                 .level(entity.getLevel() != null ? entity.getLevel() : "intermediate")
                 .summary(summary)
-                .shortRule(shortRule)
+                .shortRule(summary)
                 .structure(entity.getStructure())
                 .signalWords(entity.getSignalWords())
                 .commonMistake(entity.getCommonMistake())
-                .examples(entity.getExamples() != null ?
-                        entity.getExamples().stream()
-                                .map(this::toExampleDto)
-                                .collect(Collectors.toList()) : Collections.emptyList())
+                .examples(Collections.emptyList())
                 .usages(entity.getUsages() != null ?
                         entity.getUsages().stream()
                                 .map(this::toUsageDto)
                                 .collect(Collectors.toList()) : Collections.emptyList())
                 .commonMistakes(entity.getCommonMistakes() != null ? entity.getCommonMistakes() : Collections.emptyList())
-                .examTips(entity.getExamTips() != null ? entity.getExamTips() : Collections.emptyList())
+                .examTips(Collections.emptyList())
                 .comparisons(entity.getComparisons() != null ?
                         entity.getComparisons().stream()
                                 .map(this::toComparisonDto)

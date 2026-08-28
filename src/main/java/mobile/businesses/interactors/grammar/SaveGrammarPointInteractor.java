@@ -42,25 +42,9 @@ public class SaveGrammarPointInteractor implements SaveGrammarPointBoundary {
         
         String summary = req.getSummary() != null ? req.getSummary() : req.getShortRule();
         entity.setSummary(summary);
-        entity.setShortRule(summary);
         entity.setStructure(req.getStructure());
         entity.setSignalWords(req.getSignalWords() != null ? req.getSignalWords() : Collections.emptyList());
         entity.setCommonMistake(req.getCommonMistake());
-
-        // Map Root Examples
-        if (req.getExamples() != null) {
-            List<GrammarPointEntity.GrammarExample> examples = req.getExamples().stream()
-                    .map(e -> GrammarPointEntity.GrammarExample.builder()
-                            .text(e.getText())
-                            .translation(e.getTranslation())
-                            .highlight(e.getHighlight())
-                            .note(e.getNote())
-                            .build())
-                    .collect(Collectors.toList());
-            entity.setExamples(examples);
-        } else {
-            entity.setExamples(Collections.emptyList());
-        }
 
         // Map Multi Usages
         if (req.getUsages() != null) {
@@ -88,7 +72,6 @@ public class SaveGrammarPointInteractor implements SaveGrammarPointBoundary {
         }
 
         entity.setCommonMistakes(req.getCommonMistakes() != null ? req.getCommonMistakes() : Collections.emptyList());
-        entity.setExamTips(req.getExamTips() != null ? req.getExamTips() : Collections.emptyList());
 
         // Map Comparisons
         if (req.getComparisons() != null) {

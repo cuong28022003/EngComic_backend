@@ -17,7 +17,7 @@ public interface GrammarPointRepository extends MongoRepository<GrammarPointEnti
 
     @Query("{ '$or': [ " +
             "{ 'topic': { $regex: ?0, $options: 'i' } }, " +
-            "{ 'shortRule': { $regex: ?0, $options: 'i' } }, " +
+            "{ 'summary': { $regex: ?0, $options: 'i' } }, " +
             "{ 'signalWords': { $regex: ?0, $options: 'i' } }, " +
             "{ 'searchKeywords': { $regex: ?0, $options: 'i' } }, " +
             "{ 'category': { $regex: ?0, $options: 'i' } } " +

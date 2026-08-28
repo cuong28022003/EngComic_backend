@@ -64,25 +64,9 @@ public class BatchImportGrammarInteractor implements BatchImportGrammarBoundary 
 
             String summary = input.getSummary() != null ? input.getSummary() : input.getShortRule();
             entity.setSummary(summary);
-            entity.setShortRule(summary);
             entity.setStructure(input.getStructure());
             entity.setSignalWords(input.getSignalWords() != null ? input.getSignalWords() : Collections.emptyList());
             entity.setCommonMistake(input.getCommonMistake());
-
-            // Root Examples
-            if (input.getExamples() != null) {
-                List<GrammarPointEntity.GrammarExample> examples = input.getExamples().stream()
-                        .map(e -> GrammarPointEntity.GrammarExample.builder()
-                                .text(e.getText())
-                                .translation(e.getTranslation())
-                                .highlight(e.getHighlight())
-                                .note(e.getNote())
-                                .build())
-                        .collect(Collectors.toList());
-                entity.setExamples(examples);
-            } else {
-                entity.setExamples(Collections.emptyList());
-            }
 
             // Multi Usages
             if (input.getUsages() != null) {
@@ -110,7 +94,6 @@ public class BatchImportGrammarInteractor implements BatchImportGrammarBoundary 
             }
 
             entity.setCommonMistakes(input.getCommonMistakes() != null ? input.getCommonMistakes() : Collections.emptyList());
-            entity.setExamTips(input.getExamTips() != null ? input.getExamTips() : Collections.emptyList());
 
             // Comparisons
             if (input.getComparisons() != null) {

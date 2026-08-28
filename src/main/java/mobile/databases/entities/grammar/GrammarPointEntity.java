@@ -35,9 +35,6 @@ public class GrammarPointEntity {
     /** Bản chất cốt lõi tóm tắt trong 1-2 câu ngắn gọn */
     private String summary;
 
-    /** Legacy fallback field: Quy tắc ngắn */
-    private String shortRule;
-
     /** Legacy fallback field: Cấu trúc chung */
     private String structure;
 
@@ -47,9 +44,6 @@ public class GrammarPointEntity {
     /** Legacy fallback field: Lỗi sai chung */
     private String commonMistake;
 
-    /** Legacy fallback field: Danh sách ví dụ chung */
-    private List<GrammarExample> examples;
-
     /** 
      * Danh sách CÁC CÁCH DÙNG CHI TIẾT (Multi-usages)
      * Mỗi cách dùng có công thức, dấu hiệu và ví dụ minh họa riêng biệt
@@ -58,9 +52,6 @@ public class GrammarPointEntity {
 
     /** Bẫy đề thi & Lỗi sai kinh điển (Multiple common mistakes) */
     private List<String> commonMistakes;
-
-    /** Mẹo làm bài nhanh trong phòng thi (Exam Hacks / Quick Tips) */
-    private List<String> examTips;
 
     /** Bảng so sánh phân biệt với các điểm ngữ pháp dễ gây nhầm lẫn */
     private List<GrammarComparison> comparisons;
