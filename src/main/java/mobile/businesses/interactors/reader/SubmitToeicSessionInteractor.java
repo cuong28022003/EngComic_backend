@@ -46,6 +46,7 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
         List<GradedQuestionDto> results = new ArrayList<>();
         List<ToeicUserSessionEntity.UserAnswerRecord> sessionAnswers = new ArrayList<>();
         List<ToeicMistakeEntity> newMistakesToSave = new ArrayList<>();
+        List<ToeicMistakeEntity> mistakesToDelete = new ArrayList<>();
         List<mobile.databases.entities.reader.ToeicReviewItemEntity> copiedReviewsToSave = new ArrayList<>();
 
         List<ToeicMistakeEntity> existingMistakes = mistakeRepository.findByUserIdAndTestIdOrderByQuestionNumberAsc(request.getUserId(), test.getId());
@@ -94,7 +95,14 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
                         if (existR != null) {
                             copiedReviewsToSave.add(cloneReviewEntity(existR, request.getUserId(), test.getId(), q.getNumber()));
                         }
-                    } else if (existM == null) {
+                    } else if (existM != null) {
+                        // Correct but flagged, and an old mistake exists without explanation:
+                        // keep it as a review-worthy item but mark it as flagged (user was unsure).
+                        existM.setReason("flagged");
+                        existM.setUserAnswer(userChoice);
+                        existM.setUpdatedAt(new Date());
+                        newMistakesToSave.add(existM);
+                    } else {
                         ToeicMistakeEntity mistake = ToeicMistakeEntity.builder()
                                 .userId(request.getUserId())
                                 .testId(test.getId())
@@ -109,6 +117,13 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
                                 .updatedAt(new Date())
                                 .build();
                         newMistakesToSave.add(mistake);
+                    }
+                } else {
+                    // Answered correctly and not flagged: clear any stale mistake for this question
+                    // so correctly answered questions no longer linger in the mistake queue.
+                    ToeicMistakeEntity existM = existingMistakeMap.get(q.getNumber());
+                    if (existM != null) {
+                        mistakesToDelete.add(existM);
                     }
                 }
             } else {
@@ -253,6 +268,11 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
         if (!newMistakesToSave.isEmpty()) {
             newMistakesToSave.forEach(m -> m.setAttemptId(finalAttemptId));
             savedMistakes = mistakeRepository.saveAll(newMistakesToSave);
+        }
+
+        // Delete stale mistakes for questions that are now answered correctly
+        if (!mistakesToDelete.isEmpty()) {
+            mistakeRepository.deleteAll(mistakesToDelete);
         }
 
         if (!copiedReviewsToSave.isEmpty()) {
