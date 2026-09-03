@@ -23,5 +23,4 @@ public class SubmitToeicSessionResponse {
     private int duration;
     private List<PartBreakdownDto> partBreakdown;
     private List<GradedQuestionDto> results;
-    private List<ToeicMistakeDto> newMistakes;
 }

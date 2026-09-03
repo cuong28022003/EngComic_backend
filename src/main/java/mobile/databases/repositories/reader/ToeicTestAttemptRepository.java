@@ -14,4 +14,5 @@ public interface ToeicTestAttemptRepository extends MongoRepository<ToeicTestAtt
     Optional<ToeicTestAttemptEntity> findFirstByUserIdAndStatusOrderByLastSavedAtDesc(String userId, String status);
     Optional<ToeicTestAttemptEntity> findByIdAndUserId(String id, String userId);
     long countByUserIdAndTestId(String userId, String testId);
+    long countByUserId(String userId);
 }

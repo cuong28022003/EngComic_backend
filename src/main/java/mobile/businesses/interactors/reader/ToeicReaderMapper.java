@@ -1,9 +1,7 @@
 package mobile.businesses.interactors.reader;
 
-import mobile.apis.reader.dtos.ToeicMistakeDto;
 import mobile.apis.reader.dtos.ToeicTestDetailDto;
 import mobile.apis.reader.dtos.ToeicTestSummaryDto;
-import mobile.databases.entities.reader.ToeicMistakeEntity;
 import mobile.databases.entities.reader.ToeicTestEntity;
 import org.springframework.stereotype.Component;
 
@@ -46,25 +44,6 @@ public class ToeicReaderMapper {
                                         .build())
                                 .collect(Collectors.toList()) : Collections.emptyList())
                 .createdAt(entity.getCreatedAt())
-                .build();
-    }
-
-    public ToeicMistakeDto toMistakeDto(ToeicMistakeEntity entity) {
-        if (entity == null) return null;
-        return ToeicMistakeDto.builder()
-                .id(entity.getId())
-                .testId(entity.getTestId())
-                .testName(entity.getTestName())
-                .attemptId(entity.getAttemptId())
-                .questionNumber(entity.getQuestionNumber())
-                .part(entity.getPart())
-                .userAnswer(entity.getUserAnswer())
-                .correctAnswer(entity.getCorrectAnswer())
-                .explanation(entity.getExplanation())
-                .reason(entity.getReason())
-                .status(entity.getStatus())
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
                 .build();
     }
 

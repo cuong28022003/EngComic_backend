@@ -3,10 +3,8 @@ package mobile.businesses.interactors.reader;
 import lombok.RequiredArgsConstructor;
 import mobile.apis.reader.dtos.ImportReviewItemsRequest;
 import mobile.businesses.boundaries.reader.ImportReviewItemsBoundary;
-import mobile.databases.entities.reader.ToeicMistakeEntity;
 import mobile.databases.entities.reader.ToeicReviewItemEntity;
 import mobile.databases.entities.reader.ToeicTestAttemptEntity;
-import mobile.databases.repositories.reader.ToeicMistakeRepository;
 import mobile.databases.repositories.reader.ToeicReviewItemRepository;
 import mobile.databases.repositories.reader.ToeicTestAttemptRepository;
 import org.springframework.http.HttpStatus;
@@ -23,7 +21,6 @@ public class ImportReviewItemsInteractor implements ImportReviewItemsBoundary {
 
     private final ToeicTestAttemptRepository attemptRepository;
     private final ToeicReviewItemRepository reviewItemRepository;
-    private final ToeicMistakeRepository mistakeRepository;
     private final ToeicReaderMapper mapper;
 
     @Override
@@ -82,28 +79,6 @@ public class ImportReviewItemsInteractor implements ImportReviewItemsBoundary {
         }
 
         List<ToeicReviewItemEntity> savedReviews = reviewItemRepository.saveAll(entitiesToSave);
-
-        // Update corresponding mistake entities to status = 'explained'
-        try {
-            List<ToeicMistakeEntity> userMistakes = mistakeRepository.findByUserIdOrderByCreatedAtDesc(request.getUserId());
-            for (ToeicMistakeEntity mistake : userMistakes) {
-                if (importedQuestionNumbers.contains(mistake.getQuestionNumber()) &&
-                        (attempt.getId().equals(mistake.getAttemptId()) || attempt.getTestId().equals(mistake.getTestId()))) {
-                    if ("pending".equalsIgnoreCase(mistake.getStatus())) {
-                        mistake.setStatus("explained");
-                        // Find explanation from saved reviews
-                        savedReviews.stream()
-                                .filter(r -> r.getQuestionNumber() == mistake.getQuestionNumber())
-                                .findFirst()
-                                .ifPresent(r -> mistake.setExplanation(r.getExplanation()));
-                        mistake.setUpdatedAt(new Date());
-                        mistakeRepository.save(mistake);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            // Non-blocking log
-        }
 
         return Response.builder()
                 .data(savedReviews.stream().map(mapper::toReviewItemDto).collect(Collectors.toList()))

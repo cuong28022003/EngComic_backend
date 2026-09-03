@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import mobile.businesses.boundaries.reader.DeleteToeicTestBoundary;
 import mobile.databases.entities.reader.ToeicTestAttemptEntity;
 import mobile.databases.entities.reader.ToeicTestEntity;
-import mobile.databases.repositories.reader.ToeicMistakeRepository;
+import mobile.databases.repositories.reader.ToeicReviewItemRepository;
 import mobile.databases.repositories.reader.ToeicTestAttemptRepository;
 import mobile.databases.repositories.reader.ToeicTestRepository;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class DeleteToeicTestInteractor implements DeleteToeicTestBoundary {
 
     private final ToeicTestRepository testRepository;
     private final ToeicTestAttemptRepository attemptRepository;
-    private final ToeicMistakeRepository mistakeRepository;
+    private final ToeicReviewItemRepository reviewItemRepository;
 
     @Override
     @Transactional
@@ -39,11 +39,12 @@ public class DeleteToeicTestInteractor implements DeleteToeicTestBoundary {
 
         ToeicTestEntity test = testOpt.get();
 
-        // 1. Delete associated attempts
+        // 1. Delete associated attempts & reviews
         List<ToeicTestAttemptEntity> attempts = attemptRepository.findByUserIdAndTestIdOrderByStartedAtDesc(userId, testId);
         if (!attempts.isEmpty()) {
             attemptRepository.deleteAll(attempts);
         }
+        reviewItemRepository.deleteByTestId(testId);
 
         // 2. Delete local PDF file if exists
         if (test.getLocalPdfPath() != null && !test.getLocalPdfPath().isEmpty()) {

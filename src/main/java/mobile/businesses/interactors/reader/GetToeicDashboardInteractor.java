@@ -5,7 +5,7 @@ import mobile.apis.reader.dtos.ToeicDashboardDto;
 import mobile.apis.reader.dtos.ToeicTestSummaryDto;
 import mobile.businesses.boundaries.reader.GetToeicDashboardBoundary;
 import mobile.databases.entities.reader.ToeicTestEntity;
-import mobile.databases.repositories.reader.ToeicMistakeRepository;
+import mobile.databases.repositories.reader.ToeicTestAttemptRepository;
 import mobile.databases.repositories.reader.ToeicTestRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class GetToeicDashboardInteractor implements GetToeicDashboardBoundary {
 
     private final ToeicTestRepository testRepository;
-    private final ToeicMistakeRepository mistakeRepository;
+    private final ToeicTestAttemptRepository attemptRepository;
     private final ToeicReaderMapper mapper;
 
     @Override
@@ -27,7 +27,7 @@ public class GetToeicDashboardInteractor implements GetToeicDashboardBoundary {
 
         long totalTests = testRepository.countByUserId(userId);
         long completedTests = testRepository.countByUserIdAndStatus(userId, "completed");
-        long pendingMistakes = mistakeRepository.countByUserIdAndStatus(userId, "pending");
+        long totalAttempts = attemptRepository.countByUserId(userId);
 
         List<ToeicTestEntity> recentList = testRepository.findByUserIdOrderByCreatedAtDesc(userId, PageRequest.of(0, 10)).getContent();
         List<ToeicTestSummaryDto> recentSummaries = recentList.stream()
@@ -48,7 +48,7 @@ public class GetToeicDashboardInteractor implements GetToeicDashboardBoundary {
         ToeicDashboardDto dto = ToeicDashboardDto.builder()
                 .totalTests(totalTests)
                 .completedTests(completedTests)
-                .pendingMistakes(pendingMistakes)
+                .totalAttempts(totalAttempts)
                 .averageAccuracy(avgAcc)
                 .recentTests(recentSummaries)
                 .build();

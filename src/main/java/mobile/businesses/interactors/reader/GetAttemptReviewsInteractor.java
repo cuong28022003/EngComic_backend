@@ -17,7 +17,6 @@ public class GetAttemptReviewsInteractor implements GetAttemptReviewsBoundary {
 
     private final ToeicTestAttemptRepository attemptRepository;
     private final ToeicReviewItemRepository reviewItemRepository;
-    private final mobile.databases.repositories.reader.ToeicMistakeRepository mistakeRepository;
     private final ToeicReaderMapper mapper;
 
     @Override
@@ -34,29 +33,6 @@ public class GetAttemptReviewsInteractor implements GetAttemptReviewsBoundary {
         // If no attempt-specific reviews, try to load any reviews for this test
         if (list.isEmpty() && testId != null) {
             list = reviewItemRepository.findByUserIdAndTestIdOrderByQuestionNumberAsc(request.getUserId(), testId);
-        }
-
-        // Also merge any explanations stored in ToeicMistakeEntity
-        if (testId != null) {
-            var mistakes = mistakeRepository.findByUserIdAndTestIdOrderByQuestionNumberAsc(request.getUserId(), testId);
-            Set<Integer> existingQNums = list.stream().map(ToeicReviewItemEntity::getQuestionNumber).collect(Collectors.toSet());
-
-            for (var mistake : mistakes) {
-                if (mistake.getExplanation() != null && !mistake.getExplanation().trim().isEmpty()
-                        && !existingQNums.contains(mistake.getQuestionNumber())) {
-                    ToeicReviewItemEntity fallback = ToeicReviewItemEntity.builder()
-                            .userId(request.getUserId())
-                            .testId(testId)
-                            .attemptId(request.getAttemptId())
-                            .questionNumber(mistake.getQuestionNumber())
-                            .part(mistake.getPart())
-                            .errorType("vocab")
-                            .explanation(mistake.getExplanation())
-                            .build();
-                    list.add(fallback);
-                    existingQNums.add(mistake.getQuestionNumber());
-                }
-            }
         }
 
         return Response.builder()

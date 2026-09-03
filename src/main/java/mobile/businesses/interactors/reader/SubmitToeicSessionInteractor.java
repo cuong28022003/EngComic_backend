@@ -3,11 +3,13 @@ package mobile.businesses.interactors.reader;
 import lombok.RequiredArgsConstructor;
 import mobile.apis.reader.dtos.*;
 import mobile.businesses.boundaries.reader.SubmitToeicSessionBoundary;
-import mobile.databases.entities.reader.ToeicMistakeEntity;
 import mobile.databases.entities.reader.ToeicQuestion;
+import mobile.databases.entities.reader.ToeicReviewItemEntity;
+import mobile.databases.entities.reader.ToeicTestAttemptEntity;
 import mobile.databases.entities.reader.ToeicTestEntity;
 import mobile.databases.entities.reader.ToeicUserSessionEntity;
-import mobile.databases.repositories.reader.ToeicMistakeRepository;
+import mobile.databases.repositories.reader.ToeicReviewItemRepository;
+import mobile.databases.repositories.reader.ToeicTestAttemptRepository;
 import mobile.databases.repositories.reader.ToeicTestRepository;
 import mobile.databases.repositories.reader.ToeicUserSessionRepository;
 import org.springframework.http.HttpStatus;
@@ -23,11 +25,9 @@ import java.util.stream.Collectors;
 public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary {
 
     private final ToeicTestRepository testRepository;
-    private final ToeicMistakeRepository mistakeRepository;
     private final ToeicUserSessionRepository sessionRepository;
-    private final mobile.databases.repositories.reader.ToeicTestAttemptRepository attemptRepository;
-    private final mobile.databases.repositories.reader.ToeicReviewItemRepository reviewItemRepository;
-    private final ToeicReaderMapper mapper;
+    private final ToeicTestAttemptRepository attemptRepository;
+    private final ToeicReviewItemRepository reviewItemRepository;
 
     @Override
     @Transactional
@@ -45,17 +45,11 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
 
         List<GradedQuestionDto> results = new ArrayList<>();
         List<ToeicUserSessionEntity.UserAnswerRecord> sessionAnswers = new ArrayList<>();
-        List<ToeicMistakeEntity> newMistakesToSave = new ArrayList<>();
-        List<ToeicMistakeEntity> mistakesToDelete = new ArrayList<>();
-        List<mobile.databases.entities.reader.ToeicReviewItemEntity> copiedReviewsToSave = new ArrayList<>();
+        List<ToeicReviewItemEntity> copiedReviewsToSave = new ArrayList<>();
 
-        List<ToeicMistakeEntity> existingMistakes = mistakeRepository.findByUserIdAndTestIdOrderByQuestionNumberAsc(request.getUserId(), test.getId());
-        Map<Integer, ToeicMistakeEntity> existingMistakeMap = existingMistakes.stream()
-                .collect(Collectors.toMap(ToeicMistakeEntity::getQuestionNumber, m -> m, (a, b) -> a));
-
-        List<mobile.databases.entities.reader.ToeicReviewItemEntity> existingReviews = reviewItemRepository.findByUserIdAndTestIdOrderByQuestionNumberAsc(request.getUserId(), test.getId());
-        Map<Integer, mobile.databases.entities.reader.ToeicReviewItemEntity> existingReviewMap = existingReviews.stream()
-                .collect(Collectors.toMap(mobile.databases.entities.reader.ToeicReviewItemEntity::getQuestionNumber, r -> r, (a, b) -> a));
+        List<ToeicReviewItemEntity> existingReviews = reviewItemRepository.findByUserIdAndTestIdOrderByQuestionNumberAsc(request.getUserId(), test.getId());
+        Map<Integer, ToeicReviewItemEntity> existingReviewMap = existingReviews.stream()
+                .collect(Collectors.toMap(ToeicReviewItemEntity::getQuestionNumber, r -> r, (a, b) -> a));
 
         int rawScore = 0;
         List<ToeicQuestion> allQuestions = test.getQuestions() != null ? test.getQuestions() : Collections.emptyList();
@@ -86,81 +80,15 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
                 partStats.get(part)[0]++;
 
                 if (flagged) {
-                    ToeicMistakeEntity existM = existingMistakeMap.get(q.getNumber());
-                    mobile.databases.entities.reader.ToeicReviewItemEntity existR = existingReviewMap.get(q.getNumber());
-                    String previousExplanation = (existR != null && existR.getExplanation() != null) ? existR.getExplanation()
-                            : (existM != null ? existM.getExplanation() : null);
-
-                    if (previousExplanation != null && !previousExplanation.trim().isEmpty()) {
-                        if (existR != null) {
-                            copiedReviewsToSave.add(cloneReviewEntity(existR, request.getUserId(), test.getId(), q.getNumber()));
-                        }
-                    } else if (existM != null) {
-                        // Correct but flagged, and an old mistake exists without explanation:
-                        // keep it as a review-worthy item but mark it as flagged (user was unsure).
-                        existM.setReason("flagged");
-                        existM.setUserAnswer(userChoice);
-                        existM.setUpdatedAt(new Date());
-                        newMistakesToSave.add(existM);
-                    } else {
-                        ToeicMistakeEntity mistake = ToeicMistakeEntity.builder()
-                                .userId(request.getUserId())
-                                .testId(test.getId())
-                                .testName(test.getTestName())
-                                .questionNumber(q.getNumber())
-                                .part(q.getPart())
-                                .userAnswer(userChoice)
-                                .correctAnswer(correctChoice)
-                                .reason("flagged")
-                                .status("pending")
-                                .createdAt(new Date())
-                                .updatedAt(new Date())
-                                .build();
-                        newMistakesToSave.add(mistake);
-                    }
-                } else {
-                    // Answered correctly and not flagged: clear any stale mistake for this question
-                    // so correctly answered questions no longer linger in the mistake queue.
-                    ToeicMistakeEntity existM = existingMistakeMap.get(q.getNumber());
-                    if (existM != null) {
-                        mistakesToDelete.add(existM);
+                    ToeicReviewItemEntity existR = existingReviewMap.get(q.getNumber());
+                    if (existR != null && existR.getExplanation() != null && !existR.getExplanation().trim().isEmpty()) {
+                        copiedReviewsToSave.add(cloneReviewEntity(existR, request.getUserId(), test.getId(), q.getNumber()));
                     }
                 }
             } else {
-                ToeicMistakeEntity existM = existingMistakeMap.get(q.getNumber());
-                mobile.databases.entities.reader.ToeicReviewItemEntity existR = existingReviewMap.get(q.getNumber());
-                String previousExplanation = (existR != null && existR.getExplanation() != null) ? existR.getExplanation()
-                        : (existM != null ? existM.getExplanation() : null);
-
-                if (previousExplanation != null && !previousExplanation.trim().isEmpty()) {
-                    if (existR != null) {
-                        copiedReviewsToSave.add(cloneReviewEntity(existR, request.getUserId(), test.getId(), q.getNumber()));
-                    }
-                    if (existM != null) {
-                        existM.setUserAnswer(userChoice != null ? userChoice : "Bỏ qua");
-                        existM.setUpdatedAt(new Date());
-                        newMistakesToSave.add(existM);
-                    }
-                } else if (existM != null) {
-                    existM.setUserAnswer(userChoice != null ? userChoice : "Bỏ qua");
-                    existM.setReason("wrong");
-                    existM.setUpdatedAt(new Date());
-                    newMistakesToSave.add(existM);
-                } else {
-                    ToeicMistakeEntity mistake = ToeicMistakeEntity.builder()
-                            .userId(request.getUserId())
-                            .testId(test.getId())
-                            .testName(test.getTestName())
-                            .questionNumber(q.getNumber())
-                            .part(q.getPart())
-                            .userAnswer(userChoice != null ? userChoice : "Bỏ qua")
-                            .correctAnswer(correctChoice)
-                            .reason("wrong")
-                            .status("pending")
-                            .createdAt(new Date())
-                            .updatedAt(new Date())
-                            .build();
-                    newMistakesToSave.add(mistake);
+                ToeicReviewItemEntity existR = existingReviewMap.get(q.getNumber());
+                if (existR != null && existR.getExplanation() != null && !existR.getExplanation().trim().isEmpty()) {
+                    copiedReviewsToSave.add(cloneReviewEntity(existR, request.getUserId(), test.getId(), q.getNumber()));
                 }
             }
 
@@ -187,7 +115,7 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
                     .build());
         }
 
-        mobile.databases.entities.reader.ToeicTestAttemptEntity attempt = null;
+        ToeicTestAttemptEntity attempt = null;
         if (sub != null && sub.getAttemptId() != null && !sub.getAttemptId().trim().isEmpty()) {
             attempt = attemptRepository.findByIdAndUserId(sub.getAttemptId(), request.getUserId()).orElse(null);
         }
@@ -201,7 +129,7 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
         if (attempt == null) {
             long prevCount = attemptRepository.countByUserIdAndTestId(request.getUserId(), test.getId());
             attemptNumber = (int) prevCount + 1;
-            attempt = mobile.databases.entities.reader.ToeicTestAttemptEntity.builder()
+            attempt = ToeicTestAttemptEntity.builder()
                     .userId(request.getUserId())
                     .testId(test.getId())
                     .testName(test.getTestName())
@@ -233,8 +161,8 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
                 .build();
         sessionRepository.save(session);
 
-        List<mobile.databases.entities.reader.ToeicTestAttemptEntity.UserAnswerRecord> attemptAnswers = sessionAnswers.stream()
-                .map(sa -> mobile.databases.entities.reader.ToeicTestAttemptEntity.UserAnswerRecord.builder()
+        List<ToeicTestAttemptEntity.UserAnswerRecord> attemptAnswers = sessionAnswers.stream()
+                .map(sa -> ToeicTestAttemptEntity.UserAnswerRecord.builder()
                         .questionNumber(sa.getQuestionNumber())
                         .part(sa.getPart())
                         .userAnswer(sa.getUserAnswer())
@@ -262,19 +190,7 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
         attempt.setCompletedAt(new Date());
         attempt = attemptRepository.save(attempt);
 
-        // Save mistakes with attemptId
-        List<ToeicMistakeEntity> savedMistakes = Collections.emptyList();
         final String finalAttemptId = attempt.getId();
-        if (!newMistakesToSave.isEmpty()) {
-            newMistakesToSave.forEach(m -> m.setAttemptId(finalAttemptId));
-            savedMistakes = mistakeRepository.saveAll(newMistakesToSave);
-        }
-
-        // Delete stale mistakes for questions that are now answered correctly
-        if (!mistakesToDelete.isEmpty()) {
-            mistakeRepository.deleteAll(mistakesToDelete);
-        }
-
         if (!copiedReviewsToSave.isEmpty()) {
             copiedReviewsToSave.forEach(r -> r.setAttemptId(finalAttemptId));
             reviewItemRepository.saveAll(copiedReviewsToSave);
@@ -337,7 +253,6 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
                 .duration(sub != null ? sub.getDuration() : 0)
                 .partBreakdown(partBreakdown)
                 .results(results)
-                .newMistakes(savedMistakes.stream().map(mapper::toMistakeDto).collect(Collectors.toList()))
                 .build();
 
         return Response.builder()
@@ -345,12 +260,12 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
                 .build();
     }
 
-    private mobile.databases.entities.reader.ToeicReviewItemEntity cloneReviewEntity(
-            mobile.databases.entities.reader.ToeicReviewItemEntity source,
+    private ToeicReviewItemEntity cloneReviewEntity(
+            ToeicReviewItemEntity source,
             String userId,
             String testId,
             int questionNumber) {
-        return mobile.databases.entities.reader.ToeicReviewItemEntity.builder()
+        return ToeicReviewItemEntity.builder()
                 .userId(userId)
                 .testId(testId)
                 .questionNumber(questionNumber)

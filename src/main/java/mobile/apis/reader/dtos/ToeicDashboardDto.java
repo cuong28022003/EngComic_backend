@@ -14,7 +14,7 @@ import java.util.List;
 public class ToeicDashboardDto {
     private long totalTests;
     private long completedTests;
-    private long pendingMistakes;
+    private long totalAttempts;
     private Double averageAccuracy;
     private List<ToeicTestSummaryDto> recentTests;
 }

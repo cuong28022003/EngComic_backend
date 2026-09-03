@@ -12,4 +12,5 @@ public interface ToeicReviewItemRepository extends MongoRepository<ToeicReviewIt
     List<ToeicReviewItemEntity> findByUserIdAndAttemptIdOrderByQuestionNumberAsc(String userId, String attemptId);
     List<ToeicReviewItemEntity> findByUserIdAndTestIdOrderByQuestionNumberAsc(String userId, String testId);
     Optional<ToeicReviewItemEntity> findByUserIdAndAttemptIdAndQuestionNumber(String userId, String attemptId, int questionNumber);
+    void deleteByTestId(String testId);
 }
