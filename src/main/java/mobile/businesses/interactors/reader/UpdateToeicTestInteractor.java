@@ -48,7 +48,9 @@ public class UpdateToeicTestInteractor implements UpdateToeicTestBoundary {
 
         // Handle PDF file upload if provided
         if (request.getPdfFile() != null && !request.getPdfFile().isEmpty()) {
-            String localFilename = null;
+            String oldLocalPath = test.getLocalPdfPath();
+            String oldPdfUrl = test.getPdfUrl();
+
             try {
                 java.nio.file.Path uploadDir = java.nio.file.Paths.get("uploads", "toeic_pdfs");
                 if (!java.nio.file.Files.exists(uploadDir)) {
@@ -57,23 +59,36 @@ public class UpdateToeicTestInteractor implements UpdateToeicTestBoundary {
                 String originalName = request.getPdfFile().getOriginalFilename();
                 String ext = (originalName != null && originalName.contains(".")) ?
                         originalName.substring(originalName.lastIndexOf(".")) : ".pdf";
-                localFilename = java.util.UUID.randomUUID().toString() + ext;
+                String localFilename = java.util.UUID.randomUUID().toString() + ext;
                 java.nio.file.Path targetPath = uploadDir.resolve(localFilename);
                 java.nio.file.Files.copy(request.getPdfFile().getInputStream(), targetPath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            } catch (Exception e) {
-                log.error("Failed to save local PDF on update: {}", e.getMessage());
-            }
 
-            if (localFilename != null) {
                 test.setLocalPdfPath(localFilename);
                 test.setPdfUrl("/api/toeic/tests/file/" + localFilename);
-            } else {
-                try {
-                    String uploadedUrl = cloudinaryService.uploadFile(request.getPdfFile(), "toeic_pdfs");
-                    test.setPdfUrl(uploadedUrl);
-                } catch (IOException e) {
-                    log.warn("Failed to upload PDF to Cloudinary on update: {}", e.getMessage());
+                log.info("Saved TOEIC PDF directly to local storage on update: {}", test.getPdfUrl());
+
+                // Clean up old local file if existed
+                if (oldLocalPath != null && !oldLocalPath.isEmpty()) {
+                    try {
+                        java.nio.file.Path oldPath = uploadDir.resolve(oldLocalPath);
+                        if (java.nio.file.Files.exists(oldPath)) {
+                            java.nio.file.Files.delete(oldPath);
+                        }
+                    } catch (Exception ex) {
+                        log.warn("Could not delete old local PDF file: {}", ex.getMessage());
+                    }
                 }
+                // Clean up old cloudinary file if it was on cloudinary
+                if (oldPdfUrl != null && oldPdfUrl.contains("res.cloudinary.com")) {
+                    try {
+                        cloudinaryService.deleteFile(oldPdfUrl);
+                    } catch (Exception ex) {
+                        log.warn("Could not delete previous Cloudinary PDF: {}", ex.getMessage());
+                    }
+                }
+            } catch (Exception ex) {
+                log.error("Failed to save local PDF on update: {}", ex.getMessage());
+                throw new RuntimeException("Không thể lưu trữ tệp PDF: " + ex.getMessage());
             }
         } else if (data != null && data.getPdfUrl() != null && !data.getPdfUrl().trim().isEmpty()) {
             test.setPdfUrl(data.getPdfUrl().trim());

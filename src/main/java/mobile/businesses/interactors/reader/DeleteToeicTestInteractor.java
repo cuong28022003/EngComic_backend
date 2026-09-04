@@ -25,6 +25,7 @@ public class DeleteToeicTestInteractor implements DeleteToeicTestBoundary {
     private final ToeicTestRepository testRepository;
     private final ToeicTestAttemptRepository attemptRepository;
     private final ToeicReviewItemRepository reviewItemRepository;
+    private final mobile.databases.services.CloudinaryService cloudinaryService;
 
     @Override
     @Transactional
@@ -46,7 +47,14 @@ public class DeleteToeicTestInteractor implements DeleteToeicTestBoundary {
         }
         reviewItemRepository.deleteByTestId(testId);
 
-        // 2. Delete local PDF file if exists
+        // 2. Delete Cloudinary PDF or local PDF file if exists
+        if (test.getPdfUrl() != null && test.getPdfUrl().contains("res.cloudinary.com")) {
+            try {
+                cloudinaryService.deleteFile(test.getPdfUrl());
+            } catch (Exception e) {
+                log.warn("Could not delete Cloudinary PDF {}: {}", test.getPdfUrl(), e.getMessage());
+            }
+        }
         if (test.getLocalPdfPath() != null && !test.getLocalPdfPath().isEmpty()) {
             try {
                 Path filePath = Paths.get("uploads", "toeic_pdfs", test.getLocalPdfPath());

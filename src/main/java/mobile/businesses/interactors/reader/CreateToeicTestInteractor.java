@@ -45,19 +45,12 @@ public class CreateToeicTestInteractor implements CreateToeicTestBoundary {
                 localFilename = java.util.UUID.randomUUID().toString() + ext;
                 java.nio.file.Path targetPath = uploadDir.resolve(localFilename);
                 java.nio.file.Files.copy(request.getPdfFile().getInputStream(), targetPath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            } catch (Exception e) {
-                log.error("Failed to save local PDF: {}", e.getMessage());
-            }
 
-            if (localFilename != null) {
-                // Use local backend streaming endpoint to avoid browser tracking prevention / CDN block
                 pdfUrl = "/api/toeic/tests/file/" + localFilename;
-            } else {
-                try {
-                    pdfUrl = cloudinaryService.uploadFile(request.getPdfFile(), "toeic_pdfs");
-                } catch (IOException e) {
-                    log.warn("Failed to upload PDF to Cloudinary: {}", e.getMessage());
-                }
+                log.info("Saved TOEIC PDF directly to local storage: {}", pdfUrl);
+            } catch (Exception ex) {
+                log.error("Failed to save local PDF: {}", ex.getMessage());
+                throw new RuntimeException("Không thể lưu trữ tệp PDF: " + ex.getMessage());
             }
         }
 
