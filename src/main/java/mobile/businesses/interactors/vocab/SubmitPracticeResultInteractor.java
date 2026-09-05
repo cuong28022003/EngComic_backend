@@ -16,6 +16,7 @@ public class SubmitPracticeResultInteractor implements SubmitPracticeResult {
 
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
+    private final mobile.businesses.boundaries.user.RecordStudyActivity recordStudyActivity;
 
     @Override
     public Response execute(Request request) {
@@ -53,6 +54,16 @@ public class SubmitPracticeResultInteractor implements SubmitPracticeResult {
 
         CardEntity saved = cardRepository.save(card);
         CardResponseDto dto = cardMapper.toResponse(saved);
+
+        // Record user study activity, update streak & award XP
+        try {
+            recordStudyActivity.execute(mobile.businesses.boundaries.user.RecordStudyActivity.Request.builder()
+                    .userId(card.getUserId())
+                    .xpEarned(5)
+                    .activityType("flashcard_review")
+                    .build());
+        } catch (Exception ignored) {}
+
         return Response.builder().card(dto).build();
     }
 }

@@ -28,6 +28,7 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
     private final ToeicUserSessionRepository sessionRepository;
     private final ToeicTestAttemptRepository attemptRepository;
     private final ToeicReviewItemRepository reviewItemRepository;
+    private final mobile.businesses.boundaries.user.RecordStudyActivity recordStudyActivity;
 
     @Override
     @Transactional
@@ -254,6 +255,18 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
                 .partBreakdown(partBreakdown)
                 .results(results)
                 .build();
+
+        // Record user study activity, update streak & award XP
+        try {
+            int earnedXp = Math.max(30, rawScore * 2);
+            recordStudyActivity.execute(mobile.businesses.boundaries.user.RecordStudyActivity.Request.builder()
+                    .userId(request.getUserId())
+                    .xpEarned(earnedXp)
+                    .activityType("toeic_test")
+                    .build());
+        } catch (Exception e) {
+            // Non-blocking for test completion
+        }
 
         return Response.builder()
                 .data(res)
