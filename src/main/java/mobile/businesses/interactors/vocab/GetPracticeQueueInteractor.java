@@ -22,7 +22,7 @@ public class GetPracticeQueueInteractor implements GetPracticeQueueBoundary {
     public Response execute(Request request) {
         String userId = request.getUserId();
         String deckId = request.getDeckId();
-        int limit = request.getLimit() > 0 ? Math.min(request.getLimit(), 30) : 20;
+        int limit = request.getLimit() > 0 ? Math.min(request.getLimit(), 100) : 20;
 
         Date now = new Date();
         List<CardEntity> rawCards;
@@ -31,8 +31,9 @@ public class GetPracticeQueueInteractor implements GetPracticeQueueBoundary {
             rawCards = cardRepository.findByUserIdAndDeckId(userId, deckId);
         } else {
             // Get due cards (learning/mature due today) + new cards
-            List<CardEntity> dueCards = cardRepository.findDueCards(userId, now, PageRequest.of(0, limit));
-            int remaining = limit - dueCards.size();
+            int queryLimit = Math.max(limit, 50);
+            List<CardEntity> dueCards = cardRepository.findDueCards(userId, now, PageRequest.of(0, queryLimit));
+            int remaining = queryLimit - dueCards.size();
             List<CardEntity> newCards = remaining > 0
                     ? cardRepository.findNewCards(userId, PageRequest.of(0, remaining))
                     : Collections.emptyList();
@@ -51,8 +52,7 @@ public class GetPracticeQueueInteractor implements GetPracticeQueueBoundary {
             }
         }
 
-        List<PracticeQueueItemDto> items = new ArrayList<>();
-        int totalDueCount = 0;
+        List<CardEntity> eligibleCards = new ArrayList<>();
 
         for (CardEntity c : rawCards) {
             // Exclude leech cards and cards that do NOT have exercisePackage from practice queue
@@ -60,10 +60,42 @@ public class GetPracticeQueueInteractor implements GetPracticeQueueBoundary {
                 continue;
             }
 
-            totalDueCount++;
-            if (items.size() < limit) {
-                items.add(toQueueDto(c));
+            // Filter by level if specified
+            if (request.getLevel() != null && request.getLevel() > 0) {
+                int cardLevel = c.getMasteryLevel() > 0 ? c.getMasteryLevel() : 1;
+                if (cardLevel != request.getLevel()) {
+                    continue;
+                }
             }
+
+            // Filter by Part of Speech if specified
+            if (request.getPos() != null && !request.getPos().isBlank() && !"all".equalsIgnoreCase(request.getPos())) {
+                String cardPos = c.getPartOfSpeech() != null ? c.getPartOfSpeech().trim().toLowerCase() : "";
+                if ("unknown".equalsIgnoreCase(request.getPos())) {
+                    if (!cardPos.isEmpty()) continue;
+                } else if (!cardPos.equalsIgnoreCase(request.getPos().trim())) {
+                    continue;
+                }
+            }
+
+            // Filter by Star (Favorite) if specified
+            if (Boolean.TRUE.equals(request.getStarOnly()) && !c.isFavorite()) {
+                continue;
+            }
+
+            eligibleCards.add(c);
+        }
+
+        int totalDueCount = eligibleCards.size();
+
+        // Shuffle if requested
+        if (Boolean.TRUE.equals(request.getShuffle())) {
+            Collections.shuffle(eligibleCards);
+        }
+
+        List<PracticeQueueItemDto> items = new ArrayList<>();
+        for (int i = 0; i < Math.min(eligibleCards.size(), limit); i++) {
+            items.add(toQueueDto(eligibleCards.get(i)));
         }
 
         return Response.builder()

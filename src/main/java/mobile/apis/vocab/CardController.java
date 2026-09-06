@@ -224,11 +224,19 @@ public class CardController {
     public ResponseEntity<java.util.Map<String, Object>> getPracticeQueue(
             @CurrentUserId String userId,
             @RequestParam(required = false) String deckId,
-            @RequestParam(defaultValue = "20") int limit) {
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(required = false) Integer level,
+            @RequestParam(required = false) String pos,
+            @RequestParam(required = false) Boolean starOnly,
+            @RequestParam(required = false) Boolean shuffle) {
         GetPracticeQueueBoundary.Request req = GetPracticeQueueBoundary.Request.builder()
                 .userId(userId)
                 .deckId(deckId)
                 .limit(limit)
+                .level(level)
+                .pos(pos)
+                .starOnly(starOnly)
+                .shuffle(shuffle)
                 .build();
 
         GetPracticeQueueBoundary.Response res = getPracticeQueueBoundary.execute(req);

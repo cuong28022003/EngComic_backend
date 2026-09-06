@@ -16,6 +16,10 @@ public interface GetPracticeQueueBoundary {
         private String userId;
         private String deckId;
         private int limit;
+        private Integer level;
+        private String pos;
+        private Boolean starOnly;
+        private Boolean shuffle;
     }
 
     @Getter
