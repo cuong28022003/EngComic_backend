@@ -51,7 +51,9 @@ public class GeneratePromptInteractor implements GeneratePrompt {
                 "  ]\n" +
                 "}\n" +
                 "Nếu mục là cụm từ (collocation), ipa và part_of_speech có thể null.\n" +
-                "Chỉ trả JSON thuần, không markdown, không giải thích thêm.";
+                "=== QUY TẮC BẮT BUỘC: ===\n" +
+                "1. Chỉ trả về DUY NHẤT một JSON array thuần [ ... ], không markdown code block, không giải thích thêm.\n" +
+                "2. QUAN TRỌNG: Trong các chuỗi 'meaning_vi', 'definition_en', 'examples', TUYỆT ĐỐI KHÔNG dùng dấu ngoặc kép đôi \". Bắt buộc dùng dấu ngoặc đơn '...' để trích dẫn từ vựng nhằm tránh lỗi cú pháp JSON.";
 
         return Response.builder().prompt(prompt).build();
     }
