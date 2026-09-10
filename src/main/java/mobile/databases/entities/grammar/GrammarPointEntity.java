@@ -59,6 +59,9 @@ public class GrammarPointEntity {
     /** Từ khóa phục vụ tìm kiếm nhanh (Search Keywords / Tags) */
     private List<String> searchKeywords;
 
+    /** Danh sách từ vựng tiêu biểu (Typical vocabulary / Key words) */
+    private List<String> typicalWords;
+
     private Date createdAt;
 
     private Date updatedAt;

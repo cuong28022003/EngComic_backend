@@ -112,8 +112,11 @@ Nhiệm vụ của bạn là tạo ngân hàng bài tập thực hành 4 CẤP �
 3. Level 3 (Tái hiện chủ động): Tách một câu tiếng Anh tự nhiên thành mảng các mảnh từ (shuffledWords) kèm câu đúng và bản dịch.
 4. Level 4 (Tình huống thực tế): 1 tình huống giao tiếp/công sở cụ thể + câu phản hồi mẫu tự nhiên + ghi chú sắc thái.
 
-=== QUY ĐỊNH BẮT BUỘC VỀ OUTPUT: ===
-- Chỉ trả về DUY NHẤT một JSON Array hợp lệ (Không bọc giải thích ngoài khối markdown code block ```json ... ```).
+=== QUY ĐỊNH BẮT BUỘC ĐỂ TRÁNH LỖI CÚ PHÁP JSON (ZERO-ERROR PROMPT): ===
+- Chỉ trả về DUY NHẤT một JSON Array thuần hợp lệ trong cặp ngoặc vuông [ ... ] (bắt đầu bằng [ và kết thúc bằng ]).
+- KHÔNG bọc trong markdown code block, KHÔNG thêm bất kỳ câu chào hay lời giải thích nào ở trước hoặc sau JSON.
+- QUY TẮC DẤU TRÍCH DẪN (QUAN TRỌNG NHẤT): Trong các câu hỏi, câu ví dụ, tình huống và giải thích, TUYỆT ĐỐI KHÔNG dùng dấu ngoặc kép đôi " để trích dẫn từ vựng. BẮT BUỘC dùng dấu ngoặc đơn '...' (Ví dụ: 'make a decision' thay vì "make a decision") để không làm hỏng cấu trúc JSON.
+- Đảm bảo tất cả keys bọc trong ngoặc kép ", các phần tử ngăn cách bởi dấu phẩy ,, không có dấu phẩy thừa ở cuối.
 - Khớp 100%% với cấu trúc JSON mẫu sau:
 
 %s

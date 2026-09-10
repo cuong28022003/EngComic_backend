@@ -111,6 +111,7 @@ public class BatchImportGrammarInteractor implements BatchImportGrammarBoundary 
             }
 
             entity.setSearchKeywords(input.getSearchKeywords() != null ? input.getSearchKeywords() : Collections.emptyList());
+            entity.setTypicalWords(input.getTypicalWords() != null ? input.getTypicalWords() : Collections.emptyList());
             entity.setUpdatedAt(new Date());
 
             savedEntities.add(grammarPointRepository.save(entity));

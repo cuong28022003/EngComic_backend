@@ -71,6 +71,10 @@ public class BatchImportGrammarRequest {
         @JsonProperty("search_keywords")
         @JsonAlias({"searchKeywords", "tags"})
         private List<String> searchKeywords;
+
+        @JsonProperty("typical_words")
+        @JsonAlias({"typicalWords", "commonWords", "common_words", "vocabulary", "vocabularies"})
+        private List<String> typicalWords;
     }
 
     @Data

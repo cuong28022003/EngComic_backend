@@ -37,6 +37,7 @@ public class GrammarMapper {
                                 .map(this::toComparisonDto)
                                 .collect(Collectors.toList()) : Collections.emptyList())
                 .searchKeywords(entity.getSearchKeywords() != null ? entity.getSearchKeywords() : Collections.emptyList())
+                .typicalWords(entity.getTypicalWords() != null ? entity.getTypicalWords() : Collections.emptyList())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
