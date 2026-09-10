@@ -89,6 +89,7 @@ public class SaveGrammarPointInteractor implements SaveGrammarPointBoundary {
         }
 
         entity.setSearchKeywords(req.getSearchKeywords() != null ? req.getSearchKeywords() : Collections.emptyList());
+        entity.setTypicalWords(req.getTypicalWords() != null ? req.getTypicalWords() : Collections.emptyList());
         entity.setUpdatedAt(new Date());
 
         GrammarPointEntity saved = grammarPointRepository.save(entity);

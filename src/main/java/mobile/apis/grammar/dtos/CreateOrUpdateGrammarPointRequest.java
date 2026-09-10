@@ -64,6 +64,10 @@ public class CreateOrUpdateGrammarPointRequest {
     @JsonAlias({"search_keywords", "tags"})
     private List<String> searchKeywords;
 
+    @JsonProperty("typicalWords")
+    @JsonAlias({"typical_words", "common_words", "commonWords", "vocabulary", "vocabularies"})
+    private List<String> typicalWords;
+
     @Data
     @Builder
     @NoArgsConstructor

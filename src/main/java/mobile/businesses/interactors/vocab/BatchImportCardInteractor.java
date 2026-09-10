@@ -184,6 +184,37 @@ public class BatchImportCardInteractor implements BatchImportCard {
                 card.setRelations(relations);
             }
 
+            // Parse tags / grammar_tags
+            Set<String> tagsSet = new HashSet<>();
+            if (map.containsKey("tags")) {
+                Object tagsObj = map.get("tags");
+                if (tagsObj instanceof List) {
+                    for (Object t : (List<?>) tagsObj) {
+                        if (t != null && !t.toString().trim().isEmpty()) {
+                            tagsSet.add(t.toString().trim());
+                        }
+                    }
+                } else if (tagsObj instanceof String) {
+                    String[] parts = ((String) tagsObj).split("[,;]");
+                    for (String p : parts) {
+                        if (!p.trim().isEmpty()) tagsSet.add(p.trim());
+                    }
+                }
+            }
+            if (map.containsKey("grammar_tags")) {
+                Object gTagsObj = map.get("grammar_tags");
+                if (gTagsObj instanceof List) {
+                    for (Object t : (List<?>) gTagsObj) {
+                        if (t != null && !t.toString().trim().isEmpty()) {
+                            tagsSet.add(t.toString().trim());
+                        }
+                    }
+                }
+            }
+            if (!tagsSet.isEmpty()) {
+                card.setTags(tagsSet);
+            }
+
             card.setStage(0);
             card.setStatus("new");
             card.setInterval(0);

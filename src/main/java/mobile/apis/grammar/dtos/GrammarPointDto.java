@@ -28,6 +28,7 @@ public class GrammarPointDto {
     private List<String> examTips;
     private List<GrammarComparisonDto> comparisons;
     private List<String> searchKeywords;
+    private List<String> typicalWords;
     private Date createdAt;
     private Date updatedAt;
 
