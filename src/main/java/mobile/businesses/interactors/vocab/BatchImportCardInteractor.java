@@ -261,19 +261,64 @@ public class BatchImportCardInteractor implements BatchImportCard {
                 responseDto.getImported().add(cardMapper.toResponse(sc));
             }
 
-            List<PendingItemEntity> pendingList = pendingItemRepository.findByUserIdAndStatus(userId, "pending");
-            List<PendingItemEntity> toDelete = new ArrayList<>();
-            for (PendingItemEntity item : pendingList) {
-                if (item.getContent() != null && importedWords.contains(item.getContent().trim().toLowerCase())) {
-                    toDelete.add(item);
-                }
-            }
-            if (!toDelete.isEmpty()) {
-                pendingItemRepository.deleteAll(toDelete);
-            }
+            cleanUpPendingItems(userId, request.getPromptWords(), importedWords);
         }
 
         return Response.builder().data(responseDto).build();
+    }
+
+    private void cleanUpPendingItems(String userId, List<String> promptWords, Set<String> importedWords) {
+        List<PendingItemEntity> pendingList = pendingItemRepository.findByUserIdAndStatus(userId, "pending");
+        if (pendingList == null || pendingList.isEmpty()) {
+            return;
+        }
+
+        Set<String> wordsToDelete = new HashSet<>();
+
+        // 1. Ưu tiên các từ trong ô input tạo prompt (từ Word Collector đưa sang)
+        if (promptWords != null && !promptWords.isEmpty()) {
+            for (String pw : promptWords) {
+                addNormalizedVariants(wordsToDelete, pw);
+            }
+        }
+
+        // 2. Kết hợp các từ đã import thành công vào database
+        if (importedWords != null && !importedWords.isEmpty()) {
+            for (String iw : importedWords) {
+                addNormalizedVariants(wordsToDelete, iw);
+            }
+        }
+
+        List<PendingItemEntity> toDelete = new ArrayList<>();
+        for (PendingItemEntity item : pendingList) {
+            if (item.getContent() != null) {
+                String raw = item.getContent().trim().toLowerCase();
+                String clean = normalizeWord(raw);
+                if (wordsToDelete.contains(raw) || wordsToDelete.contains(clean)) {
+                    toDelete.add(item);
+                }
+            }
+        }
+
+        if (!toDelete.isEmpty()) {
+            pendingItemRepository.deleteAll(toDelete);
+            log.info("Cleaned up {} pending items for user {}", toDelete.size(), userId);
+        }
+    }
+
+    private void addNormalizedVariants(Set<String> targetSet, String word) {
+        if (word == null || word.trim().isEmpty()) return;
+        String raw = word.trim().toLowerCase();
+        targetSet.add(raw);
+        String clean = normalizeWord(raw);
+        if (!clean.isEmpty()) {
+            targetSet.add(clean);
+        }
+    }
+
+    private String normalizeWord(String word) {
+        if (word == null) return "";
+        return word.replaceAll("^[.,;:!?\"'()\\[\\]{}]+|[.,;:!?\"'()\\[\\]{}]+$", "").trim();
     }
 
     private String getString(Map<?, ?> map, String... keys) {

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mobile.apis.vocab.dtos.BatchImportResponseDto;
 
+import java.util.List;
+
 public interface BatchImportCard {
     Response execute(Request request);
 
@@ -15,6 +17,7 @@ public interface BatchImportCard {
         private String userId;
         private String jsonContent;
         private String deckId;
+        private List<String> promptWords;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder

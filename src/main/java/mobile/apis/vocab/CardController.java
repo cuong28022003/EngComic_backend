@@ -62,6 +62,7 @@ public class CardController {
                 .userId(userId)
                 .jsonContent(batchRequest.getJsonContent())
                 .deckId(batchRequest.getDeckId())
+                .promptWords(batchRequest.getPromptWords())
                 .build();
 
         BatchImportCard.Response response = batchImportCard.execute(req);
