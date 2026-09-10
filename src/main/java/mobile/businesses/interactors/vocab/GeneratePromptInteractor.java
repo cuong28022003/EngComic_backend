@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GeneratePromptInteractor implements GeneratePrompt {
 
+    public static final String SUPPORTED_POS_SCHEMA =
+            "noun|verb|adjective|adverb|pronoun|determiner|preposition|conjunction|transition_word|interjection|phrasal_verb|idiom|collocation";
+
     private final PendingItemRepository pendingItemRepository;
 
     @Override
@@ -34,7 +37,7 @@ public class GeneratePromptInteractor implements GeneratePrompt {
                 "{\n" +
                 "  \"word\": \"...\",\n" +
                 "  \"ipa\": \"/.../\",\n" +
-                "  \"part_of_speech\": \"...\",\n" +
+                "  \"part_of_speech\": \"" + SUPPORTED_POS_SCHEMA + "\",\n" +
                 "  \"meaning_vi\": \"...\",\n" +
                 "  \"definition_en\": \"...\",\n" +
                 "  \"usage_note\": null,\n" +
