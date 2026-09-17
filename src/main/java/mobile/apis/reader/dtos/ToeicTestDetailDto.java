@@ -15,7 +15,9 @@ import java.util.List;
 public class ToeicTestDetailDto {
     private String id;
     private String testName;
+    private String section;
     private String pdfUrl;
+    private String audioUrl;
     private String status;
     private Integer rawScore;
     private Integer scaledScore;
@@ -30,5 +32,7 @@ public class ToeicTestDetailDto {
         private int number;
         private int part;
         private String correctAnswer;
+        private Long audioStartMs;
+        private String transcript;
     }
 }

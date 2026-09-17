@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -20,4 +21,5 @@ public class BatchAssignDeckRequest {
     @NotEmpty(message = "Danh sách thẻ từ không được để trống")
     private List<String> cardIds;
     private String deckId; // null or empty means unassign
+    private List<String> deckIds = new ArrayList<>(); // multi-deck add mode (deckIds != null => add/clear membership)
 }

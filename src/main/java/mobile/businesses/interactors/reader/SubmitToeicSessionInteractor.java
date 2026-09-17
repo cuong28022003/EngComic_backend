@@ -3,6 +3,7 @@ package mobile.businesses.interactors.reader;
 import lombok.RequiredArgsConstructor;
 import mobile.apis.reader.dtos.*;
 import mobile.businesses.boundaries.reader.SubmitToeicSessionBoundary;
+import mobile.businesses.domains.reader.ScaledScoreConverter;
 import mobile.databases.entities.reader.ToeicQuestion;
 import mobile.databases.entities.reader.ToeicReviewItemEntity;
 import mobile.databases.entities.reader.ToeicTestAttemptEntity;
@@ -54,8 +55,10 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
 
         int rawScore = 0;
         List<ToeicQuestion> allQuestions = test.getQuestions() != null ? test.getQuestions() : Collections.emptyList();
+        boolean isListening = "listening".equals(test.getSection());
+        List<Integer> defaultParts = isListening ? Arrays.asList(1, 2, 3, 4) : Arrays.asList(5, 6, 7);
         List<Integer> selectedParts = (sub != null && sub.getSelectedParts() != null && !sub.getSelectedParts().isEmpty())
-                ? sub.getSelectedParts() : Arrays.asList(5, 6, 7);
+                ? sub.getSelectedParts() : defaultParts;
 
         List<ToeicQuestion> questions = allQuestions.stream()
                 .filter(q -> selectedParts.contains(q.getPart()))
@@ -141,22 +144,33 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
             attemptNumber = attempt.getAttemptNumber();
         }
 
+        Integer scaledScore = ScaledScoreConverter.convert(rawScore, totalQuestions, test.getSection());
+
         // Save session record (backward compatibility)
         ToeicUserSessionEntity session = ToeicUserSessionEntity.builder()
                 .userId(request.getUserId())
                 .testId(test.getId())
                 .testName(test.getTestName())
                 .rawScore(rawScore)
+                .scaledScore(scaledScore)
                 .totalQuestions(totalQuestions)
                 .duration(sub != null ? sub.getDuration() : 0)
                 .timeMode(sub != null ? sub.getTimeMode() : "full_test")
                 .selectedParts(selectedParts)
-                .part5TargetSeconds(sub != null ? sub.getPart5TargetSeconds() : 0)
-                .part6TargetSeconds(sub != null ? sub.getPart6TargetSeconds() : 0)
-                .part7TargetSeconds(sub != null ? sub.getPart7TargetSeconds() : 0)
-                .part5ElapsedSeconds(sub != null ? sub.getPart5ElapsedSeconds() : 0)
-                .part6ElapsedSeconds(sub != null ? sub.getPart6ElapsedSeconds() : 0)
-                .part7ElapsedSeconds(sub != null ? sub.getPart7ElapsedSeconds() : 0)
+                .part1TargetSeconds(getPartTargetSeconds(sub, 1))
+                .part2TargetSeconds(getPartTargetSeconds(sub, 2))
+                .part3TargetSeconds(getPartTargetSeconds(sub, 3))
+                .part4TargetSeconds(getPartTargetSeconds(sub, 4))
+                .part5TargetSeconds(getPartTargetSeconds(sub, 5))
+                .part6TargetSeconds(getPartTargetSeconds(sub, 6))
+                .part7TargetSeconds(getPartTargetSeconds(sub, 7))
+                .part1ElapsedSeconds(getPartElapsedSeconds(sub, 1))
+                .part2ElapsedSeconds(getPartElapsedSeconds(sub, 2))
+                .part3ElapsedSeconds(getPartElapsedSeconds(sub, 3))
+                .part4ElapsedSeconds(getPartElapsedSeconds(sub, 4))
+                .part5ElapsedSeconds(getPartElapsedSeconds(sub, 5))
+                .part6ElapsedSeconds(getPartElapsedSeconds(sub, 6))
+                .part7ElapsedSeconds(getPartElapsedSeconds(sub, 7))
                 .answers(sessionAnswers)
                 .submittedAt(new Date())
                 .build();
@@ -177,14 +191,23 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
         attempt.setStatus("completed");
         attempt.setTimeMode(sub != null ? sub.getTimeMode() : "full_test");
         attempt.setSelectedParts(selectedParts);
-        attempt.setPart5TargetSeconds(sub != null ? sub.getPart5TargetSeconds() : 0);
-        attempt.setPart6TargetSeconds(sub != null ? sub.getPart6TargetSeconds() : 0);
-        attempt.setPart7TargetSeconds(sub != null ? sub.getPart7TargetSeconds() : 0);
+        attempt.setPart1TargetSeconds(getPartTargetSeconds(sub, 1));
+        attempt.setPart2TargetSeconds(getPartTargetSeconds(sub, 2));
+        attempt.setPart3TargetSeconds(getPartTargetSeconds(sub, 3));
+        attempt.setPart4TargetSeconds(getPartTargetSeconds(sub, 4));
+        attempt.setPart5TargetSeconds(getPartTargetSeconds(sub, 5));
+        attempt.setPart6TargetSeconds(getPartTargetSeconds(sub, 6));
+        attempt.setPart7TargetSeconds(getPartTargetSeconds(sub, 7));
         attempt.setTotalElapsedSeconds(sub != null ? sub.getDuration() : 0);
-        attempt.setPart5ElapsedSeconds(sub != null ? sub.getPart5ElapsedSeconds() : 0);
-        attempt.setPart6ElapsedSeconds(sub != null ? sub.getPart6ElapsedSeconds() : 0);
-        attempt.setPart7ElapsedSeconds(sub != null ? sub.getPart7ElapsedSeconds() : 0);
+        attempt.setPart1ElapsedSeconds(getPartElapsedSeconds(sub, 1));
+        attempt.setPart2ElapsedSeconds(getPartElapsedSeconds(sub, 2));
+        attempt.setPart3ElapsedSeconds(getPartElapsedSeconds(sub, 3));
+        attempt.setPart4ElapsedSeconds(getPartElapsedSeconds(sub, 4));
+        attempt.setPart5ElapsedSeconds(getPartElapsedSeconds(sub, 5));
+        attempt.setPart6ElapsedSeconds(getPartElapsedSeconds(sub, 6));
+        attempt.setPart7ElapsedSeconds(getPartElapsedSeconds(sub, 7));
         attempt.setRawScore(rawScore);
+        attempt.setScaledScore(scaledScore);
         attempt.setTotalQuestions(totalQuestions);
         attempt.setAnswers(attemptAnswers);
         attempt.setLastSavedAt(new Date());
@@ -202,6 +225,9 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
         if (test.getRawScore() == null || rawScore >= test.getRawScore()) {
             test.setRawScore(rawScore);
         }
+        if (scaledScore != null) {
+            test.setScaledScore(scaledScore);
+        }
         test.setUpdatedAt(new Date());
         testRepository.save(test);
 
@@ -216,16 +242,8 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
                     int targetSec = 0;
                     int elapsedSec = 0;
                     if (sub != null) {
-                        if (p == 5) {
-                            targetSec = sub.getPart5TargetSeconds();
-                            elapsedSec = sub.getPart5ElapsedSeconds();
-                        } else if (p == 6) {
-                            targetSec = sub.getPart6TargetSeconds();
-                            elapsedSec = sub.getPart6ElapsedSeconds();
-                        } else if (p == 7) {
-                            targetSec = sub.getPart7TargetSeconds();
-                            elapsedSec = sub.getPart7ElapsedSeconds();
-                        }
+                        targetSec = getPartTargetSeconds(sub, p);
+                        elapsedSec = getPartElapsedSeconds(sub, p);
                     }
                     double avgSec = total > 0 ? (double) elapsedSec / total : 0.0;
 
@@ -249,6 +267,7 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
                 .attemptId(attempt.getId())
                 .attemptNumber(attemptNumber)
                 .rawScore(rawScore)
+                .scaledScore(scaledScore)
                 .totalQuestions(totalQuestions)
                 .accuracyPercentage(Math.round(overallAcc * 10.0) / 10.0)
                 .duration(sub != null ? sub.getDuration() : 0)
@@ -271,6 +290,34 @@ public class SubmitToeicSessionInteractor implements SubmitToeicSessionBoundary 
         return Response.builder()
                 .data(res)
                 .build();
+    }
+
+    private int getPartTargetSeconds(SubmitToeicSessionRequest sub, int part) {
+        if (sub == null) return 0;
+        switch (part) {
+            case 1: return sub.getPart1TargetSeconds();
+            case 2: return sub.getPart2TargetSeconds();
+            case 3: return sub.getPart3TargetSeconds();
+            case 4: return sub.getPart4TargetSeconds();
+            case 5: return sub.getPart5TargetSeconds();
+            case 6: return sub.getPart6TargetSeconds();
+            case 7: return sub.getPart7TargetSeconds();
+            default: return 0;
+        }
+    }
+
+    private int getPartElapsedSeconds(SubmitToeicSessionRequest sub, int part) {
+        if (sub == null) return 0;
+        switch (part) {
+            case 1: return sub.getPart1ElapsedSeconds();
+            case 2: return sub.getPart2ElapsedSeconds();
+            case 3: return sub.getPart3ElapsedSeconds();
+            case 4: return sub.getPart4ElapsedSeconds();
+            case 5: return sub.getPart5ElapsedSeconds();
+            case 6: return sub.getPart6ElapsedSeconds();
+            case 7: return sub.getPart7ElapsedSeconds();
+            default: return 0;
+        }
     }
 
     private ToeicReviewItemEntity cloneReviewEntity(

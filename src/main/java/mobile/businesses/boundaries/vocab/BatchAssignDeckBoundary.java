@@ -16,6 +16,7 @@ public interface BatchAssignDeckBoundary {
         private String userId;
         private List<String> cardIds;
         private String deckId;
+        private List<String> deckIds;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder

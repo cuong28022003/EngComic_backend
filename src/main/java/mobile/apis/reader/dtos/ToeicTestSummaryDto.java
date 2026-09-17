@@ -13,8 +13,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class ToeicTestSummaryDto {
     private String id;
-    private String testName;
+private String testName;
+    private String section;
     private String pdfUrl;
+    private String audioUrl;
     private int questionCount;
     private Integer rawScore;
     private Integer scaledScore;

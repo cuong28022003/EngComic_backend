@@ -21,10 +21,18 @@ public class ToeicAttemptDto {
     private String status; // "in_progress", "completed", "abandoned"
     private String timeMode;
     private List<Integer> selectedParts;
+    private int part1TargetSeconds;
+    private int part2TargetSeconds;
+    private int part3TargetSeconds;
+    private int part4TargetSeconds;
     private int part5TargetSeconds;
     private int part6TargetSeconds;
     private int part7TargetSeconds;
     private int totalElapsedSeconds;
+    private int part1ElapsedSeconds;
+    private int part2ElapsedSeconds;
+    private int part3ElapsedSeconds;
+    private int part4ElapsedSeconds;
     private int part5ElapsedSeconds;
     private int part6ElapsedSeconds;
     private int part7ElapsedSeconds;

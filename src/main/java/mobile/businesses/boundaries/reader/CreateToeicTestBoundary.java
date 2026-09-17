@@ -14,9 +14,10 @@ public interface CreateToeicTestBoundary {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     class Request {
-        private String userId;
+private String userId;
         private CreateToeicTestRequest requestData;
         private MultipartFile pdfFile;
+        private MultipartFile audioFile;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder

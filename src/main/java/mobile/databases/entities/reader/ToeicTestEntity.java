@@ -28,9 +28,13 @@ public class ToeicTestEntity {
     private String id;
     private String userId;
     private String testName;
-    private String pdfUrl;
+private String pdfUrl;
     private String localPdfPath;
-    
+
+    private String section; // "reading" | "listening"
+    private String audioUrl;
+    private String localAudioPath;
+
     private Integer rawScore;
     private Integer scaledScore;
     

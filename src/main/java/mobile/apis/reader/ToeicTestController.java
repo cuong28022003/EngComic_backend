@@ -10,11 +10,14 @@ import mobile.security.constants.AppAuthorities;
 import mobile.security.resolver.CurrentUserId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -70,7 +73,8 @@ public class ToeicTestController {
     public ResponseEntity<ToeicTestSummaryDto> createTestMultipart(
             @CurrentUserId String userId,
             @RequestPart(value = "requestData") String requestDataJson,
-            @RequestPart(value = "pdfFile", required = false) MultipartFile pdfFile) {
+            @RequestPart(value = "pdfFile", required = false) MultipartFile pdfFile,
+            @RequestPart(value = "audioFile", required = false) MultipartFile audioFile) {
 
         try {
             CreateToeicTestRequest data = objectMapper.readValue(requestDataJson, CreateToeicTestRequest.class);
@@ -79,6 +83,7 @@ public class ToeicTestController {
                             .userId(userId)
                             .requestData(data)
                             .pdfFile(pdfFile)
+                            .audioFile(audioFile)
                             .build());
             return ResponseEntity.ok(res.getData());
         } catch (Exception e) {
@@ -108,7 +113,8 @@ public class ToeicTestController {
             @CurrentUserId String userId,
             @PathVariable String id,
             @RequestPart(value = "requestData", required = false) String requestDataJson,
-            @RequestPart(value = "pdfFile", required = false) MultipartFile pdfFile) {
+            @RequestPart(value = "pdfFile", required = false) MultipartFile pdfFile,
+            @RequestPart(value = "audioFile", required = false) MultipartFile audioFile) {
 
         try {
             UpdateToeicTestRequest data = (requestDataJson != null && !requestDataJson.trim().isEmpty()) ?
@@ -120,6 +126,7 @@ public class ToeicTestController {
                             .testId(id)
                             .requestData(data)
                             .pdfFile(pdfFile)
+                            .audioFile(audioFile)
                             .build());
             return ResponseEntity.ok(res.getData());
         } catch (Exception e) {
@@ -213,5 +220,104 @@ public class ToeicTestController {
             log.error("Error proxying PDF: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/audio/file/{filename:.+}")
+    public void streamAudioFile(
+            @PathVariable String filename,
+            @RequestHeader(value = org.springframework.http.HttpHeaders.RANGE, required = false) String rangeHeader,
+            jakarta.servlet.http.HttpServletResponse response)
+            throws java.io.IOException {
+        try {
+            java.nio.file.Path filePath = java.nio.file.Paths.get("uploads", "toeic_audio", filename);
+            if (!java.nio.file.Files.exists(filePath)) {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                return;
+            }
+            long fileLength = java.nio.file.Files.size(filePath);
+            if (fileLength <= 0) {
+                response.setStatus(HttpStatus.OK.value());
+                return;
+            }
+            String contentType = resolveAudioContentType(filename);
+
+            long start = 0;
+            long end = fileLength - 1;
+            int status = HttpStatus.OK.value();
+
+            if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
+                List<org.springframework.http.HttpRange> ranges = org.springframework.http.HttpRange.parseRanges(rangeHeader);
+                if (!ranges.isEmpty()) {
+                    org.springframework.http.HttpRange range = ranges.get(0);
+                    start = range.getRangeStart(fileLength);
+                    end = range.getRangeEnd(fileLength);
+                    status = HttpStatus.PARTIAL_CONTENT.value();
+                }
+            }
+
+            response.setStatus(status);
+            response.setContentType(contentType);
+            response.setHeader(org.springframework.http.HttpHeaders.ACCEPT_RANGES, "bytes");
+            response.setHeader(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                    "inline; filename=\"" + filename + "\"");
+            if (status == HttpStatus.PARTIAL_CONTENT.value()) {
+                response.setHeader(org.springframework.http.HttpHeaders.CONTENT_RANGE,
+                        "bytes " + start + "-" + end + "/" + fileLength);
+            }
+            long count = end - start + 1;
+            response.setHeader(org.springframework.http.HttpHeaders.CONTENT_LENGTH, Long.toString(count));
+
+            try (java.io.InputStream is = java.nio.file.Files.newInputStream(filePath);
+                 java.io.OutputStream out = response.getOutputStream()) {
+                long skip = start;
+                while (skip > 0) {
+                    long skipped = is.skip(skip);
+                    if (skipped <= 0) break;
+                    skip -= skipped;
+                }
+                long remaining = count;
+                byte[] buf = new byte[8192];
+                int n;
+                while (remaining > 0 && (n = is.read(buf, 0, (int) Math.min(buf.length, remaining))) > 0) {
+                    out.write(buf, 0, n);
+                    remaining -= n;
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error reading audio file: {}", e.getMessage());
+            if (!response.isCommitted()) {
+                response.resetBuffer();
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
+    }
+
+    @GetMapping("/proxy-audio")
+    public ResponseEntity<org.springframework.core.io.Resource> proxyAudio(@RequestParam("url") String urlStr) {
+        try {
+            java.net.URI uri = java.net.URI.create(urlStr);
+            org.springframework.core.io.Resource remoteResource = new org.springframework.core.io.UrlResource(uri);
+            org.springframework.http.MediaType contentType = MediaType.parseMediaType(
+                    resolveAudioContentType(urlStr));
+            return ResponseEntity.ok()
+                    .contentType(contentType)
+                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "inline")
+                    .body(remoteResource);
+        } catch (Exception e) {
+            log.error("Error proxying audio: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    private String resolveAudioContentType(String filename) {
+        String lower = filename.toLowerCase();
+        if (lower.endsWith(".m4a")) return "audio/mp4";
+        if (lower.endsWith(".wav")) return "audio/wav";
+        if (lower.endsWith(".ogg")) return "audio/ogg";
+        if (lower.endsWith(".webm")) return "audio/webm";
+        if (lower.endsWith(".aac")) return "audio/aac";
+        if (lower.endsWith(".flac")) return "audio/flac";
+        if (lower.endsWith(".opus")) return "audio/ogg";
+        return "audio/mpeg"; // mp3 & default
     }
 }

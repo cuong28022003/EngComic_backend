@@ -49,6 +49,10 @@ public class ImportReviewItemsRequest {
         @JsonAlias({"questionText", "question"})
         private String questionText;
 
+        @JsonProperty("transcript")
+        @JsonAlias({"transcriptText", "script"})
+        private String transcript;
+
         @JsonProperty("options")
         private Map<String, String> options;
 
@@ -68,11 +72,20 @@ public class ImportReviewItemsRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class KeyVocabInput {
-        @JsonProperty("word")
+        @JsonProperty("term")
+        @JsonAlias({"word", "vocab", "term"})
         private String word;
 
-        @JsonProperty("meaning_vi")
-        @JsonAlias({"meaningVi", "meaning", "translation"})
+        @JsonProperty("meaning")
+        @JsonAlias({"meaningVi", "meaning_vi", "translation", "meaning"})
         private String meaningVi;
+
+        @JsonProperty("example")
+        @JsonAlias({"example_vi"})
+        private String example;
+
+        @JsonProperty("context_note")
+        @JsonAlias({"contextNote", "trap_note", "note"})
+        private String contextNote;
     }
 }

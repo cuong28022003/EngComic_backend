@@ -13,11 +13,15 @@ import java.util.Optional;
 
 @Repository("vocabCardRepository")
 public interface CardRepository extends MongoRepository<CardEntity, String> {
+    @Query("{ 'userId': ?0, '$or': [ { 'deckId': ?1 }, { 'deckIds': ?1 } ] }")
     Page<CardEntity> findByUserIdAndDeckId(String userId, String deckId, Pageable pageable);
     Page<CardEntity> findByUserId(String userId, Pageable pageable);
     List<CardEntity> findByUserId(String userId);
+    @Query("{ '$or': [ { 'deckId': ?0 }, { 'deckIds': ?0 } ] }")
     List<CardEntity> findByDeckId(String deckId);
+    @Query("{ '$or': [ { 'deckId': ?0 }, { 'deckIds': ?0 } ] }")
     Page<CardEntity> findByDeckId(String deckId, Pageable pageable);
+    @Query("{ '$or': [ { 'deckId': ?0 }, { 'deckIds': ?0 } ], 'nextReview': { '$lte': ?1 } }")
     Page<CardEntity> findByDeckIdAndNextReviewLessThanEqual(String deckId, Date nextReview, Pageable pageable);
     Optional<CardEntity> findByIdAndUserId(String id, String userId);
     Optional<CardEntity> findByUserIdAndWordIgnoreCase(String userId, String word);
@@ -41,15 +45,19 @@ public interface CardRepository extends MongoRepository<CardEntity, String> {
     Page<CardEntity> findByUserIdAndMeaningContainingIgnoreCaseOrWordContainingIgnoreCase(String userId, String meaning, String word, Pageable pageable);
     Page<CardEntity> findByUserIdAndStatus(String userId, String status, Pageable pageable);
     List<CardEntity> findByUserIdAndStatus(String userId, String status);
+    @Query("{ 'userId': ?0, '$or': [ { 'deckId': ?1 }, { 'deckIds': ?1 } ] }")
     List<CardEntity> findByUserIdAndDeckId(String userId, String deckId);
     Page<CardEntity> findByUserIdAndTopicContainingIgnoreCase(String userId, String topic, Pageable pageable);
 
     @Query("{ 'userId': ?0, '$or': [ { 'relations.relatedCardId': ?1 }, { 'relations.text': { $regex: ?1, $options: 'i' } }, { 'relations.word': { $regex: ?1, $options: 'i' } } ] }")
     List<CardEntity> findReverseRelations(String userId, String targetWordOrId);
 
-    @Query("{ 'deckId': { $in: ?0 }, '$or': [ { 'word': { $regex: ?1, $options: 'i' } }, { 'meaning': { $regex: ?1, $options: 'i' } }, { 'front': { $regex: ?1, $options: 'i' } }, { 'back': { $regex: ?1, $options: 'i' } } ] }")
+    @Query("{ '$and': [ { '$or': [ { 'deckId': { $in: ?0 } }, { 'deckIds': { $in: ?0 } } ] }, { '$or': [ { 'word': { $regex: ?1, $options: 'i' } }, { 'meaning': { $regex: ?1, $options: 'i' } }, { 'front': { $regex: ?1, $options: 'i' } }, { 'back': { $regex: ?1, $options: 'i' } } ] } ] }")
     Page<CardEntity> findByDeckIdInOrDeckIdNullAndSearch(List<String> deckIds, String search, Pageable pageable);
 
-    @Query("{ 'deckId': { $in: ?0 } }")
+    @Query("{ '$or': [ { 'deckId': { $in: ?0 } }, { 'deckIds': { $in: ?0 } } ] }")
     Page<CardEntity> findByDeckIdInOrDeckIdNull(List<String> deckIds, Pageable pageable);
+
+    @Query("{ '$or': [ { 'deckId': ?0 }, { 'deckIds': ?0 } ] }")
+    List<CardEntity> findByDeckIdOrDeckIdsContaining(String deckId);
 }

@@ -47,6 +47,7 @@ public class CardController {
 
     // Feature Deck Integration
     private final mobile.businesses.boundaries.vocab.BatchAssignDeckBoundary batchAssignDeckBoundary;
+    private final mobile.businesses.boundaries.vocab.RemoveDeckFromCards removeDeckFromCards;
     private final GetUserTopicsBoundary getUserTopicsBoundary;
 
     private final CardRepository cardRepository;
@@ -80,11 +81,32 @@ public class CardController {
                         .userId(userId)
                         .cardIds(request.getCardIds())
                         .deckId(request.getDeckId())
+                        .deckIds(request.getDeckIds())
                         .build();
 
         mobile.businesses.boundaries.vocab.BatchAssignDeckBoundary.Response response = batchAssignDeckBoundary.execute(req);
         java.util.Map<String, Object> body = new java.util.HashMap<>();
         body.put("totalAssigned", response.getTotalAssigned());
+        body.put("message", response.getMessage());
+        return ResponseEntity.ok(body);
+    }
+
+    @PostMapping("/batch-remove-deck")
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<java.util.Map<String, Object>> batchRemoveDeck(
+            @CurrentUserId String userId,
+            @Valid @RequestBody mobile.apis.vocab.dtos.RemoveDeckRequest request) {
+
+        mobile.businesses.boundaries.vocab.RemoveDeckFromCards.Request req =
+                mobile.businesses.boundaries.vocab.RemoveDeckFromCards.Request.builder()
+                        .userId(userId)
+                        .cardIds(request.getCardIds())
+                        .deckId(request.getDeckId())
+                        .build();
+
+        mobile.businesses.boundaries.vocab.RemoveDeckFromCards.Response response = removeDeckFromCards.execute(req);
+        java.util.Map<String, Object> body = new java.util.HashMap<>();
+        body.put("totalRemoved", response.getTotalRemoved());
         body.put("message", response.getMessage());
         return ResponseEntity.ok(body);
     }
@@ -403,11 +425,33 @@ public class CardController {
     public ResponseEntity<CardResponseDto> moveDeck(@PathVariable String id, @RequestParam String newDeckId) {
         CardEntity card = cardRepository.findById(id).orElse(null);
         if (card != null) {
-            card.setDeckId(newDeckId);
+            boolean hasDeck = newDeckId != null && !newDeckId.isBlank();
+            card.setDeckId(hasDeck ? newDeckId : null);
+            card.setDeckIds(hasDeck ? new java.util.ArrayList<>(java.util.List.of(newDeckId)) : new java.util.ArrayList<>());
             CardEntity saved = cardRepository.save(card);
             return ResponseEntity.ok(cardMapper.toResponse(saved));
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}/decks")
+    @PreAuthorize(AppAuthorities.HAS_CARD_WRITE)
+    public ResponseEntity<CardResponseDto> setCardDecks(
+            @PathVariable String id,
+            @RequestBody mobile.apis.vocab.dtos.SetCardDecksRequest request) {
+        CardEntity card = cardRepository.findById(id).orElse(null);
+        if (card == null) {
+            return ResponseEntity.notFound().build();
+        }
+        java.util.List<String> decks = (request.getDeckIds() == null ? new java.util.ArrayList<String>() : request.getDeckIds())
+                .stream()
+                .filter(d -> d != null && !d.isBlank())
+                .distinct()
+                .toList();
+        card.setDeckIds(new java.util.ArrayList<>(decks));
+        card.setDeckId(decks.isEmpty() ? null : decks.get(0));
+        CardEntity saved = cardRepository.save(card);
+        return ResponseEntity.ok(cardMapper.toResponse(saved));
     }
 }
 

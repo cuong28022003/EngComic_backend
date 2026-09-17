@@ -14,6 +14,10 @@ import java.util.List;
 public class StartAttemptRequest {
     private String timeMode; // "full_test", "per_part", "untimed"
     private List<Integer> selectedParts;
+    private int part1TargetSeconds;
+    private int part2TargetSeconds;
+    private int part3TargetSeconds;
+    private int part4TargetSeconds;
     private int part5TargetSeconds;
     private int part6TargetSeconds;
     private int part7TargetSeconds;

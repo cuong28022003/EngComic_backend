@@ -12,7 +12,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ToeicQuestion {
-    private int number;
+private int number;
     private int part;
     private String correctAnswer; // "A", "B", "C", "D"
+
+    private Long audioStartMs; // ms từ đầu file audio tới lúc bắt đầu câu này (Listening)
+
+    private String transcript; // Transcript của đoạn audio tương ứng câu này (Listening)
 }

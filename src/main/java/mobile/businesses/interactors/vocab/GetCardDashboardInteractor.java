@@ -69,10 +69,15 @@ public class GetCardDashboardInteractor implements GetCardDashboard {
             if ("unassigned".equalsIgnoreCase(deckId.trim())) {
                 query.addCriteria(new Criteria().orOperator(
                         Criteria.where("deckId").is(null),
-                        Criteria.where("deckId").is("")
+                        Criteria.where("deckId").is(""),
+                        Criteria.where("deckIds").is(null),
+                        Criteria.where("deckIds").size(0)
                 ));
             } else {
-                query.addCriteria(Criteria.where("deckId").is(deckId.trim()));
+                query.addCriteria(new Criteria().orOperator(
+                        Criteria.where("deckId").is(deckId.trim()),
+                        Criteria.where("deckIds").is(deckId.trim())
+                ));
             }
         }
 
