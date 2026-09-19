@@ -17,6 +17,7 @@ public class CardMapper {
         response.setId(entity.getId());
         response.setUserId(entity.getUserId());
         response.setDeckId(entity.getDeckId());
+        response.setDeckIds(entity.getDeckIds() != null ? entity.getDeckIds() : new ArrayList<>());
         response.setWord(entity.getWord());
         response.setMeaning(entity.getMeaning());
         response.setIpa(entity.getIpa());
@@ -123,7 +124,23 @@ public class CardMapper {
         if (request == null) return null;
         CardEntity card = new CardEntity();
         card.setUserId(request.getUserId());
-        card.setDeckId(request.getDeckId());
+        java.util.List<String> requestDecks = request.getDeckIds() != null ? request.getDeckIds() : new ArrayList<>();
+        java.util.List<String> cleanedDecks = requestDecks.stream()
+                .filter(d -> d != null && !d.isBlank())
+                .distinct()
+                .toList();
+        boolean hasListDecks = !cleanedDecks.isEmpty();
+        boolean hasSingleDeck = request.getDeckId() != null && !request.getDeckId().isBlank();
+        if (hasListDecks) {
+            card.setDeckIds(new ArrayList<>(cleanedDecks));
+            card.setDeckId(hasSingleDeck ? request.getDeckId() : cleanedDecks.get(0));
+        } else if (hasSingleDeck) {
+            card.setDeckId(request.getDeckId());
+            card.setDeckIds(new ArrayList<>(java.util.List.of(request.getDeckId())));
+        } else {
+            card.setDeckId(null);
+            card.setDeckIds(new ArrayList<>());
+        }
         card.setWord(request.getWord() != null ? request.getWord() : request.getFront());
         card.setMeaning(request.getMeaning() != null ? request.getMeaning() : request.getBack());
         card.setIpa(request.getIPA());

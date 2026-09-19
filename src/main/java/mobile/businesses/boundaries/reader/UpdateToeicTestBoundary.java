@@ -18,6 +18,7 @@ public interface UpdateToeicTestBoundary {
         private String testId;
         private UpdateToeicTestRequest requestData;
         private MultipartFile pdfFile;
+        private MultipartFile audioFile;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder

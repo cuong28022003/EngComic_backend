@@ -39,6 +39,7 @@ public class ToeicReviewItemEntity {
     private String relatedGrammarTopic;
     private String passageExcerpt;
     private String questionText;
+    private String transcript;
 
     @Builder.Default
     private Map<String, String> options = new HashMap<>(); // A, B, C, D
@@ -63,5 +64,7 @@ public class ToeicReviewItemEntity {
     public static class KeyVocabItem {
         private String word;
         private String meaningVi;
+        private String example;
+        private String contextNote;
     }
 }

@@ -4,27 +4,23 @@ import lombok.RequiredArgsConstructor;
 import mobile.businesses.boundaries.vocab.BatchAssignDeckBoundary;
 import mobile.databases.entities.vocab.CardEntity;
 import mobile.databases.repositories.vocab.CardRepository;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class BatchAssignDeckInteractor implements BatchAssignDeckBoundary {
 
-    private final MongoTemplate mongoTemplate;
     private final CardRepository cardRepository;
 
     @Override
     public Response execute(Request request) {
         String userId = request.getUserId();
         List<String> cardIds = request.getCardIds();
-        String deckId = request.getDeckId();
 
         if (cardIds == null || cardIds.isEmpty()) {
             return Response.builder()
@@ -33,29 +29,71 @@ public class BatchAssignDeckInteractor implements BatchAssignDeckBoundary {
                     .build();
         }
 
-        // Target deckId: null if empty or unassigned
-        String targetDeckId = (deckId != null && !deckId.isBlank() && !"unassigned".equalsIgnoreCase(deckId.trim()))
-                ? deckId.trim()
-                : null;
-
-        Query query = new Query(Criteria.where("id").in(cardIds));
+        List<CardEntity> cards = cardRepository.findAllById(cardIds);
         if (userId != null) {
-            query.addCriteria(Criteria.where("userId").is(userId));
+            cards = cards.stream().filter(c -> userId.equals(c.getUserId())).toList();
+        }
+        if (cards.isEmpty()) {
+            return Response.builder()
+                    .totalAssigned(0)
+                    .message("Không tìm thấy thẻ từ nào")
+                    .build();
         }
 
-        Update update = new Update()
-                .set("deckId", targetDeckId)
-                .set("updatedAt", new Date());
+        // deckIds != null => multi-deck mode: empty list clears membership, non-empty adds to those decks
+        boolean multiMode = request.getDeckIds() != null;
+        List<String> requestDecks = multiMode ? request.getDeckIds() : List.of();
 
-        com.mongodb.client.result.UpdateResult result = mongoTemplate.updateMulti(query, update, CardEntity.class);
-        long modifiedCount = result.getModifiedCount();
+        List<String> cleaned = requestDecks.stream()
+                .filter(d -> d != null && !d.isBlank())
+                .distinct()
+                .toList();
 
-        String msg = targetDeckId != null
-                ? "Đã gán " + modifiedCount + " thẻ từ vào bộ thẻ thành công"
-                : "Đã hủy gán bộ thẻ cho " + modifiedCount + " thẻ từ";
+        int processed = 0;
+        for (CardEntity card : cards) {
+            Set<String> merged = new LinkedHashSet<>();
+            if (card.getDeckIds() != null) {
+                merged.addAll(card.getDeckIds());
+            }
+            if (multiMode) {
+                merged.addAll(cleaned);
+                if (merged.isEmpty()) {
+                    card.setDeckIds(new ArrayList<>());
+                    card.setDeckId(null);
+                } else {
+                    card.setDeckIds(new ArrayList<>(merged));
+                    if (card.getDeckId() == null || card.getDeckId().isBlank()) {
+                        card.setDeckId(merged.iterator().next());
+                    }
+                }
+            } else {
+                // legacy single-deck replace mode
+                String targetDeckId = (request.getDeckId() != null
+                        && !request.getDeckId().isBlank()
+                        && !"unassigned".equalsIgnoreCase(request.getDeckId().trim()))
+                        ? request.getDeckId().trim()
+                        : null;
+                if (targetDeckId == null) {
+                    card.setDeckIds(new ArrayList<>());
+                    card.setDeckId(null);
+                } else {
+                    card.setDeckIds(new ArrayList<>(List.of(targetDeckId)));
+                    card.setDeckId(targetDeckId);
+                }
+            }
+            cardRepository.save(card);
+            processed++;
+        }
+
+        String msg;
+        if (multiMode && cleaned.isEmpty()) {
+            msg = "Đã hủy gán bộ thẻ cho " + processed + " thẻ từ";
+        } else {
+            msg = "Đã gán " + processed + " thẻ từ vào " + cleaned.size() + " bộ thẻ thành công";
+        }
 
         return Response.builder()
-                .totalAssigned((int) modifiedCount)
+                .totalAssigned(processed)
                 .message(msg)
                 .build();
     }

@@ -35,10 +35,22 @@ public class StartTestAttemptInteractor implements StartTestAttemptBoundary {
         int attemptNumber = (int) previousCount + 1;
 
         StartAttemptRequest req = request.getStartData();
+        String section = test.getSection() != null ? test.getSection() : "reading";
+        boolean isListening = "listening".equals(section);
+        List<Integer> defaultParts = isListening ? Arrays.asList(1, 2, 3, 4) : Arrays.asList(5, 6, 7);
         List<Integer> parts = (req != null && req.getSelectedParts() != null && !req.getSelectedParts().isEmpty())
-                ? req.getSelectedParts() : Arrays.asList(5, 6, 7);
+                ? req.getSelectedParts() : defaultParts;
 
         String timeMode = (req != null && req.getTimeMode() != null) ? req.getTimeMode() : "full_test";
+
+        // Mặc định thời lượng mỗi phần theo section
+        int part1Target = req != null ? req.getPart1TargetSeconds() : (isListening ? 300 : 0);
+        int part2Target = req != null ? req.getPart2TargetSeconds() : (isListening ? 480 : 0);
+        int part3Target = req != null ? req.getPart3TargetSeconds() : (isListening ? 960 : 0);
+        int part4Target = req != null ? req.getPart4TargetSeconds() : (isListening ? 960 : 0);
+        int part5Target = req != null ? req.getPart5TargetSeconds() : 1200;
+        int part6Target = req != null ? req.getPart6TargetSeconds() : 600;
+        int part7Target = req != null ? req.getPart7TargetSeconds() : 2700;
 
         ToeicTestAttemptEntity attempt = ToeicTestAttemptEntity.builder()
                 .userId(request.getUserId())
@@ -48,10 +60,18 @@ public class StartTestAttemptInteractor implements StartTestAttemptBoundary {
                 .status("in_progress")
                 .timeMode(timeMode)
                 .selectedParts(parts)
-                .part5TargetSeconds(req != null ? req.getPart5TargetSeconds() : 1200)
-                .part6TargetSeconds(req != null ? req.getPart6TargetSeconds() : 600)
-                .part7TargetSeconds(req != null ? req.getPart7TargetSeconds() : 2700)
+                .part1TargetSeconds(part1Target)
+                .part2TargetSeconds(part2Target)
+                .part3TargetSeconds(part3Target)
+                .part4TargetSeconds(part4Target)
+                .part5TargetSeconds(part5Target)
+                .part6TargetSeconds(part6Target)
+                .part7TargetSeconds(part7Target)
                 .totalElapsedSeconds(0)
+                .part1ElapsedSeconds(0)
+                .part2ElapsedSeconds(0)
+                .part3ElapsedSeconds(0)
+                .part4ElapsedSeconds(0)
                 .part5ElapsedSeconds(0)
                 .part6ElapsedSeconds(0)
                 .part7ElapsedSeconds(0)

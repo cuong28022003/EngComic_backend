@@ -27,6 +27,7 @@ public class CardEntity {
     protected String id;
     protected String userId;
     protected String deckId;
+    protected List<String> deckIds = new ArrayList<>();
 
     // --- Static Content ---
     protected String word;

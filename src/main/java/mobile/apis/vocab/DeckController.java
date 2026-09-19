@@ -137,10 +137,31 @@ public class DeckController {
         }
     }
 
-    @DeleteMapping("/{id}")
+@DeleteMapping("/{id}")
     @PreAuthorize(AppAuthorities.HAS_DECK_MANAGE)
     public ResponseEntity<Void> deleteDeck(@PathVariable String id) {
-        cardRepository.deleteAllByDeckId(id);
+        java.util.List<CardEntity> cards = cardRepository.findByDeckIdOrDeckIdsContaining(id);
+        java.util.List<CardEntity> toDelete = new java.util.ArrayList<>();
+        for (CardEntity card : cards) {
+            boolean primary = id.equals(card.getDeckId());
+            java.util.List<String> others = (card.getDeckIds() != null ? card.getDeckIds() : new java.util.ArrayList<String>())
+                    .stream()
+                    .filter(d -> !id.equals(d))
+                    .distinct()
+                    .toList();
+            if (others.isEmpty()) {
+                toDelete.add(card);
+            } else {
+                card.setDeckIds(new java.util.ArrayList<>(others));
+                if (primary) {
+                    card.setDeckId(others.get(0));
+                }
+                cardRepository.save(card);
+            }
+        }
+        if (!toDelete.isEmpty()) {
+            cardRepository.deleteAll(toDelete);
+        }
         deckRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }

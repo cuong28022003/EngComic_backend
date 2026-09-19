@@ -24,6 +24,7 @@ public class ToeicReviewItemDto {
     private String relatedGrammarTopic;
     private String passageExcerpt;
     private String questionText;
+    private String transcript;
     private Map<String, String> options;
     private String explanation;
     private String tip;
@@ -37,5 +38,7 @@ public class ToeicReviewItemDto {
     public static class KeyVocabDto {
         private String word;
         private String meaningVi;
+        private String example;
+        private String contextNote;
     }
 }

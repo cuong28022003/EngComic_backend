@@ -42,6 +42,7 @@ public class CreateCardRequest {
     protected Set<String> tags = new HashSet<>();
     protected String userId;
     protected String deckId;
+    protected List<String> deckIds = new ArrayList<>();
 
     protected String partOfSpeech;
     protected String definitionEn;

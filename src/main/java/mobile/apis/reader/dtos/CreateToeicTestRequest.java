@@ -14,8 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateToeicTestRequest {
-    @NotBlank(message = "Tên bài thi không được để trống")
+@NotBlank(message = "Tên bài thi không được để trống")
     private String testName;
+
+    private String section; // "reading" | "listening" (mặc định "reading")
 
     private String pdfUrl; // Optional if uploaded separately or passed directly
 
@@ -30,5 +32,9 @@ public class CreateToeicTestRequest {
         private int number;
         private int part;
         private String correctAnswer; // "A", "B", "C", "D"
+
+        private Long audioStartMs; // Listening: ms đầu file audio
+
+        private String transcript; // Listening: nội dung transcript của câu này
     }
 }

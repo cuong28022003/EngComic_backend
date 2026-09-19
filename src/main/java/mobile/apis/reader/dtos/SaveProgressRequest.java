@@ -13,6 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 public class SaveProgressRequest {
     private int totalElapsedSeconds;
+    private int part1ElapsedSeconds;
+    private int part2ElapsedSeconds;
+    private int part3ElapsedSeconds;
+    private int part4ElapsedSeconds;
     private int part5ElapsedSeconds;
     private int part6ElapsedSeconds;
     private int part7ElapsedSeconds;

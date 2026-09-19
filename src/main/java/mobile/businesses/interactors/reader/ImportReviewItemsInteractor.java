@@ -60,6 +60,7 @@ public class ImportReviewItemsInteractor implements ImportReviewItemsBoundary {
             reviewEntity.setRelatedGrammarTopic(item.getRelatedGrammarTopic());
             reviewEntity.setPassageExcerpt(item.getPassageExcerpt());
             reviewEntity.setQuestionText(item.getQuestionText());
+            reviewEntity.setTranscript(item.getTranscript());
             reviewEntity.setOptions(item.getOptions() != null ? item.getOptions() : new HashMap<>());
             reviewEntity.setExplanation(item.getExplanation());
             reviewEntity.setTip(item.getTip());
@@ -70,6 +71,8 @@ public class ImportReviewItemsInteractor implements ImportReviewItemsBoundary {
                         .map(v -> ToeicReviewItemEntity.KeyVocabItem.builder()
                                 .word(v.getWord())
                                 .meaningVi(v.getMeaningVi())
+                                .example(v.getExample())
+                                .contextNote(v.getContextNote())
                                 .build())
                         .collect(Collectors.toList());
                 reviewEntity.setKeyVocab(vocabList);

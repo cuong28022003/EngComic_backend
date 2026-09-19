@@ -21,6 +21,7 @@ public class CardResponseDto {
     protected String id;
     protected String userId;
     protected String deckId;
+    protected List<String> deckIds = new ArrayList<>();
     @JsonAlias({"front"})
     protected String word;
     @JsonAlias({"back", "meaning_vi", "meaningVi"})

@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateToeicTestRequest {
     private String testName;
+    private String section; // "reading" | "listening"
     private String pdfUrl;
     private List<CreateToeicTestRequest.QuestionItem> questions;
 }

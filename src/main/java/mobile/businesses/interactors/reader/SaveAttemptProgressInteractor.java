@@ -39,6 +39,10 @@ public class SaveAttemptProgressInteractor implements SaveAttemptProgressBoundar
         SaveProgressRequest prog = request.getProgressData();
         if (prog != null) {
             attempt.setTotalElapsedSeconds(prog.getTotalElapsedSeconds());
+            attempt.setPart1ElapsedSeconds(prog.getPart1ElapsedSeconds());
+            attempt.setPart2ElapsedSeconds(prog.getPart2ElapsedSeconds());
+            attempt.setPart3ElapsedSeconds(prog.getPart3ElapsedSeconds());
+            attempt.setPart4ElapsedSeconds(prog.getPart4ElapsedSeconds());
             attempt.setPart5ElapsedSeconds(prog.getPart5ElapsedSeconds());
             attempt.setPart6ElapsedSeconds(prog.getPart6ElapsedSeconds());
             attempt.setPart7ElapsedSeconds(prog.getPart7ElapsedSeconds());
