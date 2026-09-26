@@ -34,6 +34,11 @@ public class ImportReviewItemsInteractor implements ImportReviewItemsBoundary {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dữ liệu JSON phân tích không được để trống");
         }
 
+        // Import AI mới sẽ REPLACE import AI cũ cho lượt làm này:
+        // xóa toàn bộ review items cũ của attempt trước khi lưu bộ dữ liệu mới,
+        // tránh các item từ lần import trước bị "bám" lại gây trộn lẫn.
+        reviewItemRepository.deleteByUserIdAndAttemptId(request.getUserId(), attempt.getId());
+
         List<ToeicReviewItemEntity> entitiesToSave = new ArrayList<>();
         List<Integer> importedQuestionNumbers = new ArrayList<>();
 
