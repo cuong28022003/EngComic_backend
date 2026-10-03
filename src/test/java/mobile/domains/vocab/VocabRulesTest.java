@@ -57,4 +57,35 @@ public class VocabRulesTest {
         assertFalse(VocabRules.isValidDeckName(""));
         assertFalse(VocabRules.isValidDeckName(null));
     }
+
+    @Test
+    @DisplayName("Dedup key is case-insensitive and ignores leading/trailing spaces")
+    void testVocabDedupKeyNormalization() {
+        assertEquals(VocabRules.vocabDedupKey("  Mitigate ", "VERB"),
+                VocabRules.vocabDedupKey("mitigate", "verb"));
+    }
+
+    @Test
+    @DisplayName("Different word form keeps distinct key")
+    void testVocabDedupKeyDiffersByWord() {
+        assertNotEquals(
+                VocabRules.vocabDedupKey("report", "noun"),
+                VocabRules.vocabDedupKey("reporting", "noun"));
+    }
+
+    @Test
+    @DisplayName("Different part of speech keeps distinct key (same word usable as noun & verb)")
+    void testVocabDedupKeyDiffersByPos() {
+        assertNotEquals(
+                VocabRules.vocabDedupKey("record", "noun"),
+                VocabRules.vocabDedupKey("record", "verb"));
+    }
+
+    @Test
+    @DisplayName("Null and blank part of speech are treated as the same empty pos")
+    void testVocabDedupKeyNullPos() {
+        assertEquals(
+                VocabRules.vocabDedupKey("mitigate", null),
+                VocabRules.vocabDedupKey("mitigate", " "));
+    }
 }

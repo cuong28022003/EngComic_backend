@@ -25,6 +25,7 @@ public interface CardRepository extends MongoRepository<CardEntity, String> {
     Page<CardEntity> findByDeckIdAndNextReviewLessThanEqual(String deckId, Date nextReview, Pageable pageable);
     Optional<CardEntity> findByIdAndUserId(String id, String userId);
     Optional<CardEntity> findByUserIdAndWordIgnoreCase(String userId, String word);
+    List<CardEntity> findAllByUserIdAndWordIgnoreCase(String userId, String word);
 
     @Query("{ 'userId': ?0, 'status': { $in: ['learning', 'mature'] }, 'nextReview': { $lte: ?1 } }")
     List<CardEntity> findDueCards(String userId, Date now, Pageable pageable);

@@ -130,6 +130,36 @@ public class VocabRules {
         return name != null && !name.trim().isBlank() && name.trim().length() <= 100;
     }
 
+    /**
+     * Normalizes a word for duplicate detection: trim + lowercase.
+     * Returns null for null/blank input.
+     */
+    public static String normalizeWord(String word) {
+        if (word == null) return null;
+        String trimmed = word.trim();
+        return trimmed.isEmpty() ? null : trimmed.toLowerCase();
+    }
+
+    /**
+     * Normalizes a part-of-speech tag for duplicate detection: trim + lowercase.
+     * Returns null for null/blank input so that cards with no POS and cards with a
+     * POS value are treated as distinct.
+     */
+    public static String normalizePos(String partOfSpeech) {
+        if (partOfSpeech == null) return null;
+        String trimmed = partOfSpeech.trim();
+        return trimmed.isEmpty() ? null : trimmed.toLowerCase();
+    }
+
+    /**
+     * Unique key of a vocabulary card used for duplicate detection.
+     * Two cards are considered duplicates when they have the same word AND the same
+     * part-of-speech (same user).
+     */
+    public static String vocabDedupKey(String word, String partOfSpeech) {
+        return normalizeWord(word) + "|" + normalizePos(partOfSpeech);
+    }
+
     public static boolean canAddCardToDeck(long currentCardCount, int maxCapacity) {
         return currentCardCount < maxCapacity;
     }

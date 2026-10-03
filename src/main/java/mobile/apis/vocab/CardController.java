@@ -21,7 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/card")
@@ -396,14 +398,31 @@ public class CardController {
             @CurrentUserId String currentUserId,
             @RequestBody List<CreateCardRequest> createCardRequests) {
 
-        List<CardResponseDto> responses = createCardRequests.stream().map(req -> {
+        // Deduplicate theo userId + word + partOfSpeech để tránh insert trùng vào kho
+        List<CardEntity> existingCards = cardRepository.findByUserId(currentUserId);
+        Set<String> dedupKeys = new HashSet<>();
+        for (CardEntity c : existingCards) {
+            if (c.getWord() != null) {
+                dedupKeys.add(mobile.domains.vocab.VocabRules.vocabDedupKey(c.getWord(), c.getPartOfSpeech()));
+            }
+        }
+
+        List<CardResponseDto> responses = new java.util.ArrayList<>();
+        for (CreateCardRequest req : createCardRequests) {
             CardEntity cardEntity = cardMapper.toEntity(req);
             if (cardEntity.getUserId() == null && currentUserId != null) {
                 cardEntity.setUserId(currentUserId);
             }
+            if (cardEntity.getWord() != null && !cardEntity.getWord().isBlank()) {
+                String key = mobile.domains.vocab.VocabRules.vocabDedupKey(cardEntity.getWord(), cardEntity.getPartOfSpeech());
+                if (dedupKeys.contains(key)) {
+                    continue;
+                }
+                dedupKeys.add(key);
+            }
             CardEntity saved = cardRepository.save(cardEntity);
-            return cardMapper.toResponse(saved);
-        }).toList();
+            responses.add(cardMapper.toResponse(saved));
+        }
 
         return ResponseEntity.ok(responses);
     }

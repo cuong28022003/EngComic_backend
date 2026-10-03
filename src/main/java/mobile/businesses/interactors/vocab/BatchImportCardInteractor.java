@@ -13,6 +13,7 @@ import mobile.databases.entities.vocab.WordRelation;
 import mobile.databases.entities.vocab.WordUsage;
 import mobile.databases.repositories.vocab.CardRepository;
 import mobile.databases.repositories.vocab.PendingItemRepository;
+import mobile.domains.vocab.VocabRules;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -57,8 +58,20 @@ public class BatchImportCardInteractor implements BatchImportCard {
             return Response.builder().data(responseDto).build();
         }
 
+        // Load existing cards of the user for duplicate detection & relation linking
+        List<CardEntity> allUserCards = cardRepository.findByUserId(userId);
+        Map<String, String> wordToIdMap = new HashMap<>();
+        Set<String> existingDedupKeys = new HashSet<>();
+        for (CardEntity c : allUserCards) {
+            if (c.getWord() != null) {
+                wordToIdMap.put(c.getWord().trim().toLowerCase(), c.getId());
+                existingDedupKeys.add(VocabRules.vocabDedupKey(c.getWord(), c.getPartOfSpeech()));
+            }
+        }
+
         List<CardEntity> newCards = new ArrayList<>();
         Set<String> importedWords = new HashSet<>();
+        Set<String> batchSeenKeys = new HashSet<>();
 
         for (Map<String, Object> map : cardList) {
             String word = getString(map, "word", "front", "text");
@@ -67,13 +80,24 @@ public class BatchImportCardInteractor implements BatchImportCard {
             }
 
             String cleanWord = word.trim();
+            String pos = getString(map, "partOfSpeech", "part_of_speech", "pos");
+            String dedupKey = VocabRules.vocabDedupKey(cleanWord, pos);
+
+            // Bỏ qua nếu trùng với từ + từ loại đã có trong kho, hoặc trùng trong cùng batch
+            if (existingDedupKeys.contains(dedupKey) || batchSeenKeys.contains(dedupKey)) {
+                responseDto.getSkipped().add(cleanWord);
+                continue;
+            }
+            batchSeenKeys.add(dedupKey);
+            existingDedupKeys.add(dedupKey);
+
             CardEntity card = new CardEntity();
             card.setUserId(userId);
             card.setDeckId(deckId);
             card.setWord(cleanWord);
             card.setMeaning(getString(map, "meaning", "meaning_vi", "meaningVi", "vietnameseMeaning", "back", "vietnamese_meaning"));
             card.setIpa(getString(map, "ipa", "IPA"));
-            card.setPartOfSpeech(getString(map, "partOfSpeech", "part_of_speech", "pos"));
+            card.setPartOfSpeech(pos);
             card.setDefinitionEn(getString(map, "definitionEn", "definition_en", "definition"));
             card.setUsageNote(getString(map, "usageNote", "usage_note", "note"));
             card.setTopic(getString(map, "topic", "category"));
@@ -233,12 +257,10 @@ public class BatchImportCardInteractor implements BatchImportCard {
         if (!newCards.isEmpty()) {
             List<CardEntity> savedCards = cardRepository.saveAll(newCards);
 
-            // Auto-link relations with existing and new cards
-            List<CardEntity> allUserCards = cardRepository.findByUserId(userId);
-            Map<String, String> wordToIdMap = new HashMap<>();
-            for (CardEntity c : allUserCards) {
-                if (c.getWord() != null) {
-                    wordToIdMap.put(c.getWord().trim().toLowerCase(), c.getId());
+            // Bổ sung các từ vừa import vào map để auto-link relations (bao gồm từ chính batch)
+            for (CardEntity sc : savedCards) {
+                if (sc.getWord() != null) {
+                    wordToIdMap.put(sc.getWord().trim().toLowerCase(), sc.getId());
                 }
             }
 
