@@ -1,16 +1,16 @@
-package mobile.databases.entities.gacha;
+package mobile.databases.entities.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.FieldType;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import java.time.LocalDateTime;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -18,14 +18,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @RestResource(exported = false)
-@Document(collection = "user_character")
-public class UserCharacterEntity {
-
-    @MongoId
+@Document(collection = "character_animations")
+public class CharacterAnimationEntity {
+    @Id
     private String id;
-    private String userId;
-    private String characterId;
-    @Builder.Default
-    private LocalDateTime obtainedAt = LocalDateTime.now();
-}
 
+    @Indexed(unique = true)
+    private String characterId;
+
+    private Map<String, Object> actions;
+}

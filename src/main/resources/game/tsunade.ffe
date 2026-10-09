@@ -1,0 +1,6308 @@
+;0 always import the palette, 1 import only if all colors doesn't match to any existing palette
+noDuplicatePal = 0
+
+[PaletteDef]
+group = 1
+number = 1
+file = 1-1.act
+
+[PaletteDef]
+group = 9000
+number = 0
+file = 9000-0.act
+
+[PaletteDef]
+group = 9000
+number = 1
+file = 9000-1.act
+
+[PaletteDef]
+group = 4
+number = 0
+file = 4-0.act
+
+[PaletteDef]
+group = 7000
+number = 0
+file = 7000-0.act
+
+[PaletteDef]
+group = 7010
+number = 0
+file = 7010-0.act
+
+[PaletteDef]
+group = 7020
+number = 0
+file = 7020-0.act
+
+[PaletteDef]
+group = 7030
+number = 0
+file = 7030-0.act
+
+[PaletteDef]
+group = 7100
+number = 0
+file = 7100-0.act
+
+[PaletteDef]
+group = 7110
+number = 0
+file = 7110-0.act
+
+[PaletteDef]
+group = 7200
+number = 0
+file = 7200-0.act
+
+[PaletteDef]
+group = 7052
+number = 0
+file = 7052-0.act
+
+[PaletteDef]
+group = 7052
+number = 1
+file = 7052-1.act
+
+[PaletteDef]
+group = 7052
+number = 2
+file = 7052-2.act
+
+[PaletteDef]
+group = 7052
+number = 3
+file = 7052-3.act
+
+[PaletteDef]
+group = 7052
+number = 4
+file = 7052-4.act
+
+[PaletteDef]
+group = 7052
+number = 5
+file = 7052-5.act
+
+[PaletteDef]
+group = 7052
+number = 6
+file = 7052-6.act
+
+[PaletteDef]
+group = 7052
+number = 7
+file = 7052-7.act
+
+[PaletteDef]
+group = 7052
+number = 8
+file = 7052-8.act
+
+[PaletteDef]
+group = 1055
+number = 0
+file = 1055-0.act
+
+[PaletteDef]
+group = 8250
+number = 0
+file = 8250-0.act
+
+[PaletteDef]
+group = 8250
+number = 1
+file = 8250-1.act
+
+[PaletteDef]
+group = 8250
+number = 2
+file = 8250-2.act
+
+[PaletteDef]
+group = 8250
+number = 3
+file = 8250-3.act
+
+[PaletteDef]
+group = 8250
+number = 4
+file = 8250-4.act
+
+[PaletteDef]
+group = 8250
+number = 5
+file = 8250-5.act
+
+[PaletteDef]
+group = 8250
+number = 6
+file = 8250-6.act
+
+[PaletteDef]
+group = 8250
+number = 7
+file = 8250-7.act
+
+[PaletteDef]
+group = 8250
+number = 8
+file = 8250-8.act
+
+[PaletteDef]
+group = 8250
+number = 9
+file = 8250-9.act
+
+[PaletteDef]
+group = 8250
+number = 10
+file = 8250-10.act
+
+[PaletteDef]
+group = 8250
+number = 11
+file = 8250-11.act
+
+[PaletteDef]
+group = 8250
+number = 12
+file = 8250-12.act
+
+[PaletteDef]
+group = 8250
+number = 13
+file = 8250-13.act
+
+[PaletteDef]
+group = 8250
+number = 14
+file = 8250-14.act
+
+[PaletteDef]
+group = 8250
+number = 15
+file = 8250-15.act
+
+[PaletteDef]
+group = 8250
+number = 16
+file = 8250-16.act
+
+[PaletteDef]
+group = 8250
+number = 17
+file = 8250-17.act
+
+[PaletteDef]
+group = 8250
+number = 18
+file = 8250-18.act
+
+[PaletteDef]
+group = 8250
+number = 19
+file = 8250-19.act
+
+[PaletteDef]
+group = 8250
+number = 20
+file = 8250-20.act
+
+[PaletteDef]
+group = 8250
+number = 21
+file = 8250-21.act
+
+[PaletteDef]
+group = 8250
+number = 22
+file = 8250-22.act
+
+[PaletteDef]
+group = 8250
+number = 23
+file = 8250-23.act
+
+[PaletteDef]
+group = 8250
+number = 24
+file = 8250-24.act
+
+[PaletteDef]
+group = 8250
+number = 25
+file = 8250-25.act
+
+[PaletteDef]
+group = 8250
+number = 26
+file = 8250-26.act
+
+[PaletteDef]
+group = 8250
+number = 27
+file = 8250-27.act
+
+[PaletteDef]
+group = 8250
+number = 28
+file = 8250-28.act
+
+[PaletteDef]
+group = 8250
+number = 29
+file = 8250-29.act
+
+[PaletteDef]
+group = 8250
+number = 30
+file = 8250-30.act
+
+[PaletteDef]
+group = 8250
+number = 31
+file = 8250-31.act
+
+[PaletteDef]
+group = 8250
+number = 32
+file = 8250-32.act
+
+[PaletteDef]
+group = 8250
+number = 33
+file = 8250-33.act
+
+[PaletteDef]
+group = 8250
+number = 34
+file = 8250-34.act
+
+[PaletteDef]
+group = 8250
+number = 35
+file = 8250-35.act
+
+[PaletteDef]
+group = 8250
+number = 36
+file = 8250-36.act
+
+[PaletteDef]
+group = 8250
+number = 37
+file = 8250-37.act
+
+[PaletteDef]
+group = 8250
+number = 38
+file = 8250-38.act
+
+[PaletteDef]
+group = 8250
+number = 39
+file = 8250-39.act
+
+[PaletteDef]
+group = 8250
+number = 40
+file = 8250-40.act
+
+[PaletteDef]
+group = 8250
+number = 41
+file = 8250-41.act
+
+[PaletteDef]
+group = 8250
+number = 42
+file = 8250-42.act
+
+[PaletteDef]
+group = 8250
+number = 43
+file = 8250-43.act
+
+[PaletteDef]
+group = 8250
+number = 44
+file = 8250-44.act
+
+[PaletteDef]
+group = 8250
+number = 45
+file = 8250-45.act
+
+[PaletteDef]
+group = 8250
+number = 46
+file = 8250-46.act
+
+[PaletteDef]
+group = 8250
+number = 47
+file = 8250-47.act
+
+[PaletteDef]
+group = 8250
+number = 48
+file = 8250-48.act
+
+[PaletteDef]
+group = 8250
+number = 49
+file = 8250-49.act
+
+[PaletteDef]
+group = 8250
+number = 50
+file = 8250-50.act
+
+[PaletteDef]
+group = 8250
+number = 51
+file = 8250-51.act
+
+[PaletteDef]
+group = 8250
+number = 52
+file = 8250-52.act
+
+[PaletteDef]
+group = 8250
+number = 53
+file = 8250-53.act
+
+[PaletteDef]
+group = 8250
+number = 54
+file = 8250-54.act
+
+[PaletteDef]
+group = 8250
+number = 55
+file = 8250-55.act
+
+[PaletteDef]
+group = 8250
+number = 56
+file = 8250-56.act
+
+[PaletteDef]
+group = 8250
+number = 57
+file = 8250-57.act
+
+[PaletteDef]
+group = 8250
+number = 58
+file = 8250-58.act
+
+[PaletteDef]
+group = 8250
+number = 59
+file = 8250-59.act
+
+[PaletteDef]
+group = 8250
+number = 60
+file = 8250-60.act
+
+[PaletteDef]
+group = 8250
+number = 61
+file = 8250-61.act
+
+[PaletteDef]
+group = 8250
+number = 62
+file = 8250-62.act
+
+[PaletteDef]
+group = 8250
+number = 63
+file = 8250-63.act
+
+[PaletteDef]
+group = 8250
+number = 64
+file = 8250-64.act
+
+[PaletteDef]
+group = 1057
+number = 0
+file = 1057-0.act
+
+[PaletteDef]
+group = 1064
+number = 0
+file = 1064-0.act
+
+[PaletteDef]
+group = 1063
+number = 0
+file = 1063-0.act
+
+[PaletteDef]
+group = 1050
+number = 0
+file = 1050-0.act
+
+[PaletteDef]
+group = 1050
+number = 1
+file = 1050-1.act
+
+[PaletteDef]
+group = 1051
+number = 0
+file = 1051-0.act
+
+[PaletteDef]
+group = 1052
+number = 0
+file = 1052-0.act
+
+[PaletteDef]
+group = 1052
+number = 1
+file = 1052-1.act
+
+[PaletteDef]
+group = 1053
+number = 0
+file = 1053-0.act
+
+[PaletteDef]
+group = 1054
+number = 0
+file = 1054-0.act
+
+[PaletteDef]
+group = 1056
+number = 0
+file = 1056-0.act
+
+[PaletteDef]
+group = 1058
+number = 0
+file = 1058-0.act
+
+[PaletteDef]
+group = 1059
+number = 0
+file = 1059-0.act
+
+[PaletteDef]
+group = 1090
+number = 0
+file = 1090-0.act
+
+[PaletteDef]
+group = 9007
+number = 0
+file = 9007-0.act
+
+[PaletteDef]
+group = 9007
+number = 1
+file = 9007-1.act
+
+[PaletteDef]
+group = 9007
+number = 2
+file = 9007-2.act
+
+[PaletteDef]
+group = 9007
+number = 3
+file = 9007-3.act
+
+[PaletteDef]
+group = 9007
+number = 4
+file = 9007-4.act
+
+[PaletteDef]
+group = 7400
+number = 0
+file = 7400-0.act
+
+[PaletteDef]
+group = 9011
+number = 0
+file = 9011-0.act
+
+[PaletteDef]
+group = 2
+number = 0
+file = 2-0.act
+
+[PaletteDef]
+group = 8200
+number = 0
+file = 8200-0.act
+
+[PaletteDef]
+group = 9021
+number = 0
+file = 9021-0.act
+
+[PaletteDef]
+group = 20000
+number = 0
+file = 20000-0.act
+
+[SpriteDef]
+group = 9000
+image = 0
+xaxis = 0
+yaxis = 0
+flags = 0
+palette = 1,1
+file = 9000-0.png
+
+[SpriteDef]
+group = 9000
+image = 1
+xaxis = 0
+yaxis = 0
+flags = 0
+palette = 9000,0
+file = 9000-1.png
+
+[SpriteDef]
+group = 9000
+image = 2
+xaxis = -26
+yaxis = -2
+flags = 0
+palette = 9000,1
+file = 9000-2.png
+
+[SpriteDef]
+group = 0
+image = 0
+xaxis = 16
+yaxis = 72
+flags = 0
+palette = 1,1
+file = 0-0.png
+
+[SpriteDef]
+group = 0
+image = 1
+xaxis = 17
+yaxis = 72
+flags = 0
+palette = 1,1
+file = 0-1.png
+
+[SpriteDef]
+group = 0
+image = 2
+xaxis = 16
+yaxis = 72
+flags = 0
+palette = 1,1
+file = 0-2.png
+
+[SpriteDef]
+group = 0
+image = 3
+xaxis = 15
+yaxis = 72
+flags = 0
+palette = 1,1
+file = 0-3.png
+
+[SpriteDef]
+group = 0
+image = 10
+xaxis = 16
+yaxis = 71
+flags = 0
+palette = 1,1
+file = 0-10.png
+
+[SpriteDef]
+group = 0
+image = 20
+xaxis = 23
+yaxis = 61
+flags = 0
+palette = 1,1
+file = 0-20.png
+
+[SpriteDef]
+group = 0
+image = 21
+xaxis = 30
+yaxis = 50
+flags = 0
+palette = 1,1
+file = 0-21.png
+
+[SpriteDef]
+group = 0
+image = 22
+xaxis = 22
+yaxis = 44
+flags = 0
+palette = 1,1
+file = 0-22.png
+
+[SpriteDef]
+group = 4
+image = 10
+xaxis = 22
+yaxis = 44
+flags = 0
+palette = 4,0
+file = 4-10.png
+
+[SpriteDef]
+group = 0
+image = 23
+xaxis = 22
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 0-23.png
+
+[SpriteDef]
+group = 0
+image = 30
+xaxis = 31
+yaxis = 53
+flags = 0
+palette = 4,0
+file = 0-30.png
+
+[SpriteDef]
+group = 0
+image = 31
+xaxis = 26
+yaxis = 55
+flags = 0
+palette = 4,0
+file = 0-31.png
+
+[SpriteDef]
+group = 0
+image = 32
+xaxis = 14
+yaxis = 48
+flags = 0
+palette = 4,0
+file = 0-32.png
+
+[SpriteDef]
+group = 0
+image = 33
+xaxis = 31
+yaxis = 53
+flags = 0
+palette = 4,0
+file = 0-33.png
+
+[SpriteDef]
+group = 0
+image = 34
+xaxis = 26
+yaxis = 55
+flags = 0
+palette = 4,0
+file = 0-34.png
+
+[SpriteDef]
+group = 0
+image = 35
+xaxis = 14
+yaxis = 48
+flags = 0
+palette = 4,0
+file = 0-35.png
+
+[SpriteDef]
+group = 0
+image = 40
+xaxis = 23
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 0-40.png
+
+[SpriteDef]
+group = 0
+image = 50
+xaxis = 28
+yaxis = 79
+flags = 0
+palette = 4,0
+file = 0-50.png
+
+[SpriteDef]
+group = 0
+image = 70
+xaxis = 18
+yaxis = 67
+flags = 0
+palette = 4,0
+file = 0-70.png
+
+[SpriteDef]
+group = 0
+image = 80
+xaxis = 28
+yaxis = 79
+flags = 0
+palette = 4,0
+file = 0-80.png
+
+[SpriteDef]
+group = 5
+image = 0
+xaxis = 27
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 5-0.png
+
+[SpriteDef]
+group = 5
+image = 1
+xaxis = 26
+yaxis = 65
+flags = 0
+palette = 4,0
+file = 5-1.png
+
+[SpriteDef]
+group = 5
+image = 2
+xaxis = 25
+yaxis = 52
+flags = 0
+palette = 4,0
+file = 5-2.png
+
+[SpriteDef]
+group = 5
+image = 3
+xaxis = 39
+yaxis = 50
+flags = 0
+palette = 4,0
+file = 5-3.png
+
+[SpriteDef]
+group = 5
+image = 4
+xaxis = 24
+yaxis = 55
+flags = 0
+palette = 4,0
+file = 5-4.png
+
+[SpriteDef]
+group = 5
+image = 5
+xaxis = 34
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 5-5.png
+
+[SpriteDef]
+group = 5
+image = 6
+xaxis = 18
+yaxis = 72
+flags = 0
+palette = 4,0
+file = 5-6.png
+
+[SpriteDef]
+group = 5
+image = 7
+xaxis = 25
+yaxis = 52
+flags = 0
+palette = 4,0
+file = 5-7.png
+
+[SpriteDef]
+group = 5
+image = 8
+xaxis = 34
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 5-8.png
+
+[SpriteDef]
+group = 5
+image = 9
+xaxis = 41
+yaxis = 11
+flags = 0
+palette = 4,0
+file = 5-9.png
+
+[SpriteDef]
+group = 5
+image = 10
+xaxis = 24
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 5-10.png
+
+[SpriteDef]
+group = 5
+image = 11
+xaxis = 34
+yaxis = 54
+flags = 0
+palette = 4,0
+file = 5-11.png
+
+[SpriteDef]
+group = 5
+image = 13
+xaxis = 68
+yaxis = 18
+flags = 0
+palette = 4,0
+file = 5-13.png
+
+[SpriteDef]
+group = 5
+image = 14
+xaxis = 23
+yaxis = 64
+flags = 0
+palette = 4,0
+file = 5-14.png
+
+[SpriteDef]
+group = 5
+image = 15
+xaxis = 18
+yaxis = 72
+flags = 0
+palette = 4,0
+file = 5-15.png
+
+[SpriteDef]
+group = 5
+image = 16
+xaxis = 9
+yaxis = 11
+flags = 0
+palette = 4,0
+file = 5-16.png
+
+[SpriteDef]
+group = 5
+image = 17
+xaxis = 26
+yaxis = 65
+flags = 0
+palette = 4,0
+file = 5-17.png
+
+[SpriteDef]
+group = 200
+image = 0
+xaxis = 16
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 200-0.png
+
+[SpriteDef]
+group = 200
+image = 1
+xaxis = 16
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 200-1.png
+
+[SpriteDef]
+group = 200
+image = 2
+xaxis = 16
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 200-2.png
+
+[SpriteDef]
+group = 200
+image = 3
+xaxis = 16
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 200-3.png
+
+[SpriteDef]
+group = 200
+image = 4
+xaxis = 16
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 200-4.png
+
+[SpriteDef]
+group = 200
+image = 5
+xaxis = 19
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 200-5.png
+
+[SpriteDef]
+group = 200
+image = 6
+xaxis = 23
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 200-6.png
+
+[SpriteDef]
+group = 200
+image = 7
+xaxis = 18
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 200-7.png
+
+[SpriteDef]
+group = 200
+image = 85
+xaxis = 18
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 200-85.png
+
+[SpriteDef]
+group = 200
+image = 8
+xaxis = 25
+yaxis = 58
+flags = 0
+palette = 4,0
+file = 200-8.png
+
+[SpriteDef]
+group = 200
+image = 9
+xaxis = 27
+yaxis = 61
+flags = 0
+palette = 4,0
+file = 200-9.png
+
+[SpriteDef]
+group = 200
+image = 10
+xaxis = 21
+yaxis = 60
+flags = 0
+palette = 4,0
+file = 200-10.png
+
+[SpriteDef]
+group = 200
+image = 11
+xaxis = 23
+yaxis = 56
+flags = 0
+palette = 4,0
+file = 200-11.png
+
+[SpriteDef]
+group = 200
+image = 12
+xaxis = 22
+yaxis = 50
+flags = 0
+palette = 4,0
+file = 200-12.png
+
+[SpriteDef]
+group = 200
+image = 13
+xaxis = 24
+yaxis = 51
+flags = 0
+palette = 4,0
+file = 200-13.png
+
+[SpriteDef]
+group = 200
+image = 14
+xaxis = 30
+yaxis = 45
+flags = 0
+palette = 4,0
+file = 200-14.png
+
+[SpriteDef]
+group = 200
+image = 15
+xaxis = 28
+yaxis = 59
+flags = 0
+palette = 4,0
+file = 200-15.png
+
+[SpriteDef]
+group = 200
+image = 16
+xaxis = 25
+yaxis = 75
+flags = 0
+palette = 4,0
+file = 200-16.png
+
+[SpriteDef]
+group = 200
+image = 17
+xaxis = 31
+yaxis = 64
+flags = 0
+palette = 4,0
+file = 200-17.png
+
+[SpriteDef]
+group = 200
+image = 18
+xaxis = 22
+yaxis = 48
+flags = 0
+palette = 4,0
+file = 200-18.png
+
+[SpriteDef]
+group = 200
+image = 19
+xaxis = 28
+yaxis = 49
+flags = 0
+palette = 4,0
+file = 200-19.png
+
+[SpriteDef]
+group = 200
+image = 20
+xaxis = 30
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 200-20.png
+
+[SpriteDef]
+group = 200
+image = 21
+xaxis = 25
+yaxis = 60
+flags = 0
+palette = 4,0
+file = 200-21.png
+
+[SpriteDef]
+group = 200
+image = 22
+xaxis = 15
+yaxis = 83
+flags = 0
+palette = 4,0
+file = 200-22.png
+
+[SpriteDef]
+group = 200
+image = 23
+xaxis = 18
+yaxis = 67
+flags = 0
+palette = 4,0
+file = 200-23.png
+
+[SpriteDef]
+group = 200
+image = 24
+xaxis = 26
+yaxis = 68
+flags = 0
+palette = 4,0
+file = 200-24.png
+
+[SpriteDef]
+group = 200
+image = 25
+xaxis = 28
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 200-25.png
+
+[SpriteDef]
+group = 200
+image = 26
+xaxis = 26
+yaxis = 74
+flags = 0
+palette = 4,0
+file = 200-26.png
+
+[SpriteDef]
+group = 200
+image = 27
+xaxis = 23
+yaxis = 63
+flags = 0
+palette = 4,0
+file = 200-27.png
+
+[SpriteDef]
+group = 200
+image = 28
+xaxis = 23
+yaxis = 64
+flags = 0
+palette = 4,0
+file = 200-28.png
+
+[SpriteDef]
+group = 200
+image = 29
+xaxis = 26
+yaxis = 66
+flags = 0
+palette = 4,0
+file = 200-29.png
+
+[SpriteDef]
+group = 200
+image = 30
+xaxis = 22
+yaxis = 62
+flags = 0
+palette = 4,0
+file = 200-30.png
+
+[SpriteDef]
+group = 200
+image = 31
+xaxis = 31
+yaxis = 65
+flags = 0
+palette = 4,0
+file = 200-31.png
+
+[SpriteDef]
+group = 200
+image = 32
+xaxis = 31
+yaxis = 54
+flags = 0
+palette = 4,0
+file = 200-32.png
+
+[SpriteDef]
+group = 200
+image = 33
+xaxis = 28
+yaxis = 61
+flags = 0
+palette = 4,0
+file = 200-33.png
+
+[SpriteDef]
+group = 200
+image = 34
+xaxis = 30
+yaxis = 46
+flags = 0
+palette = 4,0
+file = 200-34.png
+
+[SpriteDef]
+group = 200
+image = 35
+xaxis = 19
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 200-35.png
+
+[SpriteDef]
+group = 200
+image = 36
+xaxis = 18
+yaxis = 67
+flags = 0
+palette = 4,0
+file = 200-36.png
+
+[SpriteDef]
+group = 200
+image = 37
+xaxis = 23
+yaxis = 63
+flags = 0
+palette = 4,0
+file = 200-37.png
+
+[SpriteDef]
+group = 200
+image = 38
+xaxis = 19
+yaxis = 58
+flags = 0
+palette = 4,0
+file = 200-38.png
+
+[SpriteDef]
+group = 200
+image = 39
+xaxis = 26
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 200-39.png
+
+[SpriteDef]
+group = 200
+image = 40
+xaxis = 20
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 200-40.png
+
+[SpriteDef]
+group = 200
+image = 41
+xaxis = 25
+yaxis = 62
+flags = 0
+palette = 4,0
+file = 200-41.png
+
+[SpriteDef]
+group = 200
+image = 42
+xaxis = 28
+yaxis = 62
+flags = 0
+palette = 4,0
+file = 200-42.png
+
+[SpriteDef]
+group = 200
+image = 43
+xaxis = 32
+yaxis = 50
+flags = 0
+palette = 4,0
+file = 200-43.png
+
+[SpriteDef]
+group = 200
+image = 44
+xaxis = 32
+yaxis = 60
+flags = 0
+palette = 4,0
+file = 200-44.png
+
+[SpriteDef]
+group = 200
+image = 45
+xaxis = 26
+yaxis = 68
+flags = 0
+palette = 4,0
+file = 200-45.png
+
+[SpriteDef]
+group = 200
+image = 46
+xaxis = 29
+yaxis = 68
+flags = 0
+palette = 4,0
+file = 200-46.png
+
+[SpriteDef]
+group = 200
+image = 47
+xaxis = 28
+yaxis = 68
+flags = 0
+palette = 4,0
+file = 200-47.png
+
+[SpriteDef]
+group = 200
+image = 48
+xaxis = 30
+yaxis = 68
+flags = 0
+palette = 4,0
+file = 200-48.png
+
+[SpriteDef]
+group = 200
+image = 49
+xaxis = 23
+yaxis = 54
+flags = 0
+palette = 4,0
+file = 200-49.png
+
+[SpriteDef]
+group = 200
+image = 50
+xaxis = 28
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 200-50.png
+
+[SpriteDef]
+group = 200
+image = 51
+xaxis = 31
+yaxis = 64
+flags = 0
+palette = 4,0
+file = 200-51.png
+
+[SpriteDef]
+group = 200
+image = 52
+xaxis = 38
+yaxis = 69
+flags = 0
+palette = 4,0
+file = 200-52.png
+
+[SpriteDef]
+group = 200
+image = 53
+xaxis = 29
+yaxis = 55
+flags = 0
+palette = 4,0
+file = 200-53.png
+
+[SpriteDef]
+group = 200
+image = 54
+xaxis = 25
+yaxis = 62
+flags = 0
+palette = 4,0
+file = 200-54.png
+
+[SpriteDef]
+group = 200
+image = 55
+xaxis = 43
+yaxis = 44
+flags = 0
+palette = 4,0
+file = 200-55.png
+
+[SpriteDef]
+group = 200
+image = 56
+xaxis = 50
+yaxis = 24
+flags = 0
+palette = 4,0
+file = 200-56.png
+
+[SpriteDef]
+group = 200
+image = 57
+xaxis = 33
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 200-57.png
+
+[SpriteDef]
+group = 200
+image = 58
+xaxis = 34
+yaxis = 54
+flags = 0
+palette = 4,0
+file = 200-58.png
+
+[SpriteDef]
+group = 200
+image = 59
+xaxis = 33
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 200-59.png
+
+[SpriteDef]
+group = 200
+image = 60
+xaxis = 33
+yaxis = 40
+flags = 0
+palette = 4,0
+file = 200-60.png
+
+[SpriteDef]
+group = 200
+image = 61
+xaxis = 24
+yaxis = 61
+flags = 0
+palette = 4,0
+file = 200-61.png
+
+[SpriteDef]
+group = 200
+image = 62
+xaxis = 24
+yaxis = 49
+flags = 0
+palette = 4,0
+file = 200-62.png
+
+[SpriteDef]
+group = 200
+image = 63
+xaxis = 28
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 200-63.png
+
+[SpriteDef]
+group = 200
+image = 64
+xaxis = 29
+yaxis = 46
+flags = 0
+palette = 4,0
+file = 200-64.png
+
+[SpriteDef]
+group = 200
+image = 65
+xaxis = 29
+yaxis = 45
+flags = 0
+palette = 4,0
+file = 200-65.png
+
+[SpriteDef]
+group = 200
+image = 66
+xaxis = 24
+yaxis = 47
+flags = 0
+palette = 4,0
+file = 200-66.png
+
+[SpriteDef]
+group = 200
+image = 67
+xaxis = 33
+yaxis = 47
+flags = 0
+palette = 4,0
+file = 200-67.png
+
+[SpriteDef]
+group = 200
+image = 68
+xaxis = 30
+yaxis = 45
+flags = 0
+palette = 4,0
+file = 200-68.png
+
+[SpriteDef]
+group = 200
+image = 69
+xaxis = 26
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 200-69.png
+
+[SpriteDef]
+group = 200
+image = 70
+xaxis = 26
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 200-70.png
+
+[SpriteDef]
+group = 200
+image = 71
+xaxis = 33
+yaxis = 48
+flags = 0
+palette = 4,0
+file = 200-71.png
+
+[SpriteDef]
+group = 200
+image = 72
+xaxis = 33
+yaxis = 56
+flags = 0
+palette = 4,0
+file = 200-72.png
+
+[SpriteDef]
+group = 200
+image = 73
+xaxis = 28
+yaxis = 60
+flags = 0
+palette = 4,0
+file = 200-73.png
+
+[SpriteDef]
+group = 200
+image = 74
+xaxis = 18
+yaxis = 81
+flags = 0
+palette = 4,0
+file = 200-74.png
+
+[SpriteDef]
+group = 200
+image = 75
+xaxis = 20
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 200-75.png
+
+[SpriteDef]
+group = 200
+image = 76
+xaxis = 19
+yaxis = 69
+flags = 0
+palette = 4,0
+file = 200-76.png
+
+[SpriteDef]
+group = 200
+image = 77
+xaxis = 20
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 200-77.png
+
+[SpriteDef]
+group = 200
+image = 78
+xaxis = 19
+yaxis = 69
+flags = 0
+palette = 4,0
+file = 200-78.png
+
+[SpriteDef]
+group = 200
+image = 79
+xaxis = 20
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 200-79.png
+
+[SpriteDef]
+group = 200
+image = 80
+xaxis = 18
+yaxis = 69
+flags = 0
+palette = 4,0
+file = 200-80.png
+
+[SpriteDef]
+group = 200
+image = 81
+xaxis = 20
+yaxis = 69
+flags = 0
+palette = 4,0
+file = 200-81.png
+
+[SpriteDef]
+group = 200
+image = 82
+xaxis = 24
+yaxis = 46
+flags = 0
+palette = 4,0
+file = 200-82.png
+
+[SpriteDef]
+group = 200
+image = 83
+xaxis = 22
+yaxis = 44
+flags = 0
+palette = 4,0
+file = 200-83.png
+
+[SpriteDef]
+group = 2000
+image = 0
+xaxis = 16
+yaxis = 72
+flags = 0
+palette = 4,0
+file = 2000-0.png
+
+[SpriteDef]
+group = 2000
+image = 1
+xaxis = 17
+yaxis = 72
+flags = 0
+palette = 4,0
+file = 2000-1.png
+
+[SpriteDef]
+group = 2000
+image = 2
+xaxis = 16
+yaxis = 72
+flags = 0
+palette = 4,0
+file = 2000-2.png
+
+[SpriteDef]
+group = 2000
+image = 3
+xaxis = 15
+yaxis = 72
+flags = 0
+palette = 4,0
+file = 2000-3.png
+
+[SpriteDef]
+group = 2000
+image = 10
+xaxis = 16
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 2000-10.png
+
+[SpriteDef]
+group = 2000
+image = 20
+xaxis = 23
+yaxis = 61
+flags = 0
+palette = 4,0
+file = 2000-20.png
+
+[SpriteDef]
+group = 2000
+image = 21
+xaxis = 30
+yaxis = 50
+flags = 0
+palette = 4,0
+file = 2000-21.png
+
+[SpriteDef]
+group = 2000
+image = 22
+xaxis = 22
+yaxis = 44
+flags = 0
+palette = 4,0
+file = 2000-22.png
+
+[SpriteDef]
+group = 2000
+image = 23
+xaxis = 22
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 2000-23.png
+
+[SpriteDef]
+group = 2000
+image = 30
+xaxis = 31
+yaxis = 53
+flags = 0
+palette = 4,0
+file = 2000-30.png
+
+[SpriteDef]
+group = 2000
+image = 31
+xaxis = 26
+yaxis = 55
+flags = 0
+palette = 4,0
+file = 2000-31.png
+
+[SpriteDef]
+group = 2000
+image = 32
+xaxis = 14
+yaxis = 48
+flags = 0
+palette = 4,0
+file = 2000-32.png
+
+[SpriteDef]
+group = 2000
+image = 33
+xaxis = 31
+yaxis = 53
+flags = 0
+palette = 4,0
+file = 2000-33.png
+
+[SpriteDef]
+group = 2000
+image = 34
+xaxis = 26
+yaxis = 55
+flags = 0
+palette = 4,0
+file = 2000-34.png
+
+[SpriteDef]
+group = 2000
+image = 35
+xaxis = 14
+yaxis = 48
+flags = 0
+palette = 4,0
+file = 2000-35.png
+
+[SpriteDef]
+group = 2000
+image = 40
+xaxis = 23
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 2000-40.png
+
+[SpriteDef]
+group = 2000
+image = 50
+xaxis = 28
+yaxis = 79
+flags = 0
+palette = 4,0
+file = 2000-50.png
+
+[SpriteDef]
+group = 2000
+image = 70
+xaxis = 18
+yaxis = 67
+flags = 0
+palette = 4,0
+file = 2000-70.png
+
+[SpriteDef]
+group = 2000
+image = 80
+xaxis = 28
+yaxis = 79
+flags = 0
+palette = 4,0
+file = 2000-80.png
+
+[SpriteDef]
+group = 6000
+image = 0
+xaxis = 27
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 6000-0.png
+
+[SpriteDef]
+group = 6000
+image = 1
+xaxis = 26
+yaxis = 65
+flags = 0
+palette = 4,0
+file = 6000-1.png
+
+[SpriteDef]
+group = 6000
+image = 2
+xaxis = 25
+yaxis = 52
+flags = 0
+palette = 4,0
+file = 6000-2.png
+
+[SpriteDef]
+group = 6000
+image = 3
+xaxis = 39
+yaxis = 50
+flags = 0
+palette = 4,0
+file = 6000-3.png
+
+[SpriteDef]
+group = 6000
+image = 4
+xaxis = 24
+yaxis = 55
+flags = 0
+palette = 4,0
+file = 6000-4.png
+
+[SpriteDef]
+group = 6000
+image = 5
+xaxis = 34
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 6000-5.png
+
+[SpriteDef]
+group = 6000
+image = 6
+xaxis = 18
+yaxis = 72
+flags = 0
+palette = 4,0
+file = 6000-6.png
+
+[SpriteDef]
+group = 6000
+image = 7
+xaxis = 25
+yaxis = 52
+flags = 0
+palette = 4,0
+file = 6000-7.png
+
+[SpriteDef]
+group = 6000
+image = 8
+xaxis = 34
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 6000-8.png
+
+[SpriteDef]
+group = 6000
+image = 9
+xaxis = 41
+yaxis = 11
+flags = 0
+palette = 4,0
+file = 6000-9.png
+
+[SpriteDef]
+group = 6000
+image = 10
+xaxis = 24
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 6000-10.png
+
+[SpriteDef]
+group = 6000
+image = 11
+xaxis = 34
+yaxis = 54
+flags = 0
+palette = 4,0
+file = 6000-11.png
+
+[SpriteDef]
+group = 6000
+image = 13
+xaxis = 68
+yaxis = 18
+flags = 0
+palette = 4,0
+file = 6000-13.png
+
+[SpriteDef]
+group = 6000
+image = 14
+xaxis = 23
+yaxis = 64
+flags = 0
+palette = 4,0
+file = 6000-14.png
+
+[SpriteDef]
+group = 6000
+image = 15
+xaxis = 18
+yaxis = 72
+flags = 0
+palette = 4,0
+file = 6000-15.png
+
+[SpriteDef]
+group = 6000
+image = 16
+xaxis = 9
+yaxis = 11
+flags = 0
+palette = 4,0
+file = 6000-16.png
+
+[SpriteDef]
+group = 6000
+image = 17
+xaxis = 26
+yaxis = 65
+flags = 0
+palette = 4,0
+file = 6000-17.png
+
+[SpriteDef]
+group = 2200
+image = 0
+xaxis = 16
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 2200-0.png
+
+[SpriteDef]
+group = 2200
+image = 1
+xaxis = 16
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 2200-1.png
+
+[SpriteDef]
+group = 2200
+image = 2
+xaxis = 16
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 2200-2.png
+
+[SpriteDef]
+group = 2200
+image = 3
+xaxis = 16
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 2200-3.png
+
+[SpriteDef]
+group = 2200
+image = 4
+xaxis = 16
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 2200-4.png
+
+[SpriteDef]
+group = 2200
+image = 5
+xaxis = 19
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 2200-5.png
+
+[SpriteDef]
+group = 2200
+image = 6
+xaxis = 23
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 2200-6.png
+
+[SpriteDef]
+group = 2200
+image = 7
+xaxis = 18
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 2200-7.png
+
+[SpriteDef]
+group = 2200
+image = 8
+xaxis = 25
+yaxis = 58
+flags = 0
+palette = 4,0
+file = 2200-8.png
+
+[SpriteDef]
+group = 2200
+image = 9
+xaxis = 27
+yaxis = 61
+flags = 0
+palette = 4,0
+file = 2200-9.png
+
+[SpriteDef]
+group = 2200
+image = 10
+xaxis = 21
+yaxis = 60
+flags = 0
+palette = 4,0
+file = 2200-10.png
+
+[SpriteDef]
+group = 2200
+image = 11
+xaxis = 23
+yaxis = 56
+flags = 0
+palette = 4,0
+file = 2200-11.png
+
+[SpriteDef]
+group = 2200
+image = 12
+xaxis = 22
+yaxis = 50
+flags = 0
+palette = 4,0
+file = 2200-12.png
+
+[SpriteDef]
+group = 2200
+image = 13
+xaxis = 24
+yaxis = 51
+flags = 0
+palette = 4,0
+file = 2200-13.png
+
+[SpriteDef]
+group = 2200
+image = 14
+xaxis = 30
+yaxis = 45
+flags = 0
+palette = 4,0
+file = 2200-14.png
+
+[SpriteDef]
+group = 2200
+image = 15
+xaxis = 28
+yaxis = 59
+flags = 0
+palette = 4,0
+file = 2200-15.png
+
+[SpriteDef]
+group = 2200
+image = 16
+xaxis = 25
+yaxis = 75
+flags = 0
+palette = 4,0
+file = 2200-16.png
+
+[SpriteDef]
+group = 2200
+image = 17
+xaxis = 31
+yaxis = 64
+flags = 0
+palette = 4,0
+file = 2200-17.png
+
+[SpriteDef]
+group = 2200
+image = 18
+xaxis = 22
+yaxis = 48
+flags = 0
+palette = 4,0
+file = 2200-18.png
+
+[SpriteDef]
+group = 2200
+image = 19
+xaxis = 28
+yaxis = 49
+flags = 0
+palette = 4,0
+file = 2200-19.png
+
+[SpriteDef]
+group = 2200
+image = 20
+xaxis = 30
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 2200-20.png
+
+[SpriteDef]
+group = 2200
+image = 21
+xaxis = 25
+yaxis = 60
+flags = 0
+palette = 4,0
+file = 2200-21.png
+
+[SpriteDef]
+group = 2200
+image = 22
+xaxis = 15
+yaxis = 83
+flags = 0
+palette = 4,0
+file = 2200-22.png
+
+[SpriteDef]
+group = 2200
+image = 23
+xaxis = 18
+yaxis = 67
+flags = 0
+palette = 4,0
+file = 2200-23.png
+
+[SpriteDef]
+group = 2200
+image = 24
+xaxis = 26
+yaxis = 68
+flags = 0
+palette = 4,0
+file = 2200-24.png
+
+[SpriteDef]
+group = 2200
+image = 25
+xaxis = 28
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 2200-25.png
+
+[SpriteDef]
+group = 2200
+image = 26
+xaxis = 26
+yaxis = 74
+flags = 0
+palette = 4,0
+file = 2200-26.png
+
+[SpriteDef]
+group = 2200
+image = 27
+xaxis = 23
+yaxis = 63
+flags = 0
+palette = 4,0
+file = 2200-27.png
+
+[SpriteDef]
+group = 2200
+image = 28
+xaxis = 23
+yaxis = 64
+flags = 0
+palette = 4,0
+file = 2200-28.png
+
+[SpriteDef]
+group = 2200
+image = 29
+xaxis = 26
+yaxis = 66
+flags = 0
+palette = 4,0
+file = 2200-29.png
+
+[SpriteDef]
+group = 2200
+image = 30
+xaxis = 22
+yaxis = 62
+flags = 0
+palette = 4,0
+file = 2200-30.png
+
+[SpriteDef]
+group = 2200
+image = 31
+xaxis = 31
+yaxis = 65
+flags = 0
+palette = 4,0
+file = 2200-31.png
+
+[SpriteDef]
+group = 2200
+image = 32
+xaxis = 31
+yaxis = 54
+flags = 0
+palette = 4,0
+file = 2200-32.png
+
+[SpriteDef]
+group = 2200
+image = 33
+xaxis = 28
+yaxis = 61
+flags = 0
+palette = 4,0
+file = 2200-33.png
+
+[SpriteDef]
+group = 2200
+image = 34
+xaxis = 30
+yaxis = 46
+flags = 0
+palette = 4,0
+file = 2200-34.png
+
+[SpriteDef]
+group = 2200
+image = 35
+xaxis = 19
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 2200-35.png
+
+[SpriteDef]
+group = 2200
+image = 36
+xaxis = 18
+yaxis = 67
+flags = 0
+palette = 4,0
+file = 2200-36.png
+
+[SpriteDef]
+group = 2200
+image = 37
+xaxis = 23
+yaxis = 63
+flags = 0
+palette = 4,0
+file = 2200-37.png
+
+[SpriteDef]
+group = 2200
+image = 38
+xaxis = 19
+yaxis = 58
+flags = 0
+palette = 4,0
+file = 2200-38.png
+
+[SpriteDef]
+group = 2200
+image = 39
+xaxis = 26
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 2200-39.png
+
+[SpriteDef]
+group = 2200
+image = 40
+xaxis = 20
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 2200-40.png
+
+[SpriteDef]
+group = 2200
+image = 41
+xaxis = 25
+yaxis = 62
+flags = 0
+palette = 4,0
+file = 2200-41.png
+
+[SpriteDef]
+group = 2200
+image = 42
+xaxis = 28
+yaxis = 62
+flags = 0
+palette = 4,0
+file = 2200-42.png
+
+[SpriteDef]
+group = 2200
+image = 43
+xaxis = 32
+yaxis = 50
+flags = 0
+palette = 4,0
+file = 2200-43.png
+
+[SpriteDef]
+group = 2200
+image = 44
+xaxis = 32
+yaxis = 60
+flags = 0
+palette = 4,0
+file = 2200-44.png
+
+[SpriteDef]
+group = 2200
+image = 45
+xaxis = 26
+yaxis = 68
+flags = 0
+palette = 4,0
+file = 2200-45.png
+
+[SpriteDef]
+group = 2200
+image = 46
+xaxis = 29
+yaxis = 68
+flags = 0
+palette = 4,0
+file = 2200-46.png
+
+[SpriteDef]
+group = 2200
+image = 47
+xaxis = 28
+yaxis = 68
+flags = 0
+palette = 4,0
+file = 2200-47.png
+
+[SpriteDef]
+group = 2200
+image = 48
+xaxis = 30
+yaxis = 68
+flags = 0
+palette = 4,0
+file = 2200-48.png
+
+[SpriteDef]
+group = 2200
+image = 49
+xaxis = 23
+yaxis = 54
+flags = 0
+palette = 4,0
+file = 2200-49.png
+
+[SpriteDef]
+group = 2200
+image = 50
+xaxis = 28
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 2200-50.png
+
+[SpriteDef]
+group = 2200
+image = 51
+xaxis = 31
+yaxis = 64
+flags = 0
+palette = 4,0
+file = 2200-51.png
+
+[SpriteDef]
+group = 2200
+image = 52
+xaxis = 38
+yaxis = 69
+flags = 0
+palette = 4,0
+file = 2200-52.png
+
+[SpriteDef]
+group = 2200
+image = 53
+xaxis = 29
+yaxis = 55
+flags = 0
+palette = 4,0
+file = 2200-53.png
+
+[SpriteDef]
+group = 2200
+image = 54
+xaxis = 25
+yaxis = 62
+flags = 0
+palette = 4,0
+file = 2200-54.png
+
+[SpriteDef]
+group = 2200
+image = 55
+xaxis = 43
+yaxis = 44
+flags = 0
+palette = 4,0
+file = 2200-55.png
+
+[SpriteDef]
+group = 2200
+image = 56
+xaxis = 50
+yaxis = 24
+flags = 0
+palette = 4,0
+file = 2200-56.png
+
+[SpriteDef]
+group = 2200
+image = 57
+xaxis = 33
+yaxis = 71
+flags = 0
+palette = 4,0
+file = 2200-57.png
+
+[SpriteDef]
+group = 2200
+image = 58
+xaxis = 34
+yaxis = 54
+flags = 0
+palette = 4,0
+file = 2200-58.png
+
+[SpriteDef]
+group = 2200
+image = 59
+xaxis = 33
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 2200-59.png
+
+[SpriteDef]
+group = 2200
+image = 60
+xaxis = 33
+yaxis = 40
+flags = 0
+palette = 4,0
+file = 2200-60.png
+
+[SpriteDef]
+group = 2200
+image = 61
+xaxis = 24
+yaxis = 61
+flags = 0
+palette = 4,0
+file = 2200-61.png
+
+[SpriteDef]
+group = 2200
+image = 62
+xaxis = 24
+yaxis = 49
+flags = 0
+palette = 4,0
+file = 2200-62.png
+
+[SpriteDef]
+group = 2200
+image = 63
+xaxis = 28
+yaxis = 57
+flags = 0
+palette = 4,0
+file = 2200-63.png
+
+[SpriteDef]
+group = 2200
+image = 64
+xaxis = 29
+yaxis = 46
+flags = 0
+palette = 4,0
+file = 2200-64.png
+
+[SpriteDef]
+group = 2200
+image = 65
+xaxis = 29
+yaxis = 45
+flags = 0
+palette = 4,0
+file = 2200-65.png
+
+[SpriteDef]
+group = 2200
+image = 66
+xaxis = 24
+yaxis = 47
+flags = 0
+palette = 4,0
+file = 2200-66.png
+
+[SpriteDef]
+group = 2200
+image = 67
+xaxis = 33
+yaxis = 47
+flags = 0
+palette = 4,0
+file = 2200-67.png
+
+[SpriteDef]
+group = 2200
+image = 68
+xaxis = 30
+yaxis = 45
+flags = 0
+palette = 4,0
+file = 2200-68.png
+
+[SpriteDef]
+group = 2200
+image = 69
+xaxis = 26
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 2200-69.png
+
+[SpriteDef]
+group = 2200
+image = 70
+xaxis = 26
+yaxis = 43
+flags = 0
+palette = 4,0
+file = 2200-70.png
+
+[SpriteDef]
+group = 2200
+image = 71
+xaxis = 33
+yaxis = 48
+flags = 0
+palette = 4,0
+file = 2200-71.png
+
+[SpriteDef]
+group = 2200
+image = 72
+xaxis = 33
+yaxis = 56
+flags = 0
+palette = 4,0
+file = 2200-72.png
+
+[SpriteDef]
+group = 2200
+image = 73
+xaxis = 28
+yaxis = 60
+flags = 0
+palette = 4,0
+file = 2200-73.png
+
+[SpriteDef]
+group = 2200
+image = 74
+xaxis = 18
+yaxis = 81
+flags = 0
+palette = 4,0
+file = 2200-74.png
+
+[SpriteDef]
+group = 2200
+image = 75
+xaxis = 20
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 2200-75.png
+
+[SpriteDef]
+group = 2200
+image = 76
+xaxis = 19
+yaxis = 69
+flags = 0
+palette = 4,0
+file = 2200-76.png
+
+[SpriteDef]
+group = 2200
+image = 77
+xaxis = 20
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 2200-77.png
+
+[SpriteDef]
+group = 2200
+image = 78
+xaxis = 19
+yaxis = 69
+flags = 0
+palette = 4,0
+file = 2200-78.png
+
+[SpriteDef]
+group = 2200
+image = 79
+xaxis = 20
+yaxis = 70
+flags = 0
+palette = 4,0
+file = 2200-79.png
+
+[SpriteDef]
+group = 2200
+image = 80
+xaxis = 18
+yaxis = 69
+flags = 0
+palette = 4,0
+file = 2200-80.png
+
+[SpriteDef]
+group = 2200
+image = 81
+xaxis = 20
+yaxis = 69
+flags = 0
+palette = 4,0
+file = 2200-81.png
+
+[SpriteDef]
+group = 2200
+image = 82
+xaxis = 24
+yaxis = 46
+flags = 0
+palette = 4,0
+file = 2200-82.png
+
+[SpriteDef]
+group = 2200
+image = 83
+xaxis = 22
+yaxis = 44
+flags = 0
+palette = 4,0
+file = 2200-83.png
+
+[SpriteDef]
+group = 7000
+image = 0
+xaxis = 72
+yaxis = 81
+flags = 0
+palette = 7000,0
+file = 7000-0.png
+
+[SpriteDef]
+group = 7000
+image = 1
+xaxis = 88
+yaxis = 98
+flags = 0
+palette = 7000,0
+file = 7000-1.png
+
+[SpriteDef]
+group = 7000
+image = 2
+xaxis = 104
+yaxis = 107
+flags = 0
+palette = 7000,0
+file = 7000-2.png
+
+[SpriteDef]
+group = 7000
+image = 3
+xaxis = 108
+yaxis = 114
+flags = 0
+palette = 7000,0
+file = 7000-3.png
+
+[SpriteDef]
+group = 7000
+image = 4
+xaxis = 95
+yaxis = 118
+flags = 0
+palette = 7000,0
+file = 7000-4.png
+
+[SpriteDef]
+group = 7010
+image = 0
+xaxis = 14
+yaxis = 32
+flags = 0
+palette = 7010,0
+file = 7010-0.png
+
+[SpriteDef]
+group = 7010
+image = 1
+xaxis = 17
+yaxis = 38
+flags = 0
+palette = 7010,0
+file = 7010-1.png
+
+[SpriteDef]
+group = 7010
+image = 2
+xaxis = 21
+yaxis = 47
+flags = 0
+palette = 7010,0
+file = 7010-2.png
+
+[SpriteDef]
+group = 7010
+image = 3
+xaxis = 23
+yaxis = 54
+flags = 0
+palette = 7010,0
+file = 7010-3.png
+
+[SpriteDef]
+group = 7010
+image = 4
+xaxis = 24
+yaxis = 57
+flags = 0
+palette = 7010,0
+file = 7010-4.png
+
+[SpriteDef]
+group = 7020
+image = 0
+xaxis = 82
+yaxis = 20
+flags = 0
+palette = 7020,0
+file = 7020-0.png
+
+[SpriteDef]
+group = 7020
+image = 1
+xaxis = 86
+yaxis = 20
+flags = 0
+palette = 7020,0
+file = 7020-1.png
+
+[SpriteDef]
+group = 7020
+image = 2
+xaxis = 79
+yaxis = 15
+flags = 0
+palette = 7020,0
+file = 7020-2.png
+
+[SpriteDef]
+group = 7020
+image = 3
+xaxis = 79
+yaxis = 15
+flags = 0
+palette = 7020,0
+file = 7020-3.png
+
+[SpriteDef]
+group = 7020
+image = 4
+xaxis = 78
+yaxis = 15
+flags = 0
+palette = 7020,0
+file = 7020-4.png
+
+[SpriteDef]
+group = 7020
+image = 5
+xaxis = 79
+yaxis = 15
+flags = 0
+palette = 7020,0
+file = 7020-5.png
+
+[SpriteDef]
+group = 7020
+image = 6
+xaxis = 78
+yaxis = 15
+flags = 0
+palette = 7020,0
+file = 7020-6.png
+
+[SpriteDef]
+group = 7020
+image = 7
+xaxis = 79
+yaxis = 15
+flags = 0
+palette = 7020,0
+file = 7020-7.png
+
+[SpriteDef]
+group = 7020
+image = 8
+xaxis = 77
+yaxis = 15
+flags = 0
+palette = 7020,0
+file = 7020-8.png
+
+[SpriteDef]
+group = 7020
+image = 9
+xaxis = 77
+yaxis = 14
+flags = 0
+palette = 7020,0
+file = 7020-9.png
+
+[SpriteDef]
+group = 7030
+image = 0
+xaxis = 41
+yaxis = 37
+flags = 0
+palette = 7030,0
+file = 7030-0.png
+
+[SpriteDef]
+group = 7100
+image = 0
+xaxis = -1
+yaxis = 100
+flags = 0
+palette = 7100,0
+file = 7100-0.png
+
+[SpriteDef]
+group = 7100
+image = 1
+xaxis = 46
+yaxis = 138
+flags = 0
+palette = 7100,0
+file = 7100-1.png
+
+[SpriteDef]
+group = 7100
+image = 2
+xaxis = 106
+yaxis = 178
+flags = 0
+palette = 7100,0
+file = 7100-2.png
+
+[SpriteDef]
+group = 7100
+image = 3
+xaxis = 112
+yaxis = 189
+flags = 0
+palette = 7100,0
+file = 7100-3.png
+
+[SpriteDef]
+group = 7100
+image = 4
+xaxis = 116
+yaxis = 197
+flags = 0
+palette = 7100,0
+file = 7100-4.png
+
+[SpriteDef]
+group = 7100
+image = 5
+xaxis = 113
+yaxis = 201
+flags = 0
+palette = 7100,0
+file = 7100-5.png
+
+[SpriteDef]
+group = 7100
+image = 6
+xaxis = 112
+yaxis = 204
+flags = 0
+palette = 7100,0
+file = 7100-6.png
+
+[SpriteDef]
+group = 7100
+image = 7
+xaxis = 116
+yaxis = 205
+flags = 0
+palette = 7100,0
+file = 7100-7.png
+
+[SpriteDef]
+group = 7100
+image = 8
+xaxis = 114
+yaxis = 199
+flags = 0
+palette = 7100,0
+file = 7100-8.png
+
+[SpriteDef]
+group = 7100
+image = 9
+xaxis = 114
+yaxis = 103
+flags = 0
+palette = 7100,0
+file = 7100-9.png
+
+[SpriteDef]
+group = 7100
+image = 10
+xaxis = 113
+yaxis = 79
+flags = 0
+palette = 7100,0
+file = 7100-10.png
+
+[SpriteDef]
+group = 7100
+image = 11
+xaxis = 114
+yaxis = 80
+flags = 0
+palette = 7100,0
+file = 7100-11.png
+
+[SpriteDef]
+group = 7100
+image = 12
+xaxis = 112
+yaxis = 79
+flags = 0
+palette = 7100,0
+file = 7100-12.png
+
+[SpriteDef]
+group = 7100
+image = 13
+xaxis = 106
+yaxis = 71
+flags = 0
+palette = 7100,0
+file = 7100-13.png
+
+[SpriteDef]
+group = 7100
+image = 14
+xaxis = 82
+yaxis = 44
+flags = 0
+palette = 7100,0
+file = 7100-14.png
+
+[SpriteDef]
+group = 7110
+image = 0
+xaxis = 339
+yaxis = 504
+flags = 0
+palette = 7110,0
+file = 7110-0.png
+
+[SpriteDef]
+group = 7110
+image = 1
+xaxis = 363
+yaxis = 531
+flags = 0
+palette = 7110,0
+file = 7110-1.png
+
+[SpriteDef]
+group = 7110
+image = 2
+xaxis = 374
+yaxis = 479
+flags = 0
+palette = 7110,0
+file = 7110-2.png
+
+[SpriteDef]
+group = 7110
+image = 3
+xaxis = 384
+yaxis = 504
+flags = 0
+palette = 7110,0
+file = 7110-3.png
+
+[SpriteDef]
+group = 7110
+image = 4
+xaxis = 323
+yaxis = 527
+flags = 0
+palette = 7110,0
+file = 7110-4.png
+
+[SpriteDef]
+group = 7110
+image = 5
+xaxis = 346
+yaxis = 544
+flags = 0
+palette = 7110,0
+file = 7110-5.png
+
+[SpriteDef]
+group = 7110
+image = 6
+xaxis = 357
+yaxis = 516
+flags = 0
+palette = 7110,0
+file = 7110-6.png
+
+[SpriteDef]
+group = 7110
+image = 7
+xaxis = 378
+yaxis = 528
+flags = 0
+palette = 7110,0
+file = 7110-7.png
+
+[SpriteDef]
+group = 7110
+image = 8
+xaxis = 384
+yaxis = 537
+flags = 0
+palette = 7110,0
+file = 7110-8.png
+
+[SpriteDef]
+group = 7110
+image = 9
+xaxis = 396
+yaxis = 545
+flags = 0
+palette = 7110,0
+file = 7110-9.png
+
+[SpriteDef]
+group = 7110
+image = 10
+xaxis = 402
+yaxis = 503
+flags = 0
+palette = 7110,0
+file = 7110-10.png
+
+[SpriteDef]
+group = 7110
+image = 11
+xaxis = 420
+yaxis = 525
+flags = 0
+palette = 7110,0
+file = 7110-11.png
+
+[SpriteDef]
+group = 7110
+image = 12
+xaxis = 421
+yaxis = 540
+flags = 0
+palette = 7110,0
+file = 7110-12.png
+
+[SpriteDef]
+group = 7110
+image = 13
+xaxis = 427
+yaxis = 541
+flags = 0
+palette = 7110,0
+file = 7110-13.png
+
+[SpriteDef]
+group = 7110
+image = 14
+xaxis = 436
+yaxis = 515
+flags = 0
+palette = 7110,0
+file = 7110-14.png
+
+[SpriteDef]
+group = 7110
+image = 15
+xaxis = 443
+yaxis = 520
+flags = 0
+palette = 7110,0
+file = 7110-15.png
+
+[SpriteDef]
+group = 7110
+image = 16
+xaxis = 446
+yaxis = 508
+flags = 0
+palette = 7110,0
+file = 7110-16.png
+
+[SpriteDef]
+group = 7110
+image = 17
+xaxis = 446
+yaxis = 519
+flags = 0
+palette = 7110,0
+file = 7110-17.png
+
+[SpriteDef]
+group = 7110
+image = 18
+xaxis = 452
+yaxis = 531
+flags = 0
+palette = 7110,0
+file = 7110-18.png
+
+[SpriteDef]
+group = 7110
+image = 19
+xaxis = 460
+yaxis = 540
+flags = 0
+palette = 7110,0
+file = 7110-19.png
+
+[SpriteDef]
+group = 7110
+image = 20
+xaxis = 461
+yaxis = 527
+flags = 0
+palette = 7110,0
+file = 7110-20.png
+
+[SpriteDef]
+group = 7110
+image = 21
+xaxis = 463
+yaxis = 537
+flags = 0
+palette = 7110,0
+file = 7110-21.png
+
+[SpriteDef]
+group = 7110
+image = 22
+xaxis = 464
+yaxis = 545
+flags = 0
+palette = 7110,0
+file = 7110-22.png
+
+[SpriteDef]
+group = 7110
+image = 23
+xaxis = 465
+yaxis = 527
+flags = 0
+palette = 7110,0
+file = 7110-23.png
+
+[SpriteDef]
+group = 7110
+image = 24
+xaxis = 466
+yaxis = 538
+flags = 0
+palette = 7110,0
+file = 7110-24.png
+
+[SpriteDef]
+group = 7110
+image = 25
+xaxis = 466
+yaxis = 549
+flags = 0
+palette = 7110,0
+file = 7110-25.png
+
+[SpriteDef]
+group = 7110
+image = 26
+xaxis = 463
+yaxis = 558
+flags = 0
+palette = 7110,0
+file = 7110-26.png
+
+[SpriteDef]
+group = 7110
+image = 27
+xaxis = 450
+yaxis = 534
+flags = 0
+palette = 7110,0
+file = 7110-27.png
+
+[SpriteDef]
+group = 7110
+image = 28
+xaxis = 452
+yaxis = 531
+flags = 0
+palette = 7110,0
+file = 7110-28.png
+
+[SpriteDef]
+group = 7110
+image = 29
+xaxis = 452
+yaxis = 528
+flags = 0
+palette = 7110,0
+file = 7110-29.png
+
+[SpriteDef]
+group = 7110
+image = 30
+xaxis = 450
+yaxis = 527
+flags = 0
+palette = 7110,0
+file = 7110-30.png
+
+[SpriteDef]
+group = 7110
+image = 31
+xaxis = 453
+yaxis = 529
+flags = 0
+palette = 7110,0
+file = 7110-31.png
+
+[SpriteDef]
+group = 7110
+image = 32
+xaxis = 438
+yaxis = 528
+flags = 0
+palette = 7110,0
+file = 7110-32.png
+
+[SpriteDef]
+group = 7110
+image = 33
+xaxis = 396
+yaxis = 523
+flags = 0
+palette = 7110,0
+file = 7110-33.png
+
+[SpriteDef]
+group = 7110
+image = 34
+xaxis = 397
+yaxis = 528
+flags = 0
+palette = 7110,0
+file = 7110-34.png
+
+[SpriteDef]
+group = 7110
+image = 35
+xaxis = 398
+yaxis = 527
+flags = 0
+palette = 7110,0
+file = 7110-35.png
+
+[SpriteDef]
+group = 7110
+image = 36
+xaxis = 396
+yaxis = 527
+flags = 0
+palette = 7110,0
+file = 7110-36.png
+
+[SpriteDef]
+group = 7110
+image = 37
+xaxis = 376
+yaxis = 525
+flags = 0
+palette = 7110,0
+file = 7110-37.png
+
+[SpriteDef]
+group = 7110
+image = 38
+xaxis = 331
+yaxis = 522
+flags = 0
+palette = 7110,0
+file = 7110-38.png
+
+[SpriteDef]
+group = 7110
+image = 39
+xaxis = 331
+yaxis = 490
+flags = 0
+palette = 7110,0
+file = 7110-39.png
+
+[SpriteDef]
+group = 7200
+image = 0
+xaxis = 75
+yaxis = 68
+flags = 0
+palette = 7200,0
+file = 7200-0.png
+
+[SpriteDef]
+group = 7200
+image = 1
+xaxis = 72
+yaxis = 68
+flags = 0
+palette = 7200,0
+file = 7200-1.png
+
+[SpriteDef]
+group = 7200
+image = 2
+xaxis = 78
+yaxis = 67
+flags = 0
+palette = 7200,0
+file = 7200-2.png
+
+[SpriteDef]
+group = 7200
+image = 3
+xaxis = 51
+yaxis = 12
+flags = 0
+palette = 7200,0
+file = 7200-3.png
+
+[SpriteDef]
+group = 7200
+image = 4
+xaxis = 51
+yaxis = 12
+flags = 0
+palette = 7200,0
+file = 7200-4.png
+
+[SpriteDef]
+group = 7200
+image = 5
+xaxis = 50
+yaxis = 14
+flags = 0
+palette = 7200,0
+file = 7200-5.png
+
+[SpriteDef]
+group = 7200
+image = 6
+xaxis = 88
+yaxis = 16
+flags = 0
+palette = 7200,0
+file = 7200-6.png
+
+[SpriteDef]
+group = 7200
+image = 7
+xaxis = 87
+yaxis = 16
+flags = 0
+palette = 7200,0
+file = 7200-7.png
+
+[SpriteDef]
+group = 7200
+image = 8
+xaxis = 87
+yaxis = 17
+flags = 0
+palette = 7200,0
+file = 7200-8.png
+
+[SpriteDef]
+group = 7200
+image = 9
+xaxis = 64
+yaxis = 43
+flags = 0
+palette = 7200,0
+file = 7200-9.png
+
+[SpriteDef]
+group = 7200
+image = 10
+xaxis = 65
+yaxis = 46
+flags = 0
+palette = 7200,0
+file = 7200-10.png
+
+[SpriteDef]
+group = 7200
+image = 11
+xaxis = 70
+yaxis = 43
+flags = 0
+palette = 7200,0
+file = 7200-11.png
+
+[SpriteDef]
+group = 7200
+image = 12
+xaxis = 73
+yaxis = 88
+flags = 0
+palette = 7200,0
+file = 7200-12.png
+
+[SpriteDef]
+group = 7200
+image = 13
+xaxis = 70
+yaxis = 87
+flags = 0
+palette = 7200,0
+file = 7200-13.png
+
+[SpriteDef]
+group = 7200
+image = 14
+xaxis = 76
+yaxis = 88
+flags = 0
+palette = 7200,0
+file = 7200-14.png
+
+[SpriteDef]
+group = 7200
+image = 15
+xaxis = 47
+yaxis = 36
+flags = 0
+palette = 7200,0
+file = 7200-15.png
+
+[SpriteDef]
+group = 7200
+image = 16
+xaxis = 51
+yaxis = 39
+flags = 0
+palette = 7200,0
+file = 7200-16.png
+
+[SpriteDef]
+group = 7200
+image = 17
+xaxis = 56
+yaxis = 35
+flags = 0
+palette = 7200,0
+file = 7200-17.png
+
+[SpriteDef]
+group = 7200
+image = 18
+xaxis = 97
+yaxis = 91
+flags = 0
+palette = 7200,0
+file = 7200-18.png
+
+[SpriteDef]
+group = 7200
+image = 19
+xaxis = 97
+yaxis = 87
+flags = 0
+palette = 7200,0
+file = 7200-19.png
+
+[SpriteDef]
+group = 7200
+image = 20
+xaxis = 88
+yaxis = 85
+flags = 0
+palette = 7200,0
+file = 7200-20.png
+
+[SpriteDef]
+group = 7200
+image = 21
+xaxis = 51
+yaxis = 48
+flags = 0
+palette = 7200,0
+file = 7200-21.png
+
+[SpriteDef]
+group = 7200
+image = 22
+xaxis = 52
+yaxis = 48
+flags = 0
+palette = 7200,0
+file = 7200-22.png
+
+[SpriteDef]
+group = 7200
+image = 23
+xaxis = 55
+yaxis = 50
+flags = 0
+palette = 7200,0
+file = 7200-23.png
+
+[SpriteDef]
+group = 7200
+image = 24
+xaxis = 65
+yaxis = 33
+flags = 0
+palette = 7200,0
+file = 7200-24.png
+
+[SpriteDef]
+group = 7200
+image = 25
+xaxis = 64
+yaxis = 31
+flags = 0
+palette = 7200,0
+file = 7200-25.png
+
+[SpriteDef]
+group = 7200
+image = 26
+xaxis = 64
+yaxis = 36
+flags = 0
+palette = 7200,0
+file = 7200-26.png
+
+[SpriteDef]
+group = 7052
+image = 0
+xaxis = 179
+yaxis = 41
+flags = 0
+palette = 7052,0
+file = 7052-0.png
+
+[SpriteDef]
+group = 7052
+image = 1
+xaxis = 178
+yaxis = 43
+flags = 0
+palette = 7052,1
+file = 7052-1.png
+
+[SpriteDef]
+group = 7052
+image = 2
+xaxis = 219
+yaxis = 45
+flags = 0
+palette = 7052,2
+file = 7052-2.png
+
+[SpriteDef]
+group = 7052
+image = 3
+xaxis = 225
+yaxis = 59
+flags = 0
+palette = 7052,3
+file = 7052-3.png
+
+[SpriteDef]
+group = 7052
+image = 4
+xaxis = 222
+yaxis = 62
+flags = 0
+palette = 7052,4
+file = 7052-4.png
+
+[SpriteDef]
+group = 7052
+image = 5
+xaxis = 223
+yaxis = 59
+flags = 0
+palette = 7052,5
+file = 7052-5.png
+
+[SpriteDef]
+group = 7052
+image = 6
+xaxis = 226
+yaxis = 60
+flags = 0
+palette = 7052,6
+file = 7052-6.png
+
+[SpriteDef]
+group = 7052
+image = 7
+xaxis = 219
+yaxis = 63
+flags = 0
+palette = 7052,7
+file = 7052-7.png
+
+[SpriteDef]
+group = 7052
+image = 8
+xaxis = 209
+yaxis = 63
+flags = 0
+palette = 7052,8
+file = 7052-8.png
+
+[SpriteDef]
+group = 1055
+image = 0
+xaxis = 36
+yaxis = 7
+flags = 0
+palette = 1055,0
+file = 1055-0.png
+
+[SpriteDef]
+group = 1055
+image = 1
+xaxis = 38
+yaxis = 25
+flags = 0
+palette = 1055,0
+file = 1055-1.png
+
+[SpriteDef]
+group = 1055
+image = 2
+xaxis = 42
+yaxis = 49
+flags = 0
+palette = 1055,0
+file = 1055-2.png
+
+[SpriteDef]
+group = 1055
+image = 3
+xaxis = 48
+yaxis = 59
+flags = 0
+palette = 1055,0
+file = 1055-3.png
+
+[SpriteDef]
+group = 1055
+image = 4
+xaxis = 49
+yaxis = 62
+flags = 0
+palette = 1055,0
+file = 1055-4.png
+
+[SpriteDef]
+group = 1055
+image = 5
+xaxis = 48
+yaxis = 61
+flags = 0
+palette = 1055,0
+file = 1055-5.png
+
+[SpriteDef]
+group = 1055
+image = 6
+xaxis = 45
+yaxis = 61
+flags = 0
+palette = 1055,0
+file = 1055-6.png
+
+[SpriteDef]
+group = 1055
+image = 7
+xaxis = 42
+yaxis = 62
+flags = 0
+palette = 1055,0
+file = 1055-7.png
+
+[SpriteDef]
+group = 1055
+image = 8
+xaxis = 40
+yaxis = 60
+flags = 0
+palette = 1055,0
+file = 1055-8.png
+
+[SpriteDef]
+group = 1055
+image = 9
+xaxis = 39
+yaxis = 59
+flags = 0
+palette = 1055,0
+file = 1055-9.png
+
+[SpriteDef]
+group = 8250
+image = 0
+xaxis = 57
+yaxis = 10
+flags = 0
+palette = 8250,0
+file = 8250-0.png
+
+[SpriteDef]
+group = 8250
+image = 1
+xaxis = 91
+yaxis = 20
+flags = 0
+palette = 8250,1
+file = 8250-1.png
+
+[SpriteDef]
+group = 8250
+image = 2
+xaxis = 122
+yaxis = 29
+flags = 0
+palette = 8250,2
+file = 8250-2.png
+
+[SpriteDef]
+group = 8250
+image = 3
+xaxis = 150
+yaxis = 38
+flags = 0
+palette = 8250,3
+file = 8250-3.png
+
+[SpriteDef]
+group = 8250
+image = 4
+xaxis = 174
+yaxis = 45
+flags = 0
+palette = 8250,4
+file = 8250-4.png
+
+[SpriteDef]
+group = 8250
+image = 5
+xaxis = 195
+yaxis = 50
+flags = 0
+palette = 8250,5
+file = 8250-5.png
+
+[SpriteDef]
+group = 8250
+image = 6
+xaxis = 212
+yaxis = 53
+flags = 0
+palette = 8250,6
+file = 8250-6.png
+
+[SpriteDef]
+group = 8250
+image = 7
+xaxis = 226
+yaxis = 54
+flags = 0
+palette = 8250,7
+file = 8250-7.png
+
+[SpriteDef]
+group = 8250
+image = 8
+xaxis = 237
+yaxis = 54
+flags = 0
+palette = 8250,8
+file = 8250-8.png
+
+[SpriteDef]
+group = 8250
+image = 9
+xaxis = 245
+yaxis = 54
+flags = 0
+palette = 8250,9
+file = 8250-9.png
+
+[SpriteDef]
+group = 8250
+image = 10
+xaxis = 252
+yaxis = 53
+flags = 0
+palette = 8250,10
+file = 8250-10.png
+
+[SpriteDef]
+group = 8250
+image = 11
+xaxis = 266
+yaxis = 52
+flags = 0
+palette = 8250,11
+file = 8250-11.png
+
+[SpriteDef]
+group = 8250
+image = 12
+xaxis = 284
+yaxis = 50
+flags = 0
+palette = 8250,12
+file = 8250-12.png
+
+[SpriteDef]
+group = 8250
+image = 13
+xaxis = 298
+yaxis = 48
+flags = 0
+palette = 8250,13
+file = 8250-13.png
+
+[SpriteDef]
+group = 8250
+image = 14
+xaxis = 313
+yaxis = 49
+flags = 0
+palette = 8250,14
+file = 8250-14.png
+
+[SpriteDef]
+group = 8250
+image = 15
+xaxis = 328
+yaxis = 50
+flags = 0
+palette = 8250,15
+file = 8250-15.png
+
+[SpriteDef]
+group = 8250
+image = 16
+xaxis = 343
+yaxis = 50
+flags = 0
+palette = 8250,16
+file = 8250-16.png
+
+[SpriteDef]
+group = 8250
+image = 17
+xaxis = 359
+yaxis = 51
+flags = 0
+palette = 8250,17
+file = 8250-17.png
+
+[SpriteDef]
+group = 8250
+image = 18
+xaxis = 373
+yaxis = 51
+flags = 0
+palette = 8250,18
+file = 8250-18.png
+
+[SpriteDef]
+group = 8250
+image = 19
+xaxis = 388
+yaxis = 51
+flags = 0
+palette = 8250,19
+file = 8250-19.png
+
+[SpriteDef]
+group = 8250
+image = 20
+xaxis = 404
+yaxis = 51
+flags = 0
+palette = 8250,20
+file = 8250-20.png
+
+[SpriteDef]
+group = 8250
+image = 21
+xaxis = 418
+yaxis = 51
+flags = 0
+palette = 8250,21
+file = 8250-21.png
+
+[SpriteDef]
+group = 8250
+image = 22
+xaxis = 411
+yaxis = 50
+flags = 0
+palette = 8250,22
+file = 8250-22.png
+
+[SpriteDef]
+group = 8250
+image = 23
+xaxis = 421
+yaxis = 50
+flags = 0
+palette = 8250,23
+file = 8250-23.png
+
+[SpriteDef]
+group = 8250
+image = 24
+xaxis = 431
+yaxis = 49
+flags = 0
+palette = 8250,24
+file = 8250-24.png
+
+[SpriteDef]
+group = 8250
+image = 25
+xaxis = 446
+yaxis = 48
+flags = 0
+palette = 8250,25
+file = 8250-25.png
+
+[SpriteDef]
+group = 8250
+image = 26
+xaxis = 462
+yaxis = 47
+flags = 0
+palette = 8250,26
+file = 8250-26.png
+
+[SpriteDef]
+group = 8250
+image = 27
+xaxis = 446
+yaxis = 45
+flags = 0
+palette = 8250,27
+file = 8250-27.png
+
+[SpriteDef]
+group = 8250
+image = 28
+xaxis = 443
+yaxis = 44
+flags = 0
+palette = 8250,28
+file = 8250-28.png
+
+[SpriteDef]
+group = 8250
+image = 29
+xaxis = 456
+yaxis = 42
+flags = 0
+palette = 8250,29
+file = 8250-29.png
+
+[SpriteDef]
+group = 8250
+image = 30
+xaxis = 468
+yaxis = 40
+flags = 0
+palette = 8250,30
+file = 8250-30.png
+
+[SpriteDef]
+group = 8250
+image = 31
+xaxis = 482
+yaxis = 38
+flags = 0
+palette = 8250,31
+file = 8250-31.png
+
+[SpriteDef]
+group = 8250
+image = 32
+xaxis = 392
+yaxis = 36
+flags = 0
+palette = 8250,32
+file = 8250-32.png
+
+[SpriteDef]
+group = 8250
+image = 33
+xaxis = 345
+yaxis = 34
+flags = 0
+palette = 8250,33
+file = 8250-33.png
+
+[SpriteDef]
+group = 8250
+image = 34
+xaxis = 319
+yaxis = 31
+flags = 0
+palette = 8250,34
+file = 8250-34.png
+
+[SpriteDef]
+group = 8250
+image = 35
+xaxis = 322
+yaxis = 29
+flags = 0
+palette = 8250,35
+file = 8250-35.png
+
+[SpriteDef]
+group = 8250
+image = 36
+xaxis = 327
+yaxis = 27
+flags = 0
+palette = 8250,36
+file = 8250-36.png
+
+[SpriteDef]
+group = 8250
+image = 37
+xaxis = 336
+yaxis = 20
+flags = 0
+palette = 8250,37
+file = 8250-37.png
+
+[SpriteDef]
+group = 8250
+image = 38
+xaxis = 339
+yaxis = 20
+flags = 0
+palette = 8250,38
+file = 8250-38.png
+
+[SpriteDef]
+group = 8250
+image = 39
+xaxis = 343
+yaxis = 13
+flags = 0
+palette = 8250,39
+file = 8250-39.png
+
+[SpriteDef]
+group = 8250
+image = 40
+xaxis = 348
+yaxis = 12
+flags = 0
+palette = 8250,40
+file = 8250-40.png
+
+[SpriteDef]
+group = 8250
+image = 41
+xaxis = 346
+yaxis = -14
+flags = 0
+palette = 8250,41
+file = 8250-41.png
+
+[SpriteDef]
+group = 8250
+image = 42
+xaxis = 389
+yaxis = -73
+flags = 0
+palette = 8250,42
+file = 8250-42.png
+
+[SpriteDef]
+group = 8250
+image = 43
+xaxis = 298
+yaxis = -92
+flags = 0
+palette = 8250,43
+file = 8250-43.png
+
+[SpriteDef]
+group = 8250
+image = 44
+xaxis = 399
+yaxis = -85
+flags = 0
+palette = 8250,44
+file = 8250-44.png
+
+[SpriteDef]
+group = 8250
+image = 45
+xaxis = 299
+yaxis = -100
+flags = 0
+palette = 8250,45
+file = 8250-45.png
+
+[SpriteDef]
+group = 8250
+image = 46
+xaxis = 409
+yaxis = -102
+flags = 0
+palette = 8250,46
+file = 8250-46.png
+
+[SpriteDef]
+group = 8250
+image = 47
+xaxis = 414
+yaxis = -116
+flags = 0
+palette = 8250,47
+file = 8250-47.png
+
+[SpriteDef]
+group = 8250
+image = 48
+xaxis = 308
+yaxis = -111
+flags = 0
+palette = 8250,48
+file = 8250-48.png
+
+[SpriteDef]
+group = 8250
+image = 49
+xaxis = 342
+yaxis = -126
+flags = 0
+palette = 8250,49
+file = 8250-49.png
+
+[SpriteDef]
+group = 8250
+image = 50
+xaxis = 370
+yaxis = -116
+flags = 0
+palette = 8250,50
+file = 8250-50.png
+
+[SpriteDef]
+group = 8250
+image = 51
+xaxis = 433
+yaxis = -132
+flags = 0
+palette = 8250,51
+file = 8250-51.png
+
+[SpriteDef]
+group = 8250
+image = 52
+xaxis = 438
+yaxis = -127
+flags = 0
+palette = 8250,52
+file = 8250-52.png
+
+[SpriteDef]
+group = 8250
+image = 53
+xaxis = 443
+yaxis = -135
+flags = 0
+palette = 8250,53
+file = 8250-53.png
+
+[SpriteDef]
+group = 8250
+image = 54
+xaxis = 448
+yaxis = -155
+flags = 0
+palette = 8250,54
+file = 8250-54.png
+
+[SpriteDef]
+group = 8250
+image = 55
+xaxis = 453
+yaxis = -148
+flags = 0
+palette = 8250,55
+file = 8250-55.png
+
+[SpriteDef]
+group = 8250
+image = 56
+xaxis = 458
+yaxis = -148
+flags = 0
+palette = 8250,56
+file = 8250-56.png
+
+[SpriteDef]
+group = 8250
+image = 57
+xaxis = 339
+yaxis = -150
+flags = 0
+palette = 8250,57
+file = 8250-57.png
+
+[SpriteDef]
+group = 8250
+image = 58
+xaxis = 344
+yaxis = -164
+flags = 0
+palette = 8250,58
+file = 8250-58.png
+
+[SpriteDef]
+group = 8250
+image = 59
+xaxis = 345
+yaxis = -169
+flags = 0
+palette = 8250,59
+file = 8250-59.png
+
+[SpriteDef]
+group = 8250
+image = 60
+xaxis = 351
+yaxis = -187
+flags = 0
+palette = 8250,60
+file = 8250-60.png
+
+[SpriteDef]
+group = 8250
+image = 61
+xaxis = 351
+yaxis = -184
+flags = 0
+palette = 8250,61
+file = 8250-61.png
+
+[SpriteDef]
+group = 8250
+image = 62
+xaxis = 365
+yaxis = -182
+flags = 0
+palette = 8250,62
+file = 8250-62.png
+
+[SpriteDef]
+group = 8250
+image = 63
+xaxis = 359
+yaxis = -200
+flags = 0
+palette = 8250,63
+file = 8250-63.png
+
+[SpriteDef]
+group = 8250
+image = 64
+xaxis = 365
+yaxis = -197
+flags = 0
+palette = 8250,64
+file = 8250-64.png
+
+[SpriteDef]
+group = 1057
+image = 0
+xaxis = 22
+yaxis = 17
+flags = 0
+palette = 1057,0
+file = 1057-0.png
+
+[SpriteDef]
+group = 1064
+image = 0
+xaxis = 51
+yaxis = 57
+flags = 0
+palette = 1064,0
+file = 1064-0.png
+
+[SpriteDef]
+group = 1064
+image = 1
+xaxis = 49
+yaxis = 55
+flags = 0
+palette = 1064,0
+file = 1064-1.png
+
+[SpriteDef]
+group = 1064
+image = 2
+xaxis = 47
+yaxis = 54
+flags = 0
+palette = 1064,0
+file = 1064-2.png
+
+[SpriteDef]
+group = 1064
+image = 3
+xaxis = 49
+yaxis = 52
+flags = 0
+palette = 1064,0
+file = 1064-3.png
+
+[SpriteDef]
+group = 1064
+image = 4
+xaxis = 48
+yaxis = 51
+flags = 0
+palette = 1064,0
+file = 1064-4.png
+
+[SpriteDef]
+group = 1064
+image = 5
+xaxis = 47
+yaxis = 49
+flags = 0
+palette = 1064,0
+file = 1064-5.png
+
+[SpriteDef]
+group = 1064
+image = 6
+xaxis = 45
+yaxis = 48
+flags = 0
+palette = 1064,0
+file = 1064-6.png
+
+[SpriteDef]
+group = 1064
+image = 7
+xaxis = 44
+yaxis = 46
+flags = 0
+palette = 1064,0
+file = 1064-7.png
+
+[SpriteDef]
+group = 1064
+image = 8
+xaxis = 43
+yaxis = 44
+flags = 0
+palette = 1064,0
+file = 1064-8.png
+
+[SpriteDef]
+group = 1064
+image = 9
+xaxis = 42
+yaxis = 42
+flags = 0
+palette = 1064,0
+file = 1064-9.png
+
+[SpriteDef]
+group = 1064
+image = 10
+xaxis = 40
+yaxis = 42
+flags = 0
+palette = 1064,0
+file = 1064-10.png
+
+[SpriteDef]
+group = 1064
+image = 11
+xaxis = 39
+yaxis = 42
+flags = 0
+palette = 1064,0
+file = 1064-11.png
+
+[SpriteDef]
+group = 1064
+image = 12
+xaxis = 37
+yaxis = 39
+flags = 0
+palette = 1064,0
+file = 1064-12.png
+
+[SpriteDef]
+group = 1064
+image = 13
+xaxis = 34
+yaxis = 36
+flags = 0
+palette = 1064,0
+file = 1064-13.png
+
+[SpriteDef]
+group = 1064
+image = 14
+xaxis = 32
+yaxis = 34
+flags = 0
+palette = 1064,0
+file = 1064-14.png
+
+[SpriteDef]
+group = 1064
+image = 15
+xaxis = 30
+yaxis = 34
+flags = 0
+palette = 1064,0
+file = 1064-15.png
+
+[SpriteDef]
+group = 1064
+image = 16
+xaxis = 31
+yaxis = 27
+flags = 0
+palette = 1064,0
+file = 1064-16.png
+
+[SpriteDef]
+group = 1064
+image = 17
+xaxis = 32
+yaxis = 27
+flags = 0
+palette = 1064,0
+file = 1064-17.png
+
+[SpriteDef]
+group = 1063
+image = 0
+xaxis = 197
+yaxis = 12
+flags = 0
+palette = 1063,0
+file = 1063-0.png
+
+[SpriteDef]
+group = 1063
+image = 1
+xaxis = 192
+yaxis = 130
+flags = 0
+palette = 1063,0
+file = 1063-1.png
+
+[SpriteDef]
+group = 1063
+image = 2
+xaxis = 166
+yaxis = 130
+flags = 0
+palette = 1063,0
+file = 1063-2.png
+
+[SpriteDef]
+group = 1063
+image = 3
+xaxis = 165
+yaxis = 131
+flags = 0
+palette = 1063,0
+file = 1063-3.png
+
+[SpriteDef]
+group = 1063
+image = 4
+xaxis = 175
+yaxis = 135
+flags = 0
+palette = 1063,0
+file = 1063-4.png
+
+[SpriteDef]
+group = 1063
+image = 5
+xaxis = 143
+yaxis = 138
+flags = 0
+palette = 1063,0
+file = 1063-5.png
+
+[SpriteDef]
+group = 1063
+image = 6
+xaxis = 143
+yaxis = 135
+flags = 0
+palette = 1063,0
+file = 1063-6.png
+
+[SpriteDef]
+group = 1063
+image = 7
+xaxis = 142
+yaxis = 127
+flags = 0
+palette = 1063,0
+file = 1063-7.png
+
+[SpriteDef]
+group = 1050
+image = 3
+xaxis = 39
+yaxis = 47
+flags = 0
+palette = 1050,0
+file = 1050-3.png
+
+[SpriteDef]
+group = 1050
+image = 4
+xaxis = 52
+yaxis = 83
+flags = 0
+palette = 1050,0
+file = 1050-4.png
+
+[SpriteDef]
+group = 1050
+image = 5
+xaxis = 10
+yaxis = 68
+flags = 0
+palette = 1050,0
+file = 1050-5.png
+
+[SpriteDef]
+group = 1050
+image = 6
+xaxis = 9
+yaxis = 32
+flags = 0
+palette = 1050,0
+file = 1050-6.png
+
+[SpriteDef]
+group = 1050
+image = 7
+xaxis = 73
+yaxis = 49
+flags = 0
+palette = 1050,1
+file = 1050-7.png
+
+[SpriteDef]
+group = 1050
+image = 8
+xaxis = 20
+yaxis = 58
+flags = 0
+palette = 1050,1
+file = 1050-8.png
+
+[SpriteDef]
+group = 1050
+image = 9
+xaxis = 1
+yaxis = 69
+flags = 0
+palette = 1050,1
+file = 1050-9.png
+
+[SpriteDef]
+group = 1050
+image = 10
+xaxis = 77
+yaxis = 50
+flags = 0
+palette = 1050,1
+file = 1050-10.png
+
+[SpriteDef]
+group = 1051
+image = 0
+xaxis = 69
+yaxis = 76
+flags = 0
+palette = 1051,0
+file = 1051-0.png
+
+[SpriteDef]
+group = 1052
+image = 0
+xaxis = 191
+yaxis = 253
+flags = 0
+palette = 1052,0
+file = 1052-0.png
+
+[SpriteDef]
+group = 1052
+image = 1
+xaxis = 191
+yaxis = 126
+flags = 0
+palette = 1052,1
+file = 1052-1.png
+
+[SpriteDef]
+group = 1053
+image = 0
+xaxis = 233
+yaxis = 309
+flags = 0
+palette = 1053,0
+file = 1053-0.png
+
+[SpriteDef]
+group = 1053
+image = 1
+xaxis = 214
+yaxis = 358
+flags = 0
+palette = 1053,0
+file = 1053-1.png
+
+[SpriteDef]
+group = 1053
+image = 2
+xaxis = 215
+yaxis = 440
+flags = 0
+palette = 1053,0
+file = 1053-2.png
+
+[SpriteDef]
+group = 1053
+image = 3
+xaxis = 237
+yaxis = 627
+flags = 0
+palette = 1053,0
+file = 1053-3.png
+
+[SpriteDef]
+group = 1053
+image = 4
+xaxis = 206
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-4.png
+
+[SpriteDef]
+group = 1053
+image = 5
+xaxis = 217
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-5.png
+
+[SpriteDef]
+group = 1053
+image = 6
+xaxis = 268
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-6.png
+
+[SpriteDef]
+group = 1053
+image = 7
+xaxis = 216
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-7.png
+
+[SpriteDef]
+group = 1053
+image = 8
+xaxis = 217
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-8.png
+
+[SpriteDef]
+group = 1053
+image = 9
+xaxis = 219
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-9.png
+
+[SpriteDef]
+group = 1053
+image = 10
+xaxis = 222
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-10.png
+
+[SpriteDef]
+group = 1053
+image = 11
+xaxis = 223
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-11.png
+
+[SpriteDef]
+group = 1053
+image = 12
+xaxis = 223
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-12.png
+
+[SpriteDef]
+group = 1053
+image = 13
+xaxis = 220
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-13.png
+
+[SpriteDef]
+group = 1053
+image = 14
+xaxis = 211
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-14.png
+
+[SpriteDef]
+group = 1053
+image = 15
+xaxis = 212
+yaxis = 652
+flags = 0
+palette = 1053,0
+file = 1053-15.png
+
+[SpriteDef]
+group = 1053
+image = 16
+xaxis = 209
+yaxis = 117
+flags = 0
+palette = 1053,0
+file = 1053-16.png
+
+[SpriteDef]
+group = 1053
+image = 17
+xaxis = 201
+yaxis = 116
+flags = 0
+palette = 1053,0
+file = 1053-17.png
+
+[SpriteDef]
+group = 1053
+image = 18
+xaxis = 192
+yaxis = 117
+flags = 0
+palette = 1053,0
+file = 1053-18.png
+
+[SpriteDef]
+group = 1053
+image = 19
+xaxis = 192
+yaxis = 119
+flags = 0
+palette = 1053,0
+file = 1053-19.png
+
+[SpriteDef]
+group = 1053
+image = 20
+xaxis = 187
+yaxis = 111
+flags = 0
+palette = 1053,0
+file = 1053-20.png
+
+[SpriteDef]
+group = 1054
+image = 0
+xaxis = 110
+yaxis = 110
+flags = 0
+palette = 1054,0
+file = 1054-0.png
+
+[SpriteDef]
+group = 1056
+image = 0
+xaxis = 473
+yaxis = -31
+flags = 0
+palette = 1056,0
+file = 1056-0.png
+
+[SpriteDef]
+group = 1056
+image = 1
+xaxis = 476
+yaxis = -29
+flags = 0
+palette = 1056,0
+file = 1056-1.png
+
+[SpriteDef]
+group = 1056
+image = 2
+xaxis = 474
+yaxis = -31
+flags = 0
+palette = 1056,0
+file = 1056-2.png
+
+[SpriteDef]
+group = 1056
+image = 3
+xaxis = 475
+yaxis = -30
+flags = 0
+palette = 1056,0
+file = 1056-3.png
+
+[SpriteDef]
+group = 1056
+image = 4
+xaxis = 483
+yaxis = -32
+flags = 0
+palette = 1056,0
+file = 1056-4.png
+
+[SpriteDef]
+group = 1056
+image = 5
+xaxis = 475
+yaxis = -32
+flags = 0
+palette = 1056,0
+file = 1056-5.png
+
+[SpriteDef]
+group = 1056
+image = 6
+xaxis = 475
+yaxis = -32
+flags = 0
+palette = 1056,0
+file = 1056-6.png
+
+[SpriteDef]
+group = 1056
+image = 7
+xaxis = 477
+yaxis = -31
+flags = 0
+palette = 1056,0
+file = 1056-7.png
+
+[SpriteDef]
+group = 1056
+image = 8
+xaxis = 476
+yaxis = -32
+flags = 0
+palette = 1056,0
+file = 1056-8.png
+
+[SpriteDef]
+group = 1056
+image = 9
+xaxis = 475
+yaxis = 7
+flags = 0
+palette = 1056,0
+file = 1056-9.png
+
+[SpriteDef]
+group = 1056
+image = 10
+xaxis = 474
+yaxis = 47
+flags = 0
+palette = 1056,0
+file = 1056-10.png
+
+[SpriteDef]
+group = 1056
+image = 11
+xaxis = 476
+yaxis = 86
+flags = 0
+palette = 1056,0
+file = 1056-11.png
+
+[SpriteDef]
+group = 1056
+image = 12
+xaxis = 474
+yaxis = 124
+flags = 0
+palette = 1056,0
+file = 1056-12.png
+
+[SpriteDef]
+group = 1056
+image = 13
+xaxis = 476
+yaxis = 162
+flags = 0
+palette = 1056,0
+file = 1056-13.png
+
+[SpriteDef]
+group = 1056
+image = 14
+xaxis = 477
+yaxis = 201
+flags = 0
+palette = 1056,0
+file = 1056-14.png
+
+[SpriteDef]
+group = 1056
+image = 15
+xaxis = 475
+yaxis = 238
+flags = 0
+palette = 1056,0
+file = 1056-15.png
+
+[SpriteDef]
+group = 1056
+image = 16
+xaxis = 475
+yaxis = 275
+flags = 0
+palette = 1056,0
+file = 1056-16.png
+
+[SpriteDef]
+group = 1056
+image = 17
+xaxis = 473
+yaxis = 311
+flags = 0
+palette = 1056,0
+file = 1056-17.png
+
+[SpriteDef]
+group = 1056
+image = 18
+xaxis = 475
+yaxis = 347
+flags = 0
+palette = 1056,0
+file = 1056-18.png
+
+[SpriteDef]
+group = 1056
+image = 19
+xaxis = 474
+yaxis = 382
+flags = 0
+palette = 1056,0
+file = 1056-19.png
+
+[SpriteDef]
+group = 1056
+image = 20
+xaxis = 475
+yaxis = 418
+flags = 0
+palette = 1056,0
+file = 1056-20.png
+
+[SpriteDef]
+group = 1056
+image = 21
+xaxis = 474
+yaxis = 452
+flags = 0
+palette = 1056,0
+file = 1056-21.png
+
+[SpriteDef]
+group = 1056
+image = 22
+xaxis = 472
+yaxis = 468
+flags = 0
+palette = 1056,0
+file = 1056-22.png
+
+[SpriteDef]
+group = 1056
+image = 23
+xaxis = 473
+yaxis = 468
+flags = 0
+palette = 1056,0
+file = 1056-23.png
+
+[SpriteDef]
+group = 1056
+image = 24
+xaxis = 474
+yaxis = 468
+flags = 0
+palette = 1056,0
+file = 1056-24.png
+
+[SpriteDef]
+group = 1056
+image = 25
+xaxis = 470
+yaxis = 468
+flags = 0
+palette = 1056,0
+file = 1056-25.png
+
+[SpriteDef]
+group = 1056
+image = 26
+xaxis = 465
+yaxis = 468
+flags = 0
+palette = 1056,0
+file = 1056-26.png
+
+[SpriteDef]
+group = 1056
+image = 27
+xaxis = 460
+yaxis = 468
+flags = 0
+palette = 1056,0
+file = 1056-27.png
+
+[SpriteDef]
+group = 1056
+image = 28
+xaxis = 452
+yaxis = 468
+flags = 0
+palette = 1056,0
+file = 1056-28.png
+
+[SpriteDef]
+group = 1058
+image = 0
+xaxis = 13
+yaxis = -34
+flags = 0
+palette = 1058,0
+file = 1058-0.png
+
+[SpriteDef]
+group = 1058
+image = 1
+xaxis = 20
+yaxis = -29
+flags = 0
+palette = 1058,0
+file = 1058-1.png
+
+[SpriteDef]
+group = 1058
+image = 2
+xaxis = 25
+yaxis = -10
+flags = 0
+palette = 1058,0
+file = 1058-2.png
+
+[SpriteDef]
+group = 1058
+image = 3
+xaxis = 27
+yaxis = 23
+flags = 0
+palette = 1058,0
+file = 1058-3.png
+
+[SpriteDef]
+group = 1058
+image = 4
+xaxis = 32
+yaxis = 52
+flags = 0
+palette = 1058,0
+file = 1058-4.png
+
+[SpriteDef]
+group = 1058
+image = 5
+xaxis = 41
+yaxis = 56
+flags = 0
+palette = 1058,0
+file = 1058-5.png
+
+[SpriteDef]
+group = 1058
+image = 6
+xaxis = 46
+yaxis = 57
+flags = 0
+palette = 1058,0
+file = 1058-6.png
+
+[SpriteDef]
+group = 1058
+image = 7
+xaxis = 46
+yaxis = 52
+flags = 0
+palette = 1058,0
+file = 1058-7.png
+
+[SpriteDef]
+group = 1058
+image = 8
+xaxis = 25
+yaxis = 39
+flags = 0
+palette = 1058,0
+file = 1058-8.png
+
+[SpriteDef]
+group = 1058
+image = 9
+xaxis = 27
+yaxis = 29
+flags = 0
+palette = 1058,0
+file = 1058-9.png
+
+[SpriteDef]
+group = 1058
+image = 10
+xaxis = 24
+yaxis = 11
+flags = 0
+palette = 1058,0
+file = 1058-10.png
+
+[SpriteDef]
+group = 1058
+image = 11
+xaxis = 22
+yaxis = 10
+flags = 0
+palette = 1058,0
+file = 1058-11.png
+
+[SpriteDef]
+group = 1058
+image = 12
+xaxis = 16
+yaxis = 7
+flags = 0
+palette = 1058,0
+file = 1058-12.png
+
+[SpriteDef]
+group = 1058
+image = 13
+xaxis = 11
+yaxis = -38
+flags = 0
+palette = 1058,0
+file = 1058-13.png
+
+[SpriteDef]
+group = 1058
+image = 14
+xaxis = 9
+yaxis = -39
+flags = 0
+palette = 1058,0
+file = 1058-14.png
+
+[SpriteDef]
+group = 1058
+image = 15
+xaxis = 5
+yaxis = -43
+flags = 0
+palette = 1058,0
+file = 1058-15.png
+
+[SpriteDef]
+group = 1059
+image = 0
+xaxis = 112
+yaxis = 66
+flags = 0
+palette = 1059,0
+file = 1059-0.png
+
+[SpriteDef]
+group = 1059
+image = 1
+xaxis = 112
+yaxis = 67
+flags = 0
+palette = 1059,0
+file = 1059-1.png
+
+[SpriteDef]
+group = 1059
+image = 2
+xaxis = 109
+yaxis = 63
+flags = 0
+palette = 1059,0
+file = 1059-2.png
+
+[SpriteDef]
+group = 1059
+image = 3
+xaxis = 98
+yaxis = 62
+flags = 0
+palette = 1059,0
+file = 1059-3.png
+
+[SpriteDef]
+group = 1059
+image = 4
+xaxis = 90
+yaxis = 52
+flags = 0
+palette = 1059,0
+file = 1059-4.png
+
+[SpriteDef]
+group = 1059
+image = 5
+xaxis = 7
+yaxis = 54
+flags = 0
+palette = 1059,0
+file = 1059-5.png
+
+[SpriteDef]
+group = 1090
+image = 0
+xaxis = 258
+yaxis = 27
+flags = 0
+palette = 1090,0
+file = 1090-0.png
+
+[SpriteDef]
+group = 9007
+image = 38
+xaxis = 238
+yaxis = 47
+flags = 0
+palette = 9007,0
+file = 9007-38.png
+
+[SpriteDef]
+group = 9007
+image = 39
+xaxis = 256
+yaxis = 42
+flags = 0
+palette = 9007,1
+file = 9007-39.png
+
+[SpriteDef]
+group = 9007
+image = 40
+xaxis = 293
+yaxis = 39
+flags = 0
+palette = 9007,2
+file = 9007-40.png
+
+[SpriteDef]
+group = 9007
+image = 41
+xaxis = 285
+yaxis = 37
+flags = 0
+palette = 9007,3
+file = 9007-41.png
+
+[SpriteDef]
+group = 9007
+image = 42
+xaxis = 269
+yaxis = 33
+flags = 0
+palette = 9007,4
+file = 9007-42.png
+
+[SpriteDef]
+group = 7400
+image = 0
+xaxis = 38
+yaxis = 52
+flags = 0
+palette = 7400,0
+file = 7400-0.png
+
+[SpriteDef]
+group = 7400
+image = 1
+xaxis = 42
+yaxis = 50
+flags = 0
+palette = 7400,0
+file = 7400-1.png
+
+[SpriteDef]
+group = 7400
+image = 2
+xaxis = 41
+yaxis = 46
+flags = 0
+palette = 7400,0
+file = 7400-2.png
+
+[SpriteDef]
+group = 7400
+image = 3
+xaxis = 47
+yaxis = 58
+flags = 0
+palette = 7400,0
+file = 7400-3.png
+
+[SpriteDef]
+group = 7400
+image = 4
+xaxis = 43
+yaxis = 52
+flags = 0
+palette = 7400,0
+file = 7400-4.png
+
+[SpriteDef]
+group = 7400
+image = 5
+xaxis = 38
+yaxis = 43
+flags = 0
+palette = 7400,0
+file = 7400-5.png
+
+[SpriteDef]
+group = 7400
+image = 6
+xaxis = 35
+yaxis = 35
+flags = 0
+palette = 7400,0
+file = 7400-6.png
+
+[SpriteDef]
+group = 7400
+image = 7
+xaxis = 29
+yaxis = 26
+flags = 0
+palette = 7400,0
+file = 7400-7.png
+
+[SpriteDef]
+group = 7400
+image = 8
+xaxis = 22
+yaxis = 25
+flags = 0
+palette = 7400,0
+file = 7400-8.png
+
+[SpriteDef]
+group = 7400
+image = 9
+xaxis = 16
+yaxis = 25
+flags = 0
+palette = 7400,0
+file = 7400-9.png
+
+[SpriteDef]
+group = 7400
+image = 10
+xaxis = 45
+yaxis = 46
+flags = 0
+palette = 7400,0
+file = 7400-10.png
+
+[SpriteDef]
+group = 7400
+image = 11
+xaxis = 45
+yaxis = 46
+flags = 0
+palette = 7400,0
+file = 7400-11.png
+
+[SpriteDef]
+group = 7400
+image = 12
+xaxis = 59
+yaxis = 60
+flags = 0
+palette = 7400,0
+file = 7400-12.png
+
+[SpriteDef]
+group = 7400
+image = 13
+xaxis = 60
+yaxis = 61
+flags = 0
+palette = 7400,0
+file = 7400-13.png
+
+[SpriteDef]
+group = 7400
+image = 14
+xaxis = 69
+yaxis = 71
+flags = 0
+palette = 7400,0
+file = 7400-14.png
+
+[SpriteDef]
+group = 7400
+image = 15
+xaxis = 69
+yaxis = 71
+flags = 0
+palette = 7400,0
+file = 7400-15.png
+
+[SpriteDef]
+group = 7400
+image = 16
+xaxis = 77
+yaxis = 78
+flags = 0
+palette = 7400,0
+file = 7400-16.png
+
+[SpriteDef]
+group = 7400
+image = 17
+xaxis = 77
+yaxis = 78
+flags = 0
+palette = 7400,0
+file = 7400-17.png
+
+[SpriteDef]
+group = 7400
+image = 18
+xaxis = 81
+yaxis = 82
+flags = 0
+palette = 7400,0
+file = 7400-18.png
+
+[SpriteDef]
+group = 7400
+image = 19
+xaxis = 81
+yaxis = 82
+flags = 0
+palette = 7400,0
+file = 7400-19.png
+
+[SpriteDef]
+group = 7400
+image = 20
+xaxis = 85
+yaxis = 86
+flags = 0
+palette = 7400,0
+file = 7400-20.png
+
+[SpriteDef]
+group = 7400
+image = 21
+xaxis = 85
+yaxis = 86
+flags = 0
+palette = 7400,0
+file = 7400-21.png
+
+[SpriteDef]
+group = 7400
+image = 22
+xaxis = 88
+yaxis = 89
+flags = 0
+palette = 7400,0
+file = 7400-22.png
+
+[SpriteDef]
+group = 7400
+image = 23
+xaxis = 88
+yaxis = 89
+flags = 0
+palette = 7400,0
+file = 7400-23.png
+
+[SpriteDef]
+group = 7400
+image = 24
+xaxis = 89
+yaxis = 90
+flags = 0
+palette = 7400,0
+file = 7400-24.png
+
+[SpriteDef]
+group = 7400
+image = 25
+xaxis = 45
+yaxis = 57
+flags = 0
+palette = 7400,0
+file = 7400-25.png
+
+[SpriteDef]
+group = 7400
+image = 26
+xaxis = 43
+yaxis = 58
+flags = 0
+palette = 7400,0
+file = 7400-26.png
+
+[SpriteDef]
+group = 7400
+image = 27
+xaxis = 89
+yaxis = 90
+flags = 0
+palette = 7400,0
+file = 7400-27.png
+
+[SpriteDef]
+group = 9011
+image = 5
+xaxis = 208
+yaxis = 343
+flags = 0
+palette = 9011,0
+file = 9011-5.png
+
+[SpriteDef]
+group = 9011
+image = 6
+xaxis = 207
+yaxis = 359
+flags = 0
+palette = 9011,0
+file = 9011-6.png
+
+[SpriteDef]
+group = 9011
+image = 7
+xaxis = 206
+yaxis = 310
+flags = 0
+palette = 9011,0
+file = 9011-7.png
+
+[SpriteDef]
+group = 9011
+image = 8
+xaxis = 207
+yaxis = 304
+flags = 0
+palette = 9011,0
+file = 9011-8.png
+
+[SpriteDef]
+group = 9011
+image = 9
+xaxis = 208
+yaxis = 329
+flags = 0
+palette = 9011,0
+file = 9011-9.png
+
+[SpriteDef]
+group = 9011
+image = 10
+xaxis = 208
+yaxis = 371
+flags = 0
+palette = 9011,0
+file = 9011-10.png
+
+[SpriteDef]
+group = 9011
+image = 11
+xaxis = 208
+yaxis = 399
+flags = 0
+palette = 9011,0
+file = 9011-11.png
+
+[SpriteDef]
+group = 9011
+image = 12
+xaxis = 210
+yaxis = 406
+flags = 0
+palette = 9011,0
+file = 9011-12.png
+
+[SpriteDef]
+group = 9011
+image = 13
+xaxis = 190
+yaxis = 436
+flags = 0
+palette = 9011,0
+file = 9011-13.png
+
+[SpriteDef]
+group = 3155
+image = 0
+xaxis = 9
+yaxis = 0
+flags = 0
+palette = 1052,1
+file = 3155-0.png
+
+[SpriteDef]
+group = 2
+image = 0
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-0.png
+
+[SpriteDef]
+group = 2
+image = 1
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-1.png
+
+[SpriteDef]
+group = 2
+image = 2
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-2.png
+
+[SpriteDef]
+group = 2
+image = 3
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-3.png
+
+[SpriteDef]
+group = 2
+image = 4
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-4.png
+
+[SpriteDef]
+group = 2
+image = 5
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-5.png
+
+[SpriteDef]
+group = 2
+image = 6
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-6.png
+
+[SpriteDef]
+group = 2
+image = 7
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-7.png
+
+[SpriteDef]
+group = 2
+image = 8
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-8.png
+
+[SpriteDef]
+group = 2
+image = 9
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-9.png
+
+[SpriteDef]
+group = 2
+image = 10
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-10.png
+
+[SpriteDef]
+group = 2
+image = 11
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-11.png
+
+[SpriteDef]
+group = 2
+image = 12
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-12.png
+
+[SpriteDef]
+group = 2
+image = 13
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-13.png
+
+[SpriteDef]
+group = 2
+image = 14
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-14.png
+
+[SpriteDef]
+group = 2
+image = 15
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-15.png
+
+[SpriteDef]
+group = 2
+image = 16
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-16.png
+
+[SpriteDef]
+group = 2
+image = 17
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-17.png
+
+[SpriteDef]
+group = 2
+image = 18
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-18.png
+
+[SpriteDef]
+group = 2
+image = 19
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-19.png
+
+[SpriteDef]
+group = 2
+image = 20
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-20.png
+
+[SpriteDef]
+group = 2
+image = 21
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-21.png
+
+[SpriteDef]
+group = 2
+image = 22
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-22.png
+
+[SpriteDef]
+group = 2
+image = 23
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-23.png
+
+[SpriteDef]
+group = 2
+image = 24
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-24.png
+
+[SpriteDef]
+group = 2
+image = 25
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-25.png
+
+[SpriteDef]
+group = 2
+image = 26
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-26.png
+
+[SpriteDef]
+group = 2
+image = 27
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-27.png
+
+[SpriteDef]
+group = 2
+image = 28
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-28.png
+
+[SpriteDef]
+group = 2
+image = 29
+xaxis = 320
+yaxis = 480
+flags = 0
+palette = 2,0
+file = 2-29.png
+
+[SpriteDef]
+group = 8200
+image = 0
+xaxis = 108
+yaxis = 237
+flags = 0
+palette = 8200,0
+file = 8200-0.png
+
+[SpriteDef]
+group = 8200
+image = 1
+xaxis = 114
+yaxis = 256
+flags = 0
+palette = 8200,0
+file = 8200-1.png
+
+[SpriteDef]
+group = 8200
+image = 2
+xaxis = 121
+yaxis = 276
+flags = 0
+palette = 8200,0
+file = 8200-2.png
+
+[SpriteDef]
+group = 8200
+image = 3
+xaxis = 128
+yaxis = 193
+flags = 0
+palette = 8200,0
+file = 8200-3.png
+
+[SpriteDef]
+group = 8200
+image = 4
+xaxis = 135
+yaxis = 198
+flags = 0
+palette = 8200,0
+file = 8200-4.png
+
+[SpriteDef]
+group = 8200
+image = 5
+xaxis = 126
+yaxis = 199
+flags = 0
+palette = 8200,0
+file = 8200-5.png
+
+[SpriteDef]
+group = 8200
+image = 6
+xaxis = 125
+yaxis = 186
+flags = 0
+palette = 8200,0
+file = 8200-6.png
+
+[SpriteDef]
+group = 8200
+image = 7
+xaxis = 127
+yaxis = 180
+flags = 0
+palette = 8200,0
+file = 8200-7.png
+
+[SpriteDef]
+group = 8200
+image = 8
+xaxis = 124
+yaxis = 124
+flags = 0
+palette = 8200,0
+file = 8200-8.png
+
+[SpriteDef]
+group = 8200
+image = 9
+xaxis = 115
+yaxis = 109
+flags = 0
+palette = 8200,0
+file = 8200-9.png
+
+[SpriteDef]
+group = 9021
+image = 0
+xaxis = 320
+yaxis = 240
+flags = 0
+palette = 9021,0
+file = 9021-0.png
+
+[SpriteDef]
+group = 20000
+image = 0
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-0.png
+
+[SpriteDef]
+group = 20000
+image = 1
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-1.png
+
+[SpriteDef]
+group = 20000
+image = 2
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-2.png
+
+[SpriteDef]
+group = 20000
+image = 3
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-3.png
+
+[SpriteDef]
+group = 20000
+image = 4
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-4.png
+
+[SpriteDef]
+group = 20000
+image = 5
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-5.png
+
+[SpriteDef]
+group = 20000
+image = 6
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-6.png
+
+[SpriteDef]
+group = 20000
+image = 7
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-7.png
+
+[SpriteDef]
+group = 20000
+image = 8
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-8.png
+
+[SpriteDef]
+group = 20000
+image = 9
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-9.png
+
+[SpriteDef]
+group = 20000
+image = 10
+xaxis = 32
+yaxis = 19
+flags = 0
+palette = 20000,0
+file = 20000-10.png

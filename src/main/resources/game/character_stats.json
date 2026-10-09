@@ -1,0 +1,171 @@
+[{
+  "_id": "tsunade_senju_v0",
+  "characterId": "tsunade_senju_v0",
+  "states": {
+    "run": {
+      "name": "run",
+      "animationNumber": 20
+    },
+    "jump": {
+      "name": "jump",
+      "animationNumber": 41,
+      "events": {
+        "0": {
+          "sound": "40-1",
+          "volume": 0.2
+        }
+      }
+    },
+    "fall": {
+      "name": "fall",
+      "animationNumber": 44
+    },
+    "crouch": {
+      "name": "crouch",
+      "animationNumber": 11
+    },
+    "takeHit": {
+      "animationNumber": 5001,
+      "name": "takeHit"
+    },
+    "lose": {
+      "animationNumber": 170,
+      "name": "Lose"
+    },
+    "win": {
+      "animationNumber": 180,
+      "name": "win"
+    },
+    "idle": {
+      "name": "idle",
+      "animationNumber": 0
+    },
+    "knockdown": {
+      "name": "knockdown",
+      "animationNumber": 5080
+    },
+    "getUp": {
+      "name": "get up",
+      "animationNumber": 5120
+    },
+    "attack1-1": {
+      "animationNumber": 200,
+      "name": "combo1-1",
+      "events": {
+        "3": {
+          "animationNumber": 7000,
+          "scale": 0.5,
+          "trans": "add",
+          "attachMode": "hitspark"
+        }
+      }
+    },
+    "attack1-2": {
+      "name": "combo 1-2",
+      "animationNumber": 210
+    },
+    "launched": {
+      "name": "laucher",
+      "animationNumber": 5020
+    },
+    "heavyHit": {
+      "name": "heavy hit",
+      "animationNumber": 5035
+    },
+    "attack1-3": {
+      "name": "combo 1-3",
+      "animationNumber": 221,
+      "events": {
+        "0": {
+          "sound": "4-32",
+          "volume": 0.3,
+          "animationNumber": 7020,
+          "attachMode": "world",
+          "inheritFacing": false,
+          "velocity": {
+            "x": 8,
+            "y": -3
+          }
+        }
+      }
+    },
+    "airAttack1-1": {
+      "name": "air combo - 1",
+      "animationNumber": 600
+    },
+    "airAttack1-2": {
+      "name": "air combo 1-2",
+      "animationNumber": 610
+    },
+    "airAttack1-3": {
+      "name": "air combo 1-3",
+      "animationNumber": 620
+    },
+    "guard": {
+      "name": "stand guard",
+      "animationNumber": 121
+    },
+    "attack1-4": {
+      "name": "combo 1-4",
+      "animationNumber": 230,
+      "events": {
+        "0": {
+          "sound": "0-14",
+          "volume": 0.2,
+          "animationNumber": 235,
+          "attachMode": "anchor",
+          "inheritFacing": true,
+          "scale": 1,
+          "trans": "add"
+        },
+        "7": {
+          "sound": "1-11",
+          "volume": 0.2
+        },
+        "8": {
+          "animationNumber": 260,
+          "attachMode": "world",
+          "inheritFacing": false,
+          "velocity": {
+            "x": 10,
+            "y": 0
+          },
+          "scale": 1,
+          "trans": "add"
+        }
+      }
+    },
+    "powerCharge": {
+      "name": "power charge",
+      "animationNumber": 500,
+      "events": {
+        "0": {
+          "animationNumber": 7002,
+          "inheritFacing": true,
+          "attachMode": "anchor",
+          "removeOnStateChange": true,
+          "shake": true,
+          "scale": 1,
+          "trans": "add"
+        }
+      }
+    },
+    "attack2-1": {
+      "name": "combo 2-1",
+      "animationNumber": 300
+    },
+    "attack2-2": {
+      "name": "combo 2-2",
+      "animationNumber": 310,
+      "events": {
+        "0": {
+          "animationNumber": 315,
+          "attachMode": "anchor",
+          "inheritFacing": true,
+          "scale": 1,
+          "trans": "add"
+        }
+      }
+    }
+  }
+}]

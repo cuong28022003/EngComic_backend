@@ -21,7 +21,7 @@ import java.util.Map;
 @Document(collection = "character")
 public class CharacterEntity {
 
-    @MongoId(FieldType.OBJECT_ID)
+    @MongoId
     private String id;
     private String name;
     private String rarity; // C, R, SR, SSR
