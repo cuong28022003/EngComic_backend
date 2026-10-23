@@ -59,7 +59,7 @@ public class GetLearningStatsInteractor implements GetLearningStats {
                 .userId(stats.getUserId())
                 .xp(stats.getXp())
                 .diamond(stats.getDiamond())
-                .rankName(stats.getRank() != null ? stats.getRank().getName() : "ĐỒNG (Bronze)")
+                .rankName(stats.getRank() != null ? stats.getRank().getName() : "Trainee")
                 .currentStreak(stats.getCurrentStreak())
                 .longestStreak(stats.getLongestStreak())
                 .lastStudyDate(stats.getLastStudyDate())

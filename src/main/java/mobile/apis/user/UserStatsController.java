@@ -1,11 +1,14 @@
 package mobile.apis.user;
 
 import lombok.RequiredArgsConstructor;
+import mobile.apis.user.dtos.LeaderboardEntryDto;
 import mobile.apis.user.dtos.UserStatsResponseDto;
+import mobile.businesses.boundaries.user.GetLeaderboard;
 import mobile.businesses.boundaries.user.GetUserStats;
 import mobile.businesses.boundaries.user.RecordStudyActivity;
 import mobile.security.constants.AppAuthorities;
 import mobile.security.resolver.CurrentUserId;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import java.util.Map;
 public class UserStatsController {
 
     private final GetUserStats getUserStats;
+    private final GetLeaderboard getLeaderboard;
     private final RecordStudyActivity recordStudyActivity;
 
     @GetMapping("/me")
@@ -43,6 +47,21 @@ public class UserStatsController {
 
         GetUserStats.Response response = getUserStats.execute(request);
         return ResponseEntity.ok(response.getStats());
+    }
+
+    @GetMapping("/top-users")
+    public ResponseEntity<Page<LeaderboardEntryDto>> getTopUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "xp") String sort) {
+        GetLeaderboard.Request request = GetLeaderboard.Request.builder()
+                .page(page)
+                .size(size)
+                .sort(sort)
+                .build();
+
+        GetLeaderboard.Response response = getLeaderboard.execute(request);
+        return ResponseEntity.ok(response.getResult());
     }
 
     @PostMapping({"/check-in", "/record-activity"})

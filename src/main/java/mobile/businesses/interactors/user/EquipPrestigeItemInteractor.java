@@ -54,7 +54,7 @@ public class EquipPrestigeItemInteractor implements EquipPrestigeItem {
                 .userId(saved.getUserId())
                 .xp(saved.getXp())
                 .diamond(saved.getDiamond())
-                .rankName(saved.getRank() != null ? saved.getRank().getName() : "ĐỒNG (Bronze)")
+                .rankName(saved.getRank() != null ? saved.getRank().getName() : "Trainee")
                 .currentStreak(saved.getCurrentStreak())
                 .longestStreak(saved.getLongestStreak())
                 .lastStudyDate(saved.getLastStudyDate())
