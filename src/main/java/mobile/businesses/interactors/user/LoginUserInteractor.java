@@ -53,6 +53,7 @@ public class LoginUserInteractor implements LoginUser {
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .imageUrl(user.getImage())
+                .coverUrl(user.getCover())
                 .birthday(user.getBirthday())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

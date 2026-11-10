@@ -24,6 +24,8 @@ public class UserMapper {
                 .birthday(user.getBirthday())
                 .createdDate(user.getCreatedate())
                 .imageUrl(user.getImage())
+                .coverUrl(user.getCover())
+                .featuredCharacterIds(user.getFeaturedCharacterIds())
                 .active(user.getActive())
                 .status(user.getStatus())
                 .roles(user.getRoles() != null

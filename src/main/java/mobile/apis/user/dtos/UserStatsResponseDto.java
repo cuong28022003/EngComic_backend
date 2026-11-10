@@ -21,6 +21,11 @@ public class UserStatsResponseDto {
     private int currentStreak;
     private int longestStreak;
     private LocalDate lastStudyDate;
+    private LocalDate lastCheckInDate;
+    private int totalCheckIns;
+    private boolean checkedInToday;
+    @Builder.Default
+    private java.util.List<String> checkInHistory = new java.util.ArrayList<>();
     private boolean isReceivedSeasonReward;
     private boolean isPremium;
     private boolean studiedToday;

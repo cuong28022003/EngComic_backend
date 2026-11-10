@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
@@ -60,18 +61,22 @@ public class AuthController {
         LoginUser.Response response = loginUser.execute(request);
         AuthResponseDto authData = response.getData();
 
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("id", authData.getId());
+        data.put("username", authData.getUsername());
+        data.put("email", authData.getEmail());
+        data.put("fullName", authData.getFullName() != null ? authData.getFullName() : authData.getUsername());
+        data.put("imageUrl", authData.getImageUrl());
+        data.put("coverUrl", authData.getCoverUrl());
+        data.put("birthday", authData.getBirthday());
+        data.put("accessToken", authData.getAccessToken());
+        data.put("refreshToken", authData.getRefreshToken());
+        data.put("roles", authData.getRoles());
+
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "message", "Login successful",
-                "data", Map.of(
-                        "id", authData.getId(),
-                        "username", authData.getUsername(),
-                        "email", authData.getEmail(),
-                        "fullName", authData.getFullName() != null ? authData.getFullName() : authData.getUsername(),
-                        "accessToken", authData.getAccessToken(),
-                        "refreshToken", authData.getRefreshToken(),
-                        "roles", authData.getRoles()
-                )
+                "data", data
         ));
     }
 

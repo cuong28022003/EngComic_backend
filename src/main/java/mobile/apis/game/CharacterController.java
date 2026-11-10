@@ -1,15 +1,19 @@
 package mobile.apis.game;
 
 import lombok.RequiredArgsConstructor;
+import mobile.apis.gacha.dtos.UserCharacterResponseDto;
 import mobile.businesses.boundaries.game.GetGameCharacterBoundary;
+import mobile.businesses.boundaries.gacha.GetUserCharacters;
 import mobile.databases.entities.gacha.CharacterEntity;
-import mobile.databases.entities.gacha.UserCharacterEntity;
 import mobile.databases.repositories.gacha.CharacterRepository;
 import mobile.databases.repositories.gacha.UserCharacterRepository;
+import mobile.security.constants.AppAuthorities;
+import mobile.security.resolver.CurrentUserId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -21,6 +25,7 @@ import java.util.List;
 public class CharacterController {
 
     private final GetGameCharacterBoundary getGameCharacterBoundary;
+    private final GetUserCharacters getUserCharacters;
     private final CharacterRepository characterRepository;
     private final UserCharacterRepository userCharacterRepository;
 
@@ -51,18 +56,26 @@ public class CharacterController {
     }
 
     @GetMapping("/users/{userId}/all")
-    public ResponseEntity<List<UserCharacterEntity>> getAllCharactersByUserId(@PathVariable String userId) {
-        List<UserCharacterEntity> userCharacters = userCharacterRepository.findByUserId(userId);
-        return ResponseEntity.ok(userCharacters);
+    public ResponseEntity<List<UserCharacterResponseDto>> getAllCharactersByUserId(@PathVariable String userId) {
+        GetUserCharacters.Request request = GetUserCharacters.Request.builder()
+                .userId(userId)
+                .pageable(PageRequest.of(0, 1000))
+                .build();
+        GetUserCharacters.Response response = getUserCharacters.execute(request);
+        List<UserCharacterResponseDto> content = response.getUserCharacters().getContent();
+        return ResponseEntity.ok(content);
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<Page<UserCharacterEntity>> getCharactersByUserId(
+    public ResponseEntity<Page<UserCharacterResponseDto>> getCharactersByUserId(
             @PathVariable String userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<UserCharacterEntity> userCharacters = userCharacterRepository.findByUserId(userId, pageable);
-        return ResponseEntity.ok(userCharacters);
+        GetUserCharacters.Request request = GetUserCharacters.Request.builder()
+                .userId(userId)
+                .pageable(PageRequest.of(page, size))
+                .build();
+        GetUserCharacters.Response response = getUserCharacters.execute(request);
+        return ResponseEntity.ok(response.getUserCharacters());
     }
 }

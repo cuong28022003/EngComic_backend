@@ -14,8 +14,10 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -40,8 +42,13 @@ public class UserEntity {
     @CreatedDate
     protected Date createdate;
     protected String image;
+    protected String cover;
     protected Boolean active;
     protected String status;
+
+    // Tối đa 3 nhân vật người dùng chọn hiển thị trên hồ sơ
+    @Builder.Default
+    protected List<String> featuredCharacterIds = new ArrayList<>();
 
     @DBRef
     @Builder.Default
@@ -55,6 +62,7 @@ public class UserEntity {
         this.birthday = LocalDate.now();
         this.createdate = new Date();
         this.image = "";
+        this.cover = "";
         this.active = true;
         this.status = "None";
         this.roles = new HashSet<>();

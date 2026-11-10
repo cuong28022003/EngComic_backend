@@ -33,9 +33,11 @@ public class GetUserStatsInteractor implements GetUserStats {
 
         LocalDate today = LocalDate.now();
         boolean studiedToday = stats.getLastStudyDate() != null && stats.getLastStudyDate().equals(today);
+        boolean checkedInToday = stats.getLastCheckInDate() != null && stats.getLastCheckInDate().equals(today);
 
-        // If user missed yesterday and today, streak resets to 0
-        if (stats.getLastStudyDate() != null && stats.getLastStudyDate().isBefore(today.minusDays(1)) && stats.getCurrentStreak() > 0) {
+        // Nếu bỏ lỡ điểm danh từ hôm kia trở về trước thì chuỗi về 0
+        LocalDate lastCheckIn = stats.getLastCheckInDate();
+        if (lastCheckIn != null && lastCheckIn.isBefore(today.minusDays(1)) && stats.getCurrentStreak() > 0) {
             stats.setCurrentStreak(0);
             stats = userStatsRepository.save(stats);
         }
@@ -51,6 +53,12 @@ public class GetUserStatsInteractor implements GetUserStats {
                 .currentStreak(stats.getCurrentStreak())
                 .longestStreak(stats.getLongestStreak())
                 .lastStudyDate(stats.getLastStudyDate())
+                .lastCheckInDate(stats.getLastCheckInDate())
+                .totalCheckIns(stats.getTotalCheckIns())
+                .checkedInToday(checkedInToday)
+                .checkInHistory(stats.getCheckInHistory() != null
+                        ? new java.util.ArrayList<>(stats.getCheckInHistory())
+                        : new java.util.ArrayList<>())
                 .studiedToday(studiedToday)
                 .isReceivedSeasonReward(stats.isReceivedSeasonReward())
                 .isPremium(stats.isPremium())

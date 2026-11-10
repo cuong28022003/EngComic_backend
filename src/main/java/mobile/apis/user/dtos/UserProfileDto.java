@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -21,6 +22,8 @@ public class UserProfileDto {
     private LocalDate birthday;
     private Date createdDate;
     private String imageUrl;
+    private String coverUrl;
+    private List<String> featuredCharacterIds;
     private Boolean active;
     private String status;
     private Set<String> roles;

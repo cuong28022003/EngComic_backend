@@ -13,6 +13,8 @@ import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -38,6 +40,15 @@ public class UserStatsEntity {
     private int longestStreak = 0;
     @Builder.Default
     private LocalDate lastStudyDate = LocalDate.now().minusDays(1);
+
+    // ===== Hệ thống điểm danh =====
+    @Builder.Default
+    private LocalDate lastCheckInDate = null;
+    @Builder.Default
+    private int totalCheckIns = 0;
+    @Builder.Default
+    private List<String> checkInHistory = new ArrayList<>();
+
     private boolean isReceivedSeasonReward;
     @Builder.Default
     private boolean isPremium = false;

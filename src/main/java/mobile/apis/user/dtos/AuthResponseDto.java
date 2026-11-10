@@ -18,6 +18,7 @@ public class AuthResponseDto {
     private String email;
     private String fullName;
     private String imageUrl;
+    private String coverUrl;
     private LocalDate birthday;
     private String accessToken;
     private String refreshToken;

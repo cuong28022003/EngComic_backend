@@ -67,17 +67,33 @@ public class GachaController {
 
     @PostMapping("/roll")
     @PreAuthorize(AppAuthorities.IS_AUTHENTICATED)
-    public ResponseEntity<RollGacha.Response> rollGacha(
+    public ResponseEntity<?> rollGacha(
             @CurrentUserId String currentUserId,
-            @RequestParam(required = false) String packId) {
+            @RequestParam(required = false) String packId,
+            @RequestParam(required = false) Integer count) {
 
-        RollGacha.Request request = RollGacha.Request.builder()
-                .userId(currentUserId)
-                .packId(packId)
-                .build();
+        int times = (count == null || count < 1) ? 1 : Math.min(count, 10);
+        if (times == 1) {
+            RollGacha.Request request = RollGacha.Request.builder()
+                    .userId(currentUserId)
+                    .packId(packId)
+                    .build();
+            RollGacha.Response response = rollGacha.execute(request);
+            return ResponseEntity.ok(response.getCharacter());
+        }
 
-        RollGacha.Response response = rollGacha.execute(request);
-        return ResponseEntity.ok(response);
+        java.util.List<mobile.apis.gacha.dtos.CharacterResponseDto> results = new java.util.ArrayList<>();
+        for (int i = 0; i < times; i++) {
+            RollGacha.Request request = RollGacha.Request.builder()
+                    .userId(currentUserId)
+                    .packId(packId)
+                    .build();
+            RollGacha.Response response = rollGacha.execute(request);
+            if (response.getCharacter() != null) {
+                results.add(response.getCharacter());
+            }
+        }
+        return ResponseEntity.ok(results);
     }
 }
 

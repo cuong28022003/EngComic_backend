@@ -20,7 +20,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -67,19 +70,36 @@ public class GachaInteractor implements GetCharacters, GetPacks, GetUserCharacte
     public GetUserCharacters.Response execute(GetUserCharacters.Request request) {
         Page<UserCharacterEntity> page = userCharacterRepository.findByUserId(request.getUserId(), request.getPageable());
 
-        List<UserCharacterResponseDto> dtos = page.getContent().stream().map(uc -> {
+        List<CharacterEntity> allChars = new ArrayList<>();
+        try {
+            allChars = characterRepository.findAll();
+        } catch (Exception ignored) {
+        }
+
+        List<UserCharacterResponseDto> dtos = new ArrayList<>();
+        for (UserCharacterEntity uc : page.getContent()) {
             CharacterResponseDto charDto = null;
-            if (uc.getCharacterId() != null) {
-                charDto = characterRepository.findById(uc.getCharacterId()).map(this::mapCharacter).orElse(null);
+            String cid = uc.getCharacterId();
+            if (cid != null && !cid.isBlank() && allChars != null) {
+                for (CharacterEntity c : allChars) {
+                    if (c == null || c.getId() == null) {
+                        continue;
+                    }
+                    String cId = c.getId().toString();
+                    if (cid.equals(cId)) {
+                        charDto = mapCharacter(c);
+                        break;
+                    }
+                }
             }
-            return UserCharacterResponseDto.builder()
+            dtos.add(UserCharacterResponseDto.builder()
                     .id(uc.getId())
                     .userId(uc.getUserId())
-                    .characterId(uc.getCharacterId())
+                    .characterId(cid)
                     .obtainedAt(uc.getObtainedAt())
                     .character(charDto)
-                    .build();
-        }).collect(Collectors.toList());
+                    .build());
+        }
 
         return GetUserCharacters.Response.builder()
                 .userCharacters(new PageImpl<>(dtos, request.getPageable(), page.getTotalElements()))

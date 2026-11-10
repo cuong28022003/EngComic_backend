@@ -45,7 +45,7 @@ public class AppSecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(PublicSecurityEndpoints.PUBLIC_URLS).permitAll()
-                .anyRequest().permitAll() // Declaratively secured via @PreAuthorize on Controllers
+                .anyRequest().permitAll()
             );
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
