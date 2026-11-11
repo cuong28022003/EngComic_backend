@@ -19,19 +19,15 @@ public class AppUserDetail implements UserDetails {
     private String email;
 
     @JsonIgnore
-    private String password;
-
-    @JsonIgnore
     private Collection<? extends GrantedAuthority> authorities;
     private Collection<String> roles;
     private Boolean enable;
 
-    public AppUserDetail(String id, String username, String email, String password,
+    public AppUserDetail(String id, String username, String email,
                          Collection<? extends GrantedAuthority> authorities, Collection<String> roles, Boolean active) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.password = password;
         this.authorities = authorities;
         this.roles = roles;
         this.enable = active;
@@ -58,7 +54,6 @@ public class AppUserDetail implements UserDetails {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getPassword(),
                 authorities,
                 roleNames,
                 user.getActive()
@@ -80,7 +75,7 @@ public class AppUserDetail implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return null;
     }
 
     @Override

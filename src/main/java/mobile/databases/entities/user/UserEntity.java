@@ -1,6 +1,5 @@
 package mobile.databases.entities.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,9 +32,7 @@ public class UserEntity {
     protected String id;
     protected String username;
     protected String email;
-
-    @JsonIgnore
-    protected String password;
+    protected String keycloakId;
     protected String fullName;
     protected LocalDate birthday;
 
@@ -54,10 +51,9 @@ public class UserEntity {
     @Builder.Default
     protected Set<RoleEntity> roles = new HashSet<>();
 
-    public UserEntity(String username, String email, String password) {
+    public UserEntity(String username, String email) {
         this.username = username;
         this.email = email;
-        this.password = password;
         this.fullName = username;
         this.birthday = LocalDate.now();
         this.createdate = new Date();

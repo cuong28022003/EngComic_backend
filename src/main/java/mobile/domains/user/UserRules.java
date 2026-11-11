@@ -23,13 +23,6 @@ public class UserRules {
         return username.trim().length() >= 3 && username.trim().length() <= 50;
     }
 
-    public static boolean isValidPassword(String password) {
-        if (password == null) {
-            return false;
-        }
-        return password.length() >= 6;
-    }
-
     public static int calculateStreak(int currentStreak, boolean isContinuous) {
         return isContinuous ? currentStreak + 1 : 1;
     }

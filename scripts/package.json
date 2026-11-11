@@ -1,0 +1,13 @@
+{
+  "name": "engcomic-keycloak-migration",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Migrate Mongo users into Keycloak for EngComic",
+  "type": "commonjs",
+  "scripts": {
+    "migrate": "node migrate-users-to-keycloak.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.10.0"
+  }
+}

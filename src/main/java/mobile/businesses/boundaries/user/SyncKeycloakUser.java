@@ -4,17 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mobile.apis.user.dtos.AuthResponseDto;
-import mobile.apis.user.dtos.LoginRequestDto;
+import mobile.apis.user.dtos.UserProfileDto;
 
-public interface LoginUser {
+public interface SyncKeycloakUser {
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     class Request {
-        private LoginRequestDto payload;
+        private String userId;
     }
 
     @Data
@@ -22,9 +21,8 @@ public interface LoginUser {
     @NoArgsConstructor
     @AllArgsConstructor
     class Response {
-        private AuthResponseDto data;
+        private UserProfileDto data;
     }
 
     Response execute(Request request);
 }
-
